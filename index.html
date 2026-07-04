@@ -404,45 +404,6 @@ button:hover{
   </div>
 
 
-  <!-- MATCHED SWAPS -->
-  <div class="stat" style="
-    background:url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800') center/cover;
-    border-radius:16px;
-    position:relative;
-    overflow:hidden;
-    color:#fff;
-    padding:20px;
-  ">
-    <div style="position:absolute;inset:0;background:rgba(0,0,0,.55)"></div>
-
-    <div style="position:relative;z-index:2;">
-      <h2 id="totalMatches" style="
-        background:linear-gradient(135deg,#0ea5e9,#2563eb);
-        color:#fff;
-        padding:15px;
-        border-radius:12px;
-        text-align:center;
-        font-size:32px;
-        font-weight:bold;
-        margin:10px 0;
-      ">
-        0
-      </h2>
-
-      <span>🎯 Matched Swaps</span>
-
-      <div style="
-        margin-top:8px;
-        font-size:12px;
-        opacity:.9;
-      ">
-        Direct swap opportunities
-      </div>
-
-    </div>
-  </div>
-
-
   <!-- TRIANGULAR SWAPS -->
   <div
     class="stat"
@@ -667,6 +628,7 @@ button:hover{
     <option>Physical Education / Mathematics</option>
 
     <option>Physical Education / Agriculture</option>
+
   </optgroup>
 
 </select>
@@ -911,123 +873,6 @@ button:hover{
   </div>
 
 </div>
-
-<!-- =========================================
-     FLOATING RASM 360 BUTTON
-========================================= -->
-
-<a
-  href="https://rasmtech.github.io/Nyota-Mtaani-kenya/"
-  target="_blank"
-  title="Open RASM 360 School Management System"
-  style="
-    position:fixed;
-    bottom:25px;
-    right:20px;
-    z-index:99999;
-    text-decoration:none;
-  "
->
-
-<div id="rasm360Btn" style="
-    display:flex;
-    align-items:center;
-    gap:12px;
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
-    color:#fff;
-    padding:14px 18px;
-    border-radius:60px;
-    box-shadow:0 10px 30px rgba(37,99,235,.35);
-    animation:rasmPulse 2s infinite;
-    transition:.3s;
-">
-
-    <div style="
-        width:48px;
-        height:48px;
-        border-radius:50%;
-        background:#fff;
-        color:#2563eb;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:24px;
-        font-weight:bold;
-        flex-shrink:0;
-    ">
-        🏫
-    </div>
-
-    <div>
-
-        <div style="
-            font-size:17px;
-            font-weight:800;
-            line-height:1.2;
-        ">
-            RASM 360
-        </div>
-
-        <div style="
-            font-size:12px;
-            opacity:.95;
-        ">
-            School Management System
-        </div>
-
-    </div>
-
-</div>
-
-</a>
-
-<style>
-
-@keyframes rasmPulse{
-
-0%{
-transform:translateY(0) scale(1);
-box-shadow:0 10px 30px rgba(37,99,235,.35);
-}
-
-50%{
-transform:translateY(-6px) scale(1.03);
-box-shadow:0 18px 40px rgba(37,99,235,.55);
-}
-
-100%{
-transform:translateY(0) scale(1);
-box-shadow:0 10px 30px rgba(37,99,235,.35);
-}
-
-}
-
-#rasm360Btn:hover{
-transform:scale(1.05);
-}
-
-@media(max-width:600px){
-
-#rasm360Btn{
-
-padding:12px 14px !important;
-gap:10px !important;
-
-}
-
-#rasm360Btn div:first-child{
-
-width:42px !important;
-height:42px !important;
-font-size:20px !important;
-
-}
-
-}
-
-</style>
-
-
 <script type="module">
 
 import { initializeApp }
@@ -1504,6 +1349,7 @@ window.postSwap = async function(){
   }
 
 };
+
 function render(swaps){
 
 const container = document.getElementById("listings");
@@ -1520,12 +1366,16 @@ container.innerHTML = "";
 
 const myPhone = localStorage.getItem("myPhone");
 
+// ==========================
+// PREMIUM COUNTIES (HOT ZONES)
+// ==========================
 const premiumCounties = [
-"Nairobi",
-"Mombasa",
-"Kisumu"
+  "Nairobi",
+  "Nairobi City",
+  "Mombasa",
+  "Kisumu",
+  "Kiambu"
 ];
-
 swaps.forEach(item=>{
 const matchedTeacher = allSwaps.find(other =>
 
@@ -1665,10 +1515,7 @@ const charge = Number(
   (
     hardshipStatus === "yes"
       ? 500
-      : (
-          premiumCounties.includes(item.currentCounty) ||
-          premiumCounties.includes(item.swapCounty)
-        )
+      : premiumCounties.includes(item.currentCounty)
         ? 400
         : 200
   )
@@ -2142,6 +1989,7 @@ container.appendChild(card);
 });
 
 }
+
 window.showTriangularOptions = function(swapId){
 
     const first = allSwaps.find(x => x.swapId === swapId);
@@ -2508,14 +2356,16 @@ Kindly verify and unlock contact.`;
   });
 
 };
+window.viewMyMatches = function (swapId) {
 
-window.viewMyMatches = function(swapId){
+    const item = allSwaps.find(x => x.swapId === swapId);
 
-    const item = allSwaps.find(x=>x.swapId===swapId);
+    if (!item) return;
 
-    if(!item) return;
+    const itemLevel = item.level;
+    const itemCurrent = (item.currentCounty || "").toLowerCase();
+    const itemSwap = (item.swapCounty || "").toLowerCase();
 
-    let direct = 0;
     let triangle = 0;
     let four = 0;
 
@@ -2523,230 +2373,305 @@ window.viewMyMatches = function(swapId){
 
     // ================= DIRECT =================
 
-    const directMatches = allSwaps.filter(other=>
+    const directMatches = [];
 
-        other!==item &&
+    for (const other of allSwaps) {
 
-        other.level===item.level &&
+        if (other === item) continue;
+        if (other.level !== itemLevel) continue;
 
-        other.currentCounty===item.swapCounty &&
+        if (
+            (other.currentCounty || "").toLowerCase() === itemSwap &&
+            (other.swapCounty || "").toLowerCase() === itemCurrent
+        ) {
+            directMatches.push(other);
+        }
+    }
 
-        other.swapCounty===item.currentCounty
-
-    );
-
-    if(directMatches.length){
-
-        direct = directMatches.length;
+    if (directMatches.length) {
 
         html += `
         <h3 style="color:#16a34a">
-        🎯 Direct Matches
+            🎯 Direct Matches
         </h3>
         `;
 
-        directMatches.forEach(m=>{
+        for (const m of directMatches) {
 
             html += `
             <div style="
-            background:#ecfdf5;
-            padding:12px;
-            border-radius:10px;
-            margin-bottom:10px;
+                background:#ecfdf5;
+                padding:12px;
+                border-radius:10px;
+                margin-bottom:10px;
             ">
-
-            👤 <b>${m.name}</b><br>
-
-            📍 ${m.currentCounty} ➜ ${m.swapCounty}
-
+                👤 <b>${m.name}</b><br>
+                📍 ${m.currentCounty} ➜ ${m.swapCounty}
             </div>
             `;
-
-        });
-
+        }
     }
 
     // ================= TRIANGLE =================
 
-    allSwaps.forEach(second=>{
+    for (const second of allSwaps) {
 
-        if(second===item) return;
+        if (second === item) continue;
+        if (second.level !== itemLevel) continue;
 
-        allSwaps.forEach(third=>{
+        const secondCurrent = (second.currentCounty || "").toLowerCase();
+        const secondSwap = (second.swapCounty || "").toLowerCase();
 
-            if(third===item || third===second) return;
+        if (secondCurrent !== itemSwap) continue;
 
-            if(
+        for (const third of allSwaps) {
 
-                item.swapCounty===second.currentCounty &&
+            if (third === item || third === second) continue;
+            if (third.level !== itemLevel) continue;
 
-                second.swapCounty===third.currentCounty &&
-
-                third.swapCounty===item.currentCounty
-
-            ){
-
+            if (
+                (third.currentCounty || "").toLowerCase() === secondSwap &&
+                (third.swapCounty || "").toLowerCase() === itemCurrent
+            ) {
                 triangle++;
-
             }
-
-        });
-
-    });
+        }
+    }
 
     // ================= FOUR WAY =================
 
-    allSwaps.forEach(second=>{
+    for (const second of allSwaps) {
 
-        if(second===item) return;
+        if (second === item) continue;
+        if ((second.currentCounty || "").toLowerCase() !== itemSwap) continue;
 
-        allSwaps.forEach(third=>{
+        for (const third of allSwaps) {
 
-            if(third===item || third===second) return;
+            if (third === item || third === second) continue;
+            if ((third.currentCounty || "").toLowerCase() !== (second.swapCounty || "").toLowerCase()) continue;
 
-            allSwaps.forEach(fourth=>{
+            for (const fourth of allSwaps) {
 
-                if(
-                    fourth===item ||
-                    fourth===second ||
-                    fourth===third
-                ) return;
+                if (
+                    fourth === item ||
+                    fourth === second ||
+                    fourth === third
+                ) continue;
 
-                if(
-
-                    item.swapCounty===second.currentCounty &&
-
-                    second.swapCounty===third.currentCounty &&
-
-                    third.swapCounty===fourth.currentCounty &&
-
-                    fourth.swapCounty===item.currentCounty
-
-                ){
-
+                if (
+                    (fourth.currentCounty || "").toLowerCase() === (third.swapCounty || "").toLowerCase() &&
+                    (fourth.swapCounty || "").toLowerCase() === itemCurrent
+                ) {
                     four++;
-
                 }
-
-            });
-
-        });
-
-    });
+            }
+        }
+    }
 
     html += `
-    <hr>
+        <hr>
 
-    <div style="line-height:2">
+        <div style="line-height:2">
 
-    🔺 <b>${triangle}</b> Triangular Match(s)
+            ✅ <b>${directMatches.length}</b> Direct Match(s)
 
-    <br>
+            <br>
 
-    🔄 <b>${four}</b> Four-Way Match(s)
+            🔺 <b>${triangle}</b> Triangular Match(s)
 
-    </div>
+            <br>
+
+            🔄 <b>${four}</b> Four-Way Match(s)
+
+        </div>
     `;
 
     Swal.fire({
 
-        title:"🤖 AI Match Report",
+        title: "🤖 AI Match Report",
 
-        width:750,
+        width: 750,
 
         html
 
     });
 
 };
-window.filterListings = function(){
+window.filterListings = function () {
 
-  const term =
-    document.getElementById("searchBox")
-    .value
-    .toLowerCase();
+    const term = document
+        .getElementById("searchBox")
+        .value
+        .trim()
+        .toLowerCase();
 
-  const filtered = allSwaps.filter(x =>
-      (x.currentCounty || "").toLowerCase().includes(term)
-   || (x.swapCounty || "").toLowerCase().includes(term)
-   || (x.subjects || "").toLowerCase().includes(term)
-  );
+    // Show all
+    if (!term) {
+        render(allSwaps);
+        return;
+    }
 
-  render(filtered);
+    const filtered = allSwaps.filter(swap => {
+
+        return (
+            (swap.currentCounty || "").toLowerCase().includes(term) ||
+            (swap.swapCounty || "").toLowerCase().includes(term) ||
+            (swap.subjects || "").toLowerCase().includes(term)
+        );
+
+    });
+
+    render(filtered);
+
 };
+
+
+// ==========================================
+// FIREBASE LISTENER (HIGH PERFORMANCE)
+// ==========================================
 
 onValue(swapsRef, snapshot => {
 
-  const data = snapshot.val() || {};
-allSwaps = Object.entries(data).map(([key,value])=>({
-  swapId:key,
-  ...value
-}));
+    const data = snapshot.val() || {};
 
-  document.getElementById("totalSwaps").textContent =
-    allSwaps.length;
-const matches = countDirectMatches();
+    allSwaps = Object.entries(data).map(([key, value]) => ({
 
-const matchCounter =
-document.getElementById("totalMatches");
+        swapId: key,
+        ...value
 
-if(matchCounter){
+    }));
 
-    matchCounter.textContent = matches;
 
-}
-  const counties = new Set();
-  const subjectsSet = new Set();
+    // ==========================================
+    // BUILD COUNTY INDEX (VERY IMPORTANT)
+    // ==========================================
 
-  allSwaps.forEach(x=>{
-    if(x.currentCounty)
-      counties.add(x.currentCounty);
+    window.countyIndex = {};
 
-    if(x.subjects)
-      subjectsSet.add(x.subjects);
-  });
+    for (const swap of allSwaps) {
 
-  document.getElementById("totalCounties").textContent =
-    counties.size;
+        const county =
+            (swap.currentCounty || "").toLowerCase();
 
-  document.getElementById("subjectCount").textContent =
-    subjectsSet.size;
-const triangles = countTriangularSwaps();
+        if (!window.countyIndex[county]) {
 
-document.getElementById(
-  "triangularCount"
-).textContent = triangles;
-  render(allSwaps);
-findTriangularSwap();
+            window.countyIndex[county] = [];
+
+        }
+
+        window.countyIndex[county].push(swap);
+
+    }
+
+
+    // ==========================================
+    // RESET MATCH CACHE
+    // ==========================================
+
+    window.matchCache = {};
+
+
+    // ==========================================
+    // FAST STATS
+    // ==========================================
+
+    const counties = new Set();
+    const subjects = new Set();
+
+    for (const swap of allSwaps) {
+
+        if (swap.currentCounty)
+            counties.add(swap.currentCounty);
+
+        if (swap.subjects)
+            subjects.add(swap.subjects);
+
+    }
+
+    document.getElementById("totalSwaps").textContent =
+        allSwaps.length;
+
+    document.getElementById("totalCounties").textContent =
+        counties.size;
+
+    document.getElementById("subjectCount").textContent =
+        subjects.size;
+
+
+    // Show placeholder while counting
+    document.getElementById("triangularCount").textContent = "...";
+
+
+    // ==========================================
+    // RENDER LIST
+    // ==========================================
+
+    render(allSwaps);
+
+
+    // ==========================================
+    // CALCULATE TRIANGLES AFTER PAGE IS DRAWN
+    // ==========================================
+
+    requestAnimationFrame(() => {
+
+        setTimeout(() => {
+
+            const triangles = countTriangularSwaps();
+
+            document.getElementById("triangularCount").textContent =
+                triangles;
+
+            // Uncomment only if needed
+            // findTriangularSwap();
+
+        }, 30);
+
+    });
+
 });
-function populateTriangularCounties(){
 
-const ids = [
-"triCountyA",
-"triCountyB",
-"triCountyC"
-];
 
-ids.forEach(id=>{
+// ==========================================
+// POPULATE TRIANGLE COUNTY DROPDOWNS
+// ==========================================
 
-const select =
-document.getElementById(id);
+function populateTriangularCounties() {
 
-if(!select) return;
+    const ids = [
+        "triCountyA",
+        "triCountyB",
+        "triCountyC"
+    ];
 
-Object.keys(kenyaLocations)
-.sort()
-.forEach(county=>{
+    const counties =
+        Object.keys(kenyaLocations).sort();
 
-select.innerHTML += `
-<option value="${county}">
-${county}
-</option>
-`;
+    let options = "";
 
-});
+    for (const county of counties) {
 
-});
+        options += `
+            <option value="${county}">
+                ${county}
+            </option>
+        `;
+
+    }
+
+    for (const id of ids) {
+
+        const select =
+            document.getElementById(id);
+
+        if (!select) continue;
+
+        select.insertAdjacentHTML(
+            "beforeend",
+            options
+        );
+
+    }
 
 }
 
@@ -2755,60 +2680,70 @@ window.findTriangularSwap = function(){
 
 const result=document.getElementById("triangularResult");
 
-const found=[];
-const used=new Set();
+const found = [];
+const used = new Set();
 
 // ============================
-// FIND ALL UNIQUE TRIANGLES
+// BUILD COUNTY INDEX
 // ============================
 
-for(let i=0;i<allSwaps.length;i++){
+const countyIndex = {};
 
-    for(let j=0;j<allSwaps.length;j++){
+for (const swap of allSwaps) {
 
-        for(let k=0;k<allSwaps.length;k++){
+    const county = (swap.currentCounty || "").toLowerCase();
 
-            if(i===j||j===k||i===k) continue;
+    if (!countyIndex[county]) {
+        countyIndex[county] = [];
+    }
 
-            const A=allSwaps[i];
-            const B=allSwaps[j];
-            const C=allSwaps[k];
+    countyIndex[county].push(swap);
 
-            if(
+}
 
-                A.swapCounty===B.currentCounty &&
+// ============================
+// FIND TRIANGLES (FAST)
+// ============================
 
-                B.swapCounty===C.currentCounty &&
+for (const A of allSwaps) {
 
-                C.swapCounty===A.currentCounty
+    const secondList =
+        countyIndex[(A.swapCounty || "").toLowerCase()] || [];
 
-            ){
+    for (const B of secondList) {
 
-                const key=[
+        if (A === B) continue;
+        if (A.level !== B.level) continue;
 
-                    A.swapId,
-                    B.swapId,
-                    C.swapId
+        const thirdList =
+            countyIndex[(B.swapCounty || "").toLowerCase()] || [];
 
-                ].sort().join("-");
+        for (const C of thirdList) {
 
-                if(!used.has(key)){
+            if (C === A || C === B) continue;
+            if (C.level !== A.level) continue;
 
-                    used.add(key);
+            if (
+                (C.swapCounty || "").toLowerCase() !==
+                (A.currentCounty || "").toLowerCase()
+            ) continue;
 
-                    found.push({
+            const key = [
+                A.swapId,
+                B.swapId,
+                C.swapId
+            ].sort().join("-");
 
-                        swap1:A,
-                        swap2:B,
-                        swap3:C,
+            if (used.has(key)) continue;
 
-                        score:100
+            used.add(key);
 
-                    });
-
-                }
-
-            }
+            found.push({
+                swap1: A,
+                swap2: B,
+                swap3: C,
+                score: 100
+            });
 
         }
 
@@ -2817,7 +2752,7 @@ for(let i=0;i<allSwaps.length;i++){
 }
 
 // Highest score first
-found.sort((a,b)=>b.score-a.score);
+found.sort((a, b) => b.score - a.score);
 
 if(found.length===0){
 
@@ -3085,7 +3020,7 @@ margin-top:10px;
 <b>M-PESA</b>
 
 <h2 style="color:#16a34a">
-0795054571
+0721955804
 </h2>
 
 Pay KES 1,000 then click <b>I Have Paid</b>
@@ -3121,21 +3056,24 @@ const message = `🔺 TRIANGULAR SWAP UNLOCK
 Name: ${t1?.name}
 Ref: ${ref(t1)}
 📍 ${t1?.currentCounty} ➜ ${t1?.swapCounty}
+📞 ${t1?.phone}
 
 👨‍🏫 TEACHER 2
 Name: ${t2?.name}
 Ref: ${ref(t2)}
 📍 ${t2?.currentCounty} ➜ ${t2?.swapCounty}
+📞 ${t2?.phone}
 
 👨‍🏫 TEACHER 3
 Name: ${t3?.name}
 Ref: ${ref(t3)}
 📍 ${t3?.currentCounty} ➜ ${t3?.swapCounty}
+📞 ${t3?.phone}
 
 🔐 ACTION REQUIRED:
-Verify payment and unlock the contacts for these three teachers.
+Verify payment and release contacts.
 
-System: Teacher Swaps Kenya`;
+System: Teacher Swap Kenya`;
 
 window.open(
 `https://wa.me/254792755676?text=${encodeURIComponent(message)}`,
@@ -3147,49 +3085,76 @@ window.open(
 });
 
 };
+function countTriangularSwaps() {
 
-function countTriangularSwaps(){
+    const found = new Set();
 
-  const found = new Set();
+    // ==========================
+    // BUILD COUNTY INDEX
+    // ==========================
 
-  for(let i=0;i<allSwaps.length;i++){
+    const countyIndex = {};
 
-    for(let j=0;j<allSwaps.length;j++){
+    for (const swap of allSwaps) {
 
-      for(let k=0;k<allSwaps.length;k++){
+        const county = (swap.currentCounty || "").toLowerCase();
 
-        if(i===j || j===k || i===k) continue;
-
-        const A = allSwaps[i];
-        const B = allSwaps[j];
-        const C = allSwaps[k];
-
-        const match =
-
-          A.swapCounty === B.currentCounty &&
-          B.swapCounty === C.currentCounty &&
-          C.swapCounty === A.currentCounty;
-
-        if(match){
-
-          const key =
-            [A.swapId,B.swapId,C.swapId]
-            .sort()
-            .join("-");
-
-          found.add(key);
-
+        if (!countyIndex[county]) {
+            countyIndex[county] = [];
         }
 
-      }
+        countyIndex[county].push(swap);
 
     }
 
-  }
+    // ==========================
+    // FIND TRIANGLES
+    // ==========================
 
-  return found.size;
+    for (const A of allSwaps) {
+
+        const secondList =
+            countyIndex[(A.swapCounty || "").toLowerCase()] || [];
+
+        for (const B of secondList) {
+
+            if (B === A) continue;
+            if (B.level !== A.level) continue;
+
+            const thirdList =
+                countyIndex[(B.swapCounty || "").toLowerCase()] || [];
+
+            for (const C of thirdList) {
+
+                if (
+                    C === A ||
+                    C === B
+                ) continue;
+
+                if (C.level !== A.level) continue;
+
+                if (
+                    (C.swapCounty || "").toLowerCase() !==
+                    (A.currentCounty || "").toLowerCase()
+                ) continue;
+
+                const key = [
+                    A.swapId,
+                    B.swapId,
+                    C.swapId
+                ].sort().join("-");
+
+                found.add(key);
+
+            }
+
+        }
+
+    }
+
+    return found.size;
+
 }
-
 
 window.toggleTriangularSection = function(){
 
@@ -3320,41 +3285,7 @@ confirmButtonColor:"#16a34a"
 });
 
 };
-function countDirectMatches(){
 
-    const found = new Set();
-
-    allSwaps.forEach(first=>{
-
-        allSwaps.forEach(second=>{
-
-            if(first.swapId === second.swapId) return;
-
-            if(
-
-                first.currentCounty === second.swapCounty &&
-
-                first.swapCounty === second.currentCounty
-
-            ){
-
-                const key =
-
-                    [first.swapId, second.swapId]
-                    .sort()
-                    .join("-");
-
-                found.add(key);
-
-            }
-
-        });
-
-    });
-
-    return found.size;
-
-}
 </script>
 
 
