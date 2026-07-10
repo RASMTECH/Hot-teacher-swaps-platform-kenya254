@@ -1636,54 +1636,68 @@ const refCode =
 // DETERMINE CHARGE
 // =====================================
 
-const hardshipStatus =
-  (item.hardship || "")
-  .toString()
-  .trim()
-  .toLowerCase();
+// =====================================
+// DETERMINE CHARGE
+// =====================================
 
-const charge = Number(
-  item.charge ??
-  (
-    hardshipStatus === "yes"
-      ? 500
-      : premiumCounties.includes(item.currentCounty)
-        ? 400
-        : 200
-  )
-);
+const hardshipStatus =
+    (item.hardship || "")
+        .trim()
+        .toLowerCase();
+
+const currentCounty =
+    (item.currentCounty || "").trim();
+
+const isHotCounty =
+    premiumCounties.some(
+        county =>
+            county.toLowerCase() ===
+            currentCounty.toLowerCase()
+    );
+
+let charge = 200;
+
+if (hardshipStatus === "yes") {
+
+    charge = 500;
+
+} else if (isHotCounty) {
+
+    charge = 400;
+
+}
 
 let topBadge = "";
 
-if(charge === 500){
+if (hardshipStatus === "yes") {
 
-  topBadge = `
-    <span style="
-      background:#dc2626;
-      color:white;
-      padding:6px 12px;
-      border-radius:20px;
-      font-size:12px;
-      font-weight:700;
-    ">
-      🚧 HARDSHIP
-    </span>
-  `;
+    topBadge = `
+        <span style="
+            background:#dc2626;
+            color:#fff;
+            padding:6px 12px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:700;
+        ">
+            🚧 HARDSHIP
+        </span>
+    `;
 
-}else if(charge === 400){
+} else if (isHotCounty) {
 
-  topBadge = `
-    <span style="
-      background:#ea580c;
-      color:white;
-      padding:6px 12px;
-      border-radius:20px;
-      font-size:12px;
-      font-weight:700;
-    ">
-      🔥 HOT COUNTY
-    </span>
-  `;
+    topBadge = `
+        <span style="
+            background:#ea580c;
+            color:#fff;
+            padding:6px 12px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:700;
+        ">
+            🔥 HOT COUNTY
+        </span>
+    `;
 
 }
 
