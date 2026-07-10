@@ -1822,23 +1822,26 @@ card.innerHTML = `
 
   </div>
 
-  <p>
+  <p style="
+    margin:8px 0;
+    line-height:1.45;
+  ">
     <strong>📍 Current Station:</strong><br>
-    ${item.currentCounty || "-"}
-    (${item.currentSubCounty || "-"})
+    ${item.currentCounty || "-"} (${item.currentSubCounty || "-"})
   </p>
 
-  <br>
-
-  <p>
+  <p style="
+    margin:8px 0;
+    line-height:1.45;
+  ">
     <strong>🎯 Wants Transfer To:</strong><br>
-    ${item.swapCounty || "-"}
-    (${item.swapSubCounty || "-"})
+    ${item.swapCounty || "-"} (${item.swapSubCounty || "-"})
   </p>
 
-  <br>
-
-  <p>
+  <p style="
+    margin:8px 0;
+    line-height:1.45;
+  ">
     <strong>📚 Subjects:</strong><br>
     ${item.subjects || "-"}
   </p>
@@ -1850,10 +1853,10 @@ match
 ?
 `
 <div style="
-margin-top:15px;
+margin-top:10px;
 background:linear-gradient(135deg,#16a34a,#15803d);
 color:white;
-padding:15px;
+padding:14px;
 border-radius:12px;
 ">
 
@@ -1865,24 +1868,23 @@ margin-bottom:8px;
 🎉 DIRECT MATCH FOUND!
 </div>
 
-<div style="line-height:1.8">
+<div style="
+line-height:1.45;
+">
 
+<p style="margin:6px 0;">
 A teacher wants your current county.
+</p>
 
-<br><br>
+<p style="margin:6px 0;">
+<b>Current:</b> ${matchedTeacher.currentCounty}
+&nbsp;➡️&nbsp;
+<b>Wants:</b> ${matchedTeacher.swapCounty}
+</p>
 
-<b>Current:</b>
-${matchedTeacher.currentCounty}
-
-➡️
-
-<b>Wants:</b>
-${matchedTeacher.swapCounty}
-
-<br><br>
-
-<b>Subjects:</b>
-${matchedTeacher.subjects}
+<p style="margin:6px 0;">
+<b>Subjects:</b> ${matchedTeacher.subjects || "-"}
+</p>
 
 </div>
 
