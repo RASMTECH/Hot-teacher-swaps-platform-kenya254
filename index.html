@@ -6,7 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Teacher Swap Kenya | Nyota Mtaani</title>
-
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <!-- SEO -->
 <meta name="description" content="Find teacher transfer swap partners across Kenya. Connect with teachers seeking mutual transfers quickly, safely and easily.">
 <!-- ======================================================
@@ -4289,8 +4290,33 @@ confirmButtonText:"Submit"
 
 }
 
-</script>
+document.addEventListener("DOMContentLoaded", function () {
 
+    Swal.fire({
+        imageUrl: "https://rasmtech.github.io/Teacher-1-images/Screenshot_20260708_134219_ChatGPT.jpg",
+        imageAlt: "Teacher Swap Kenya",
+        imageWidth: "100%",
+        width: 700,
+        showConfirmButton: true,
+        confirmButtonText: "Continue",
+        confirmButtonColor: "#16a34a",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        backdrop: true,
+        padding: 0,
+
+       showClass: {
+    popup: "animate__animated animate__fadeInUp"
+},
+hideClass: {
+    popup: "animate__animated animate__fadeOutDown"
+}
+
+    });
+
+});
+</script>
+</script>
 
 
 </body>
