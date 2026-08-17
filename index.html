@@ -21583,6 +21583,374 @@ document.addEventListener('DOMContentLoaded',function(){
     button.setAttribute('aria-expanded','false');
   }
 });
+
+/* =========================================================
+   💳 TEACHERS HUB — M-PESA PAYMENT CONFIRMATION
+   Backend is already working.
+   This function ONLY polls payment-status.
+========================================================= */
+
+window.waitForMpesaPayment = async function (
+    accountReference,
+    options = {}
+) {
+
+    console.log("🚀 PAYMENT CONFIRMATION STARTED");
+    console.log("🆔 Account Reference:", accountReference);
+
+    const BACKEND_URL =
+        "https://thirteen-romp-issuing.ngrok-free.dev";
+
+    const interval =
+        Number(options.interval || 3000);
+
+    const timeout =
+        Number(options.timeout || 180000); // 3 minutes
+
+    const onPaid =
+        typeof options.onPaid === "function"
+            ? options.onPaid
+            : null;
+
+    const onFailed =
+        typeof options.onFailed === "function"
+            ? options.onFailed
+            : null;
+
+    const onUpdate =
+        typeof options.onUpdate === "function"
+            ? options.onUpdate
+            : null;
+
+
+    if (!accountReference) {
+
+        console.error(
+            "❌ PAYMENT REFERENCE MISSING"
+        );
+
+        if (onFailed) {
+            onFailed({
+                status: "ERROR",
+                message: "Payment reference is missing."
+            });
+        }
+
+        return {
+            success: false,
+            status: "ERROR"
+        };
+
+    }
+
+
+    const startedAt =
+        Date.now();
+
+
+    let attempt = 0;
+
+
+    while (
+        Date.now() - startedAt < timeout
+    ) {
+
+        attempt++;
+
+
+        try {
+
+            console.log(
+                `🔎 PAYMENT STATUS CHECK #${attempt}`
+            );
+
+
+            const url =
+                `${BACKEND_URL}/payment-status/${encodeURIComponent(accountReference)}`;
+
+
+            console.log(
+                "🌐 Checking:",
+                url
+            );
+
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "GET",
+
+                        mode: "cors",
+
+                        credentials: "omit",
+
+                        cache: "no-store",
+
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    }
+                );
+
+
+            console.log(
+                "📡 PAYMENT STATUS HTTP:",
+                response.status
+            );
+
+
+            const raw =
+                await response.text();
+
+
+            console.log(
+                "📥 PAYMENT STATUS RAW:",
+                raw
+            );
+
+
+            let data;
+
+
+            try {
+
+                data =
+                    JSON.parse(raw);
+
+            }
+            catch (jsonError) {
+
+                console.error(
+                    "❌ PAYMENT STATUS IS NOT JSON:",
+                    jsonError
+                );
+
+                throw new Error(
+                    "Payment server returned an invalid response."
+                );
+
+            }
+
+
+            console.log(
+                "📊 PAYMENT STATUS DATA:",
+                data
+            );
+
+
+            // =================================================
+            // PAYMENT FOUND
+            // =================================================
+
+            if (
+                response.ok &&
+                data.success === true
+            ) {
+
+                const status =
+                    String(
+                        data.status || ""
+                    ).toUpperCase();
+
+
+                console.log(
+                    "📊 CURRENT PAYMENT STATUS:",
+                    status
+                );
+
+
+                // =============================================
+                // SUCCESS
+                // =============================================
+
+                if (
+                    status === "PAID" ||
+                    Number(data.ResultCode) === 0 &&
+                    data.MpesaReceiptNumber
+                ) {
+
+                    console.log(
+                        "🎉🎉🎉 PAYMENT CONFIRMED!"
+                    );
+
+                    console.log(
+                        "🧾 M-PESA RECEIPT:",
+                        data.MpesaReceiptNumber
+                    );
+
+
+                    if (onUpdate) {
+
+                        onUpdate(
+                            data
+                        );
+
+                    }
+
+
+                    if (onPaid) {
+
+                        await onPaid(
+                            data
+                        );
+
+                    }
+
+
+                    return {
+
+                        success: true,
+
+                        status: "PAID",
+
+                        payment: data
+
+                    };
+
+                }
+
+
+                // =============================================
+                // FAILED
+                // =============================================
+
+                if (
+                    status === "FAILED" ||
+                    status === "CANCELLED"
+                ) {
+
+                    console.error(
+                        "❌ PAYMENT FAILED:",
+                        data.ResultDesc
+                    );
+
+
+                    if (onFailed) {
+
+                        onFailed(
+                            data
+                        );
+
+                    }
+
+
+                    return {
+
+                        success: false,
+
+                        status: status,
+
+                        payment: data
+
+                    };
+
+                }
+
+            }
+
+
+            // =================================================
+            // NOT FOUND
+            // =================================================
+
+            if (
+                response.status === 404
+            ) {
+
+                console.log(
+                    "⏳ PAYMENT RECORD NOT FOUND YET..."
+                );
+
+            }
+
+
+            // =================================================
+            // UPDATE UI
+            // =================================================
+
+            if (onUpdate) {
+
+                onUpdate(
+                    data
+                );
+
+            }
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "⚠️ PAYMENT STATUS REQUEST ERROR:",
+                error
+            );
+
+
+            /*
+             * IMPORTANT:
+             *
+             * Do NOT immediately tell the customer
+             * that payment failed.
+             *
+             * The STK callback may still be processing.
+             *
+             * We simply retry.
+             */
+
+        }
+
+
+        console.log(
+            `⏳ Waiting ${interval}ms before next check...`
+        );
+
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    interval
+                )
+        );
+
+    }
+
+
+    // =====================================================
+    // TIMEOUT
+    // =====================================================
+
+    console.warn(
+        "⏰ PAYMENT CONFIRMATION TIMEOUT"
+    );
+
+
+    const timeoutResult = {
+
+        success: false,
+
+        status: "TIMEOUT",
+
+        message:
+            "Payment confirmation timed out. If you completed the M-Pesa payment, please check your transaction before trying again."
+
+    };
+
+
+    if (onFailed) {
+
+        onFailed(
+            timeoutResult
+        );
+
+    }
+
+
+    return timeoutResult;
+
+};
+
 </script>
 </body>
 </html>
