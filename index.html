@@ -19296,6 +19296,7 @@ async function(resourceId){
 
 /* =========================================================
    📥 DOWNLOAD / OPEN PAID RESOURCE
+   PAYMENT SUCCESS ALWAYS SHOWS DOWNLOAD BUTTON
 ========================================================= */
 
 window.downloadPaidResource =
@@ -19305,30 +19306,18 @@ async function(
 ){
 
     console.log("");
-    console.log(
-        "=============================================="
-    );
-
-    console.log(
-        "🔓 UNLOCKING RESOURCE"
-    );
-
-    console.log(
-        "=============================================="
-    );
-
-    console.log(
-        "Reference:",
-        accountReference
-    );
-
-    console.log(
-        "Resource:",
-        resourceId
-    );
+    console.log("==============================================");
+    console.log("🔓 PAID RESOURCE ACCESS");
+    console.log("==============================================");
+    console.log("Reference:", accountReference);
+    console.log("Resource:", resourceId);
 
 
     try{
+
+        /* =================================================
+           LOAD RESOURCE
+        ================================================= */
 
         const resource =
             await getTeachersHubResource(
@@ -19336,40 +19325,61 @@ async function(
             );
 
 
-        const downloadUrl =
-
-            resource.downloadUrl ||
-
-            resource.fileUrl ||
-
-            resource.resourceUrl ||
-
-            resource.url ||
-
-            resource.fileURL ||
-
-            resource.downloadURL;
+        console.log(
+            "📚 RESOURCE DATA:",
+            resource
+        );
 
 
-        if(!downloadUrl){
-
-            throw new Error(
-                "Payment was confirmed, but the resource file URL could not be found."
-            );
-
-        }
-
+        /* =================================================
+           RESOURCE TITLE
+        ================================================= */
 
         const title =
-            resource.title ||
+            resource?.title ||
+            resource?.name ||
             "Learning Resource";
 
 
+        /* =================================================
+           FIND ANY AVAILABLE DOWNLOAD URL
+        ================================================= */
+
+        const downloadUrl =
+
+            resource?.downloadUrl ||
+
+            resource?.fileUrl ||
+
+            resource?.resourceUrl ||
+
+            resource?.url ||
+
+            resource?.fileURL ||
+
+            resource?.downloadURL ||
+
+            resource?.storageUrl ||
+
+            resource?.storageURL ||
+
+            resource?.fileLink ||
+
+            resource?.downloadLink ||
+
+            null;
+
+
         console.log(
-            "✅ Resource located:",
-            title
+            "🔗 DOWNLOAD URL:",
+            downloadUrl
         );
 
+
+        /* =================================================
+           SHOW PAYMENT SUCCESS
+           EVEN IF URL IS MISSING
+        ================================================= */
 
         const result =
             await Swal.fire({
@@ -19379,6 +19389,11 @@ async function(
 
                 title:
                     "🎉 Payment Confirmed!",
+
+                width:
+                    window.innerWidth < 600
+                        ? "94%"
+                        : 520,
 
                 html:`
 
@@ -19398,18 +19413,17 @@ async function(
 
                         <br><br>
 
-                        🔓 Your resource is unlocked.
-
-                        <br><br>
 
                         <div style="
                             background:#f0fdf4;
                             border:1px solid #bbf7d0;
-                            border-radius:12px;
-                            padding:14px;
+                            border-radius:14px;
+                            padding:16px;
                         ">
 
-                            <strong>
+                            <strong style="
+                                font-size:17px;
+                            ">
 
                                 ${escapeResourceHTML(title)}
 
@@ -19428,12 +19442,32 @@ async function(
 
                         </div>
 
+
+                        <br>
+
+
+                        <div style="
+                            background:#eff6ff;
+                            border:1px solid #bfdbfe;
+                            border-radius:12px;
+                            padding:14px;
+                            color:#1e40af;
+                        ">
+
+                            🔓 Your resource has been unlocked.
+
+                            <br>
+
+                            Click the button below to access it.
+
+                        </div>
+
                     </div>
 
                 `,
 
                 confirmButtonText:
-                    "📥 Open Resource",
+                    "📥 Download Resource",
 
                 confirmButtonColor:
                     "#16a34a",
@@ -19447,85 +19481,262 @@ async function(
             });
 
 
+        /* =================================================
+           DOWNLOAD BUTTON CLICKED
+        ================================================= */
+
         if(
             result.isConfirmed
         ){
 
             console.log(
-                "📥 Opening resource..."
+                "📥 DOWNLOAD BUTTON CLICKED"
             );
 
 
-            const link =
-                document.createElement("a");
+            /* =============================================
+               URL AVAILABLE
+            ============================================= */
+
+            if(downloadUrl){
+
+                console.log(
+                    "🔗 Opening resource URL:",
+                    downloadUrl
+                );
 
 
-            link.href =
-                downloadUrl;
+                const link =
+                    document.createElement("a");
 
 
-            link.target =
-                "_blank";
+                link.href =
+                    downloadUrl;
 
 
-            link.rel =
-                "noopener noreferrer";
+                link.target =
+                    "_blank";
 
 
-            link.style.display =
-                "none";
+                link.rel =
+                    "noopener noreferrer";
 
 
-            document.body.appendChild(
-                link
+                link.style.display =
+                    "none";
+
+
+                document.body.appendChild(
+                    link
+                );
+
+
+                link.click();
+
+
+                setTimeout(
+                    () => {
+
+                        try{
+
+                            link.remove();
+
+                        }
+                        catch(_){}
+
+                    },
+                    1000
+                );
+
+
+                console.log(
+                    "✅ Resource opened."
+                );
+
+
+                return true;
+
+            }
+
+
+            /* =============================================
+               URL NOT FOUND
+               DO NOT SAY PAYMENT FAILED
+            ============================================= */
+
+            console.warn(
+                "⚠️ Payment confirmed but no resource URL was found."
             );
 
 
-            link.click();
+            /* =============================================
+               TRY COMMON DOM DOWNLOAD LINKS
+               ============================================= */
+
+            const possibleLinks = [
+
+                document.querySelector(
+                    `[data-resource-id="${resourceId}"]`
+                ),
+
+                document.querySelector(
+                    `[data-download-id="${resourceId}"]`
+                ),
+
+                document.querySelector(
+                    `a[data-resource="${resourceId}"]`
+                ),
+
+                document.querySelector(
+                    `a[data-resource-id="${resourceId}"]`
+                )
+
+            ].filter(Boolean);
 
 
-            setTimeout(
-                () => link.remove(),
-                1000
-            );
+            if(
+                possibleLinks.length > 0
+            ){
+
+                console.log(
+                    "🔗 Existing resource link found."
+                );
 
 
-            console.log(
-                "✅ Resource opened."
-            );
+                possibleLinks[0].click();
+
+
+                return true;
+
+            }
+
+
+            /* =============================================
+               SHOW RESOURCE ACCESS MESSAGE
+            ============================================= */
+
+            await Swal.fire({
+
+                icon:
+                    "info",
+
+                title:
+                    "📥 Resource Unlocked",
+
+                html:`
+
+                    <div style="
+                        line-height:1.7;
+                        text-align:center;
+                    ">
+
+                        Your payment has been
+                        <strong style="color:#16a34a;">
+                            successfully confirmed
+                        </strong>.
+
+                        <br><br>
+
+                        The resource is unlocked,
+                        but its download file has not been
+                        linked yet.
+
+                        <br><br>
+
+                        <strong>
+                            Resource:
+                        </strong>
+
+                        <br>
+
+                        ${escapeResourceHTML(title)}
+
+                        <br><br>
+
+                        <small style="
+                            color:#64748b;
+                        ">
+
+                            Please contact support if the
+                            download does not appear.
+
+                        </small>
+
+                    </div>
+
+                `,
+
+                confirmButtonText:
+                    "OK",
+
+                confirmButtonColor:
+                    "#16a34a"
+
+            });
+
+
+            return true;
 
         }
+
+
+        return false;
 
     }
     catch(error){
 
         console.error(
-            "❌ RESOURCE UNLOCK ERROR:",
+            "❌ PAID RESOURCE ACCESS ERROR:",
             error
         );
 
 
+        /* =================================================
+           PAYMENT IS STILL SUCCESSFUL
+           NEVER TELL USER TO PAY AGAIN
+        ================================================= */
+
         await Swal.fire({
 
             icon:
-                "warning",
+                "success",
 
             title:
-                "Payment Confirmed",
+                "🎉 Payment Confirmed",
 
             html:`
 
                 <div style="
                     line-height:1.7;
+                    text-align:center;
                 ">
 
                     Your M-PESA payment was
-                    <strong>successful</strong>.
+                    <strong style="color:#16a34a;">
+                        successful
+                    </strong>.
 
                     <br><br>
 
-                    However, we could not open
-                    the learning resource.
+                    <button
+                        type="button"
+                        id="manualResourceDownloadButton"
+                        style="
+                            width:100%;
+                            padding:14px 18px;
+                            border:none;
+                            border-radius:12px;
+                            background:#16a34a;
+                            color:white;
+                            font-size:16px;
+                            font-weight:bold;
+                            cursor:pointer;
+                        "
+                    >
+
+                        📥 Download Resource
+
+                    </button>
 
                     <br><br>
 
@@ -19533,8 +19744,7 @@ async function(
                         color:#64748b;
                     ">
 
-                        Please contact support and provide
-                        your M-PESA receipt.
+                        Your payment has been recorded.
 
                     </small>
 
@@ -19542,15 +19752,131 @@ async function(
 
             `,
 
-            confirmButtonText:
-                "OK"
+            showConfirmButton:
+                false,
+
+            allowOutsideClick:
+                false,
+
+            didOpen: () => {
+
+                const button =
+                    document.getElementById(
+                        "manualResourceDownloadButton"
+                    );
+
+
+                if(button){
+
+                    button.onclick =
+                    async function(){
+
+                        console.log(
+                            "📥 Manual resource download requested."
+                        );
+
+
+                        try{
+
+                            const latestResource =
+                                await getTeachersHubResource(
+                                    resourceId
+                                );
+
+
+                            const url =
+
+                                latestResource?.downloadUrl ||
+
+                                latestResource?.fileUrl ||
+
+                                latestResource?.resourceUrl ||
+
+                                latestResource?.url ||
+
+                                latestResource?.fileURL ||
+
+                                latestResource?.downloadURL ||
+
+                                latestResource?.storageUrl ||
+
+                                latestResource?.storageURL ||
+
+                                latestResource?.fileLink ||
+
+                                latestResource?.downloadLink;
+
+
+                            if(url){
+
+                                window.open(
+                                    url,
+                                    "_blank",
+                                    "noopener,noreferrer"
+                                );
+
+                                return;
+
+                            }
+
+
+                            Swal.fire({
+
+                                icon:
+                                    "info",
+
+                                title:
+                                    "Resource Unlocked",
+
+                                text:
+                                    "Payment is confirmed, but the resource file has not been linked yet.",
+
+                                confirmButtonColor:
+                                    "#16a34a"
+
+                            });
+
+                        }
+                        catch(downloadError){
+
+                            console.error(
+                                "❌ MANUAL DOWNLOAD ERROR:",
+                                downloadError
+                            );
+
+
+                            Swal.fire({
+
+                                icon:
+                                    "warning",
+
+                                title:
+                                    "Download Not Available",
+
+                                text:
+                                    "Payment is confirmed, but the resource file could not be located.",
+
+                                confirmButtonColor:
+                                    "#16a34a"
+
+                            });
+
+                        }
+
+                    };
+
+                }
+
+            }
 
         });
+
+
+        return true;
 
     }
 
 };
-
 
 /* =========================================================
    🔎 PAYMENT STATUS REQUEST
@@ -19942,12 +20268,79 @@ async function(
                Therefore status === PAID is enough.
             ============================================= */
 
-            const status =
-                String(
-                    data?.status || ""
-                )
-                    .trim()
-                    .toUpperCase();
+         /* =========================================================
+   🎯 NORMALIZE PAYMENT STATUS
+========================================================= */
+
+const status = String(
+    data?.status ??
+    data?.paymentStatus ??
+    data?.payment_status ??
+    data?.transactionStatus ??
+    data?.ResultDesc ??
+    ""
+)
+.trim()
+.toUpperCase();
+
+
+/* =========================================================
+   🎯 NORMALIZE RESULT CODE
+========================================================= */
+
+const resultCode =
+    data?.ResultCode ??
+    data?.resultCode ??
+    data?.result_code ??
+    null;
+
+
+/* =========================================================
+   🎯 CHECK PAYMENT SUCCESS
+========================================================= */
+
+const explicitSuccess =
+    data?.success === true ||
+    data?.paid === true ||
+    data?.paymentSuccessful === true ||
+    data?.payment_successful === true;
+
+
+const successfulStatus =
+    [
+        "PAID",
+        "SUCCESS",
+        "SUCCESSFUL",
+        "COMPLETED",
+        "COMPLETE",
+        "CONFIRMED",
+        "PAYMENT_SUCCESS",
+        "PAYMENT_SUCCESSFUL"
+    ].includes(status);
+
+
+const successfulResultCode =
+    String(resultCode) === "0";
+
+
+const paymentIsPaid =
+    explicitSuccess &&
+    (
+        successfulStatus ||
+        successfulResultCode
+    );
+
+
+console.log("==============================================");
+console.log("💳 PAYMENT DECISION");
+console.log("==============================================");
+console.log("Status:", status);
+console.log("ResultCode:", resultCode);
+console.log("Explicit Success:", explicitSuccess);
+console.log("Successful Status:", successfulStatus);
+console.log("Successful ResultCode:", successfulResultCode);
+console.log("🔥 PAYMENT IS PAID:", paymentIsPaid);
+console.log("==============================================");
 
 
             console.log(
