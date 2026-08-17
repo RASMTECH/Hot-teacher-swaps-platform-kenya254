@@ -325,7 +325,51 @@ header{
 .card>*{
   position:relative;
 }
+/* =========================================================
+   🚀 WHOLE ACTION HUB CONTAINER
+========================================================= */
 
+#actionHub {
+  background: linear-gradient(
+    135deg,
+    #0f766e 0%,
+    #0d9488 50%,
+    #14b8a6 100%
+  ) !important;
+
+  border-radius: 24px;
+  padding: 30px;
+  margin: 25px 0;
+
+  border: 3px solid #5eead4;
+
+  box-shadow:
+    0 12px 35px rgba(13, 148, 136, 0.35),
+    0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Heading text */
+#actionHub .action-hub-title h2 {
+  color: #ffffff !important;
+}
+
+#actionHub .action-hub-title p {
+  color: #ccfbf1 !important;
+}
+
+/* Heading area */
+#actionHub .action-hub-title {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* Three cards remain clearly visible */
+#actionHub .action-hub-grid {
+  background: transparent;
+}
 
 /* =========================================================
    GENERAL FORM CONTROLS
@@ -650,7 +694,10 @@ footer a:hover{
   color:
     #fff;
 }
-
+.action-card-purple .action-card-content strong,
+.action-card-purple .action-card-content small {
+  color: red !important;
+}
 
 /* =========================================================
    📌 POST SWAP FORM ONLY
@@ -3560,50 +3607,48 @@ TeacherHub Kenya – Swaps & Resources
       </div>
 
     </button>
+<!-- =====================================================
+     LEARNING RESOURCES
+====================================================== -->
 
+<button
+  type="button"
+  class="action-card action-card-purple"
+  onclick="openLearningResourcesSection()"
+>
 
-    <!-- =====================================================
-         💰 LEARNING RESOURCES
-    ====================================================== -->
+  <div class="action-card-color">
 
-    <button
-      type="button"
-      class="action-card action-card-purple"
-      onclick="openLearningResourcesSection()"
-    >
+    <span class="action-icon">
+      📚
+    </span>
 
-      <div class="action-card-color">
+    <span class="action-number">
+      03
+    </span>
 
-        <span class="action-icon">
-          💰
-        </span>
+  </div>
 
-        <span class="action-number">
-          03
-        </span>
+  <div class="action-card-content">
 
-      </div>
+    <strong>
+      Browse Learning Materials
+    </strong>
 
+    <small>
+      Find and access useful teaching resources,
+      lesson materials and learning content.
+    </small>
 
-      <div class="action-card-content">
+    <span class="action-open">
+      Explore Materials
+      <b>→</b>
+    </span>
 
-        <strong>
-          Earn with Learning Resources
-        </strong>
+  </div>
 
-        <small>
-          Upload useful teaching resources,
-          set your price and earn from your work.
-        </small>
+</button>
 
-        <span class="action-open">
-          Start Earning
-          <b>→</b>
-        </span>
-
-      </div>
-
-    </button>
 
 
   </div>
@@ -3632,15 +3677,16 @@ TeacherHub Kenya – Swaps & Resources
 </div>
 
 <div class="post-swap-toggle-area">
-  <button
-    type="button"
-    id="postSwapToggleBtn"
-    class="post-swap-toggle-btn"
-    onclick="togglePostSwapForm()"
-    aria-expanded="false"
-  >
-    ➕ Open Post Swap Form
-  </button>
+<button
+  type="button"
+  id="postSwapToggleBtn"
+  class="post-swap-toggle-btn"
+  onclick="togglePostSwapForm()"
+  aria-expanded="false"
+  style="background:#dc2626 !important;"
+>
+  ➕ Open Post Swap Form
+</button>
 </div>
 
 <div
@@ -4201,84 +4247,46 @@ TeacherHub Kenya – Swaps & Resources
     </select>
 
 
-    <!-- ================= NOTES ================= -->
+   <!-- ================= POST BUTTON ================= -->
 
-    <textarea
-      id="notes"
-      placeholder="📝 Additional Information (Optional)"
-      style="
-        display:block;
+<button
+  type="button"
+  onclick="postSwap()"
+  style="
+    width:100%;
+    min-height:48px;
+    padding:12px 16px;
+    border:none;
+    border-radius:11px;
 
-        width:100% !important;
+    background:#dc2626 !important;
 
-        min-height:100px;
+    color:#ffffff !important;
+    font-size:15px;
+    font-weight:900;
+    cursor:pointer;
 
-        padding:11px 14px;
+    box-shadow:
+      0 7px 18px
+      rgba(220,38,38,.30);
 
-        margin-bottom:14px;
+    transition:
+      transform .2s ease,
+      box-shadow .2s ease;
+  "
+>
+  🚀 Post Swap Request
+</button>
 
-        background:#ffffff !important;
+<!-- ================= CLOSE FORM ================= -->
 
-        color:#111827 !important;
-
-        border:2px solid #cbd5e1 !important;
-
-        border-radius:10px;
-
-        outline:none;
-
-        resize:vertical;
-      "
-    ></textarea>
-
-
-    <!-- ================= POST BUTTON ================= -->
-
-    <button
-      type="button"
-      onclick="postSwap()"
-      style="
-        width:100%;
-
-        min-height:48px;
-
-        padding:12px 16px;
-
-        border:none;
-
-        border-radius:11px;
-
-        background:
-          #16a34a !important;
-
-        color:#ffffff !important;
-
-        font-size:15px;
-
-        font-weight:900;
-
-        cursor:pointer;
-
-        box-shadow:
-          0 7px 18px
-          rgba(22,163,74,.28);
-
-        transition:
-          transform .2s ease,
-          box-shadow .2s ease;
-      "
-    >
-      🚀 Post Swap Request
-    </button>
-
-    <!-- ================= CLOSE FORM ================= -->
-    <button
-      type="button"
-      class="post-swap-close-btn"
-      onclick="togglePostSwapForm(false)"
-    >
-      ✕ Close Post Swap Form
-    </button>
+<button
+  type="button"
+  class="post-swap-close-btn"
+  onclick="togglePostSwapForm(false)"
+>
+  ✕ Close Post Swap Form
+</button>
 
   </div>
 
@@ -4303,7 +4311,7 @@ TeacherHub Kenya – Swaps & Resources
   class="swap-requests-section independent-section-wrapper"
   style="
     display:none;
-    width:100%;
+    width:45%;
     margin-top:25px;
     position:relative;
     z-index:1;
@@ -4933,11 +4941,19 @@ TeacherHub Kenya – Swaps & Resources
     </button>
   </div>
 
-  <div
-    id="adminResourcePublisher"
-    style="display:none;"
-    class="admin-resource-publisher"
-  >
+<div
+  id="adminResourcePublisher"
+  style="
+    display:none;
+    background:
+      url('https://i.imgur.com/tllGwj6.png')
+      center/cover no-repeat;
+    border-radius:18px;
+    padding:24px;
+    color:#ffffff;
+  "
+  class="admin-resource-publisher"
+>
 
     <div class="admin-resource-publisher-head">
       <div>
@@ -7704,7 +7720,7 @@ function render(swaps){
 
                 <div style="
                     margin-top:5px;
-                    font-size:12px;
+                    font-size:14px;
                     color:#94a3b8;
                 ">
                     Try another search or wait for new
@@ -7948,7 +7964,7 @@ function render(swaps){
                             999px;
 
                         font-size:
-                            10px;
+                            16px;
 
                         font-weight:
                             900;
@@ -7990,7 +8006,7 @@ function render(swaps){
                             999px;
 
                         font-size:
-                            10px;
+                            16px;
 
                         font-weight:
                             900;
@@ -8030,7 +8046,7 @@ function render(swaps){
                             999px;
 
                         font-size:
-                            10px;
+                            16px;
 
                         font-weight:
                             900;
@@ -8212,7 +8228,7 @@ function render(swaps){
                             style="
                                 color:#166534;
 
-                                font-size:14px;
+                                font-size:16px;
                             "
                         >
                             📞
@@ -8236,7 +8252,7 @@ function render(swaps){
                                     999px;
 
                                 font-size:
-                                    9px;
+                                    14px;
 
                                 font-weight:
                                     900;
@@ -8298,7 +8314,7 @@ function render(swaps){
                             style="
                                 color:#dc2626;
 
-                                font-size:13px;
+                                font-size:14px;
 
                                 font-weight:800;
                             "
@@ -8352,7 +8368,7 @@ function render(swaps){
 
                                 border-radius:8px;
 
-                                font-size:11px;
+                                font-size:14px;
 
                                 font-weight:800;
 
@@ -8419,7 +8435,7 @@ function render(swaps){
 
                     <div
                         style="
-                            font-size:14px;
+                            font-size:16px;
 
                             font-weight:900;
 
@@ -8432,7 +8448,7 @@ function render(swaps){
 
                     <div
                         style="
-                            font-size:11px;
+                            font-size:16px;
 
                             line-height:1.7;
                         "
@@ -8509,7 +8525,7 @@ function render(swaps){
 
                             border-radius:9px;
 
-                            font-size:12px;
+                            font-size:16px;
 
                             font-weight:900;
 
@@ -8565,7 +8581,7 @@ function render(swaps){
                     style="
                         color:#facc15;
 
-                        font-size:14px;
+                        font-size:16px;
 
                         font-weight:900;
 
@@ -8609,7 +8625,7 @@ function render(swaps){
 
                         <div
                             style="
-                                font-size:9px;
+                                font-size:16px;
                             "
                         >
                             🎯 Direct
@@ -8636,7 +8652,7 @@ function render(swaps){
 
                         <div
                             style="
-                                font-size:9px;
+                                font-size:13px;
                             "
                         >
                             🔺 Triangle
@@ -8663,7 +8679,7 @@ function render(swaps){
 
                         <div
                             style="
-                                font-size:9px;
+                                font-size:14px;
                             "
                         >
                             🔄 Four-Way
@@ -8704,7 +8720,7 @@ function render(swaps){
 
                                 border-radius:8px;
 
-                                font-size:11px;
+                                font-size:16px;
 
                                 font-weight:800;
 
@@ -8756,7 +8772,7 @@ function render(swaps){
 
                                 border-radius:8px;
 
-                                font-size:11px;
+                                font-size:16px;
 
                                 font-weight:900;
 
@@ -8781,7 +8797,7 @@ function render(swaps){
 
                                 border-radius:8px;
 
-                                font-size:10px;
+                                font-size:16px;
 
                                 text-align:center;
                             "
@@ -8864,7 +8880,7 @@ function render(swaps){
 
                             color:#94a3b8;
 
-                            font-size:10px;
+                            font-size:16px;
                         "
                     >
                         REF:
@@ -8911,7 +8927,7 @@ function render(swaps){
                         border-radius:
                             999px;
 
-                        font-size:10px;
+                        font-size:16px;
 
                         font-weight:800;
                     "
@@ -8938,7 +8954,7 @@ function render(swaps){
                                 border-radius:
                                     999px;
 
-                                font-size:10px;
+                                font-size:16px;
 
                                 font-weight:800;
                             "
@@ -8998,7 +9014,7 @@ function render(swaps){
                         style="
                             color:#166534;
 
-                            font-size:9px;
+                            font-size:16px;
 
                             font-weight:900;
 
@@ -9012,7 +9028,7 @@ function render(swaps){
                         style="
                             color:#0f172a;
 
-                            font-size:12px;
+                            font-size:18px;
                         "
                     >
                         ${escapeHTML(
@@ -9030,7 +9046,7 @@ function render(swaps){
 
                                     color:#64748b;
 
-                                    font-size:10px;
+                                    font-size:16px;
                                 "
                             >
                                 ${escapeHTML(
@@ -9088,7 +9104,7 @@ function render(swaps){
                         style="
                             color:#1d4ed8;
 
-                            font-size:9px;
+                            font-size:18px;
 
                             font-weight:900;
 
@@ -9102,7 +9118,7 @@ function render(swaps){
                         style="
                             color:#0f172a;
 
-                            font-size:12px;
+                            font-size:18px;
                         "
                     >
                         ${escapeHTML(
@@ -9120,7 +9136,7 @@ function render(swaps){
 
                                     color:#64748b;
 
-                                    font-size:10px;
+                                    font-size:18px;
                                 "
                             >
                                 ${escapeHTML(
@@ -9163,7 +9179,7 @@ function render(swaps){
                     style="
                         color:#92400e;
 
-                        font-size:9px;
+                        font-size:18px;
 
                         font-weight:900;
 
@@ -9177,7 +9193,7 @@ function render(swaps){
                     style="
                         color:#334155;
 
-                        font-size:11px;
+                        font-size:18px;
 
                         font-weight:700;
 
@@ -9259,7 +9275,7 @@ function render(swaps){
                             8px;
 
                         font-size:
-                            10px;
+                            18px;
 
                         font-weight:
                             800;
@@ -9301,7 +9317,7 @@ function render(swaps){
                             8px;
 
                         font-size:
-                            10px;
+                            16px;
 
                         font-weight:
                             800;
@@ -9324,6 +9340,8 @@ function render(swaps){
     }
 
 }
+
+
 /* =========================================================
    🔺 POWERFUL TRIANGULAR MATCH OPTIONS
    RASM 360 — FAST + SAFE + SMART
@@ -11085,7 +11103,7 @@ window.showPayment = function(
                                 style="
                                     display:block;
                                     color:#64748b;
-                                    font-size:10px;
+                                    font-size:18px;
                                     margin-bottom:3px;
                                 "
                             >
@@ -18898,18 +18916,27 @@ function safeResourceURL(value){
    💳 TEACHERS HUB — M-PESA PAYMENT SYSTEM
    =========================================================
 
-   FRONTEND ONLY
+   FRONTEND PAYMENT ENGINE
 
-   Your backend has already been verified to work:
+   BACKEND:
+   https://thirteen-romp-issuing.ngrok-free.dev
+
+   ENDPOINTS:
 
    POST /stkpush
    GET  /payment-status/:accountReference
    POST /mpesa/callback
 
    IMPORTANT:
-   Replace your OLD frontend M-PESA payment scripts with
-   THIS ONE CONSOLIDATED SCRIPT.
-
+   - One centralized payment-status function
+   - One payment monitor
+   - One backend test function
+   - ngrok browser-warning bypass
+   - CORS-safe requests
+   - Cache busting
+   - Temporary network errors are retried
+   - STK request sends phone/amount/reference
+   - PAID payment unlocks resource
 ========================================================= */
 
 
@@ -18922,7 +18949,11 @@ window.TEACHERS_HUB_MPESA_BACKEND =
 
 
 const MPESA_BACKEND_URL =
-    window.TEACHERS_HUB_MPESA_BACKEND;
+    String(
+        window.TEACHERS_HUB_MPESA_BACKEND
+    )
+    .trim()
+    .replace(/\/+$/, "");
 
 
 console.log("");
@@ -18956,15 +18987,14 @@ window.__teachersHubPaymentState = {
 
 /* =========================================================
    🛡️ HTML ESCAPE
-   Uses existing function if your system already has one.
 ========================================================= */
 
-if(
+if (
     typeof window.escapeResourceHTML !== "function"
-){
+) {
 
     window.escapeResourceHTML =
-    function(value){
+    function(value) {
 
         return String(value ?? "")
             .replace(/&/g, "&amp;")
@@ -18983,7 +19013,7 @@ if(
 ========================================================= */
 
 window.normalizeKenyanPhone =
-function(phone){
+function(phone) {
 
     let p =
         String(phone || "")
@@ -18992,66 +19022,42 @@ function(phone){
             .replace(/-/g, "");
 
 
-    /* +2547XXXXXXXX */
-
-    if(
-        /^\+2547\d{8}$/.test(p)
-    ){
+    if (/^\+2547\d{8}$/.test(p)) {
 
         return p.substring(1);
 
     }
 
 
-    /* +2541XXXXXXXX */
-
-    if(
-        /^\+2541\d{8}$/.test(p)
-    ){
+    if (/^\+2541\d{8}$/.test(p)) {
 
         return p.substring(1);
 
     }
 
 
-    /* 2547XXXXXXXX */
-
-    if(
-        /^2547\d{8}$/.test(p)
-    ){
+    if (/^2547\d{8}$/.test(p)) {
 
         return p;
 
     }
 
 
-    /* 2541XXXXXXXX */
-
-    if(
-        /^2541\d{8}$/.test(p)
-    ){
+    if (/^2541\d{8}$/.test(p)) {
 
         return p;
 
     }
 
 
-    /* 07XXXXXXXX */
-
-    if(
-        /^07\d{8}$/.test(p)
-    ){
+    if (/^07\d{8}$/.test(p)) {
 
         return "254" + p.substring(1);
 
     }
 
 
-    /* 01XXXXXXXX */
-
-    if(
-        /^01\d{8}$/.test(p)
-    ){
+    if (/^01\d{8}$/.test(p)) {
 
         return "254" + p.substring(1);
 
@@ -19068,32 +19074,32 @@ function(phone){
 ========================================================= */
 
 window.getTeachersHubUserId =
-function(){
+function() {
 
-    try{
+    try {
 
-        if(
+        if (
             window.currentUser &&
             window.currentUser.uid
-        ){
+        ) {
 
             return window.currentUser.uid;
 
         }
 
 
-        if(
+        if (
             typeof firebase !== "undefined" &&
             firebase.auth &&
             firebase.auth().currentUser
-        ){
+        ) {
 
             return firebase.auth().currentUser.uid;
 
         }
 
     }
-    catch(error){
+    catch(error) {
 
         console.warn(
             "⚠️ Could not determine user:",
@@ -19112,7 +19118,7 @@ function(){
    ⏱️ SLEEP
 ========================================================= */
 
-function teachersHubSleep(ms){
+function teachersHubSleep(ms) {
 
     return new Promise(
         resolve =>
@@ -19123,11 +19129,11 @@ function teachersHubSleep(ms){
 
 
 /* =========================================================
-   🛑 STOP CURRENT PAYMENT MONITOR
+   🛑 STOP PAYMENT MONITOR
 ========================================================= */
 
 window.stopTeachersHubPaymentMonitor =
-function(){
+function() {
 
     const state =
         window.__teachersHubPaymentState;
@@ -19138,18 +19144,16 @@ function(){
     );
 
 
-    try{
+    try {
 
-        if(
-            state.controller
-        ){
+        if (state.controller) {
 
             state.controller.abort();
 
         }
 
     }
-    catch(error){
+    catch(error) {
 
         console.warn(
             "⚠️ Abort error:",
@@ -19159,33 +19163,28 @@ function(){
     }
 
 
-    state.active =
-        false;
+    state.active = false;
 
-    state.reference =
-        null;
+    state.reference = null;
 
-    state.resourceId =
-        null;
+    state.resourceId = null;
 
-    state.userId =
-        null;
+    state.userId = null;
 
-    state.controller =
-        null;
+    state.controller = null;
 
 };
 
 
 /* =========================================================
-   🌐 FETCH WITH TIMEOUT
+   🌐 CENTRALIZED FETCH
 ========================================================= */
 
 async function teachersHubRequest(
     url,
     options = {},
     timeoutMs = 20000
-){
+) {
 
     const controller =
         new AbortController();
@@ -19198,27 +19197,58 @@ async function teachersHubRequest(
         );
 
 
-    try{
+    try {
+
+        const requestOptions = {
+
+            ...options,
+
+            signal:
+                controller.signal,
+
+            mode:
+                options.mode || "cors",
+
+            credentials:
+                "omit",
+
+            cache:
+                "no-store",
+
+            headers: {
+
+                "Accept":
+                    "application/json",
+
+                "ngrok-skip-browser-warning":
+                    "true",
+
+                ...(options.headers || {})
+
+            }
+
+        };
+
+
+        console.log(
+            "🌐 FETCH:",
+            requestOptions.method || "GET",
+            url
+        );
+
 
         return await fetch(
             url,
-            {
-
-                ...options,
-
-                signal:
-                    controller.signal
-
-            }
+            requestOptions
         );
 
     }
-    catch(error){
+    catch(error) {
 
-        if(
+        if (
             error &&
             error.name === "AbortError"
-        ){
+        ) {
 
             throw new Error(
                 "Payment server request timed out."
@@ -19230,7 +19260,7 @@ async function teachersHubRequest(
         throw error;
 
     }
-    finally{
+    finally {
 
         clearTimeout(timer);
 
@@ -19244,9 +19274,9 @@ async function teachersHubRequest(
 ========================================================= */
 
 window.getTeachersHubResource =
-async function(resourceId){
+async function(resourceId) {
 
-    if(!resourceId){
+    if (!resourceId) {
 
         throw new Error(
             "Learning resource ID is missing."
@@ -19255,11 +19285,11 @@ async function(resourceId){
     }
 
 
-    if(
+    if (
         typeof db === "undefined" ||
         typeof get !== "function" ||
         typeof ref !== "function"
-    ){
+    ) {
 
         throw new Error(
             "Firebase database is not available."
@@ -19278,9 +19308,7 @@ async function(resourceId){
         );
 
 
-    if(
-        !snapshot.exists()
-    ){
+    if (!snapshot.exists()) {
 
         throw new Error(
             "The learning resource could not be found."
@@ -19295,29 +19323,57 @@ async function(resourceId){
 
 
 /* =========================================================
-   📥 DOWNLOAD / OPEN PAID RESOURCE
-   PAYMENT SUCCESS ALWAYS SHOWS DOWNLOAD BUTTON
+   📥 RESOURCE DOWNLOAD URL
+========================================================= */
+
+function getTeachersHubResourceUrl(resource) {
+
+    return (
+
+        resource?.downloadUrl ||
+
+        resource?.fileUrl ||
+
+        resource?.resourceUrl ||
+
+        resource?.url ||
+
+        resource?.fileURL ||
+
+        resource?.downloadURL ||
+
+        resource?.storageUrl ||
+
+        resource?.storageURL ||
+
+        resource?.fileLink ||
+
+        resource?.downloadLink ||
+
+        null
+
+    );
+
+}
+
+
+/* =========================================================
+   🔓 DOWNLOAD / OPEN PAID RESOURCE
 ========================================================= */
 
 window.downloadPaidResource =
 async function(
     accountReference,
     resourceId
-){
+) {
 
     console.log("");
     console.log("==============================================");
     console.log("🔓 PAID RESOURCE ACCESS");
     console.log("==============================================");
-    console.log("Reference:", accountReference);
-    console.log("Resource:", resourceId);
 
 
-    try{
-
-        /* =================================================
-           LOAD RESOURCE
-        ================================================= */
+    try {
 
         const resource =
             await getTeachersHubResource(
@@ -19325,61 +19381,17 @@ async function(
             );
 
 
-        console.log(
-            "📚 RESOURCE DATA:",
-            resource
-        );
-
-
-        /* =================================================
-           RESOURCE TITLE
-        ================================================= */
-
         const title =
             resource?.title ||
             resource?.name ||
             "Learning Resource";
 
 
-        /* =================================================
-           FIND ANY AVAILABLE DOWNLOAD URL
-        ================================================= */
-
         const downloadUrl =
+            getTeachersHubResourceUrl(
+                resource
+            );
 
-            resource?.downloadUrl ||
-
-            resource?.fileUrl ||
-
-            resource?.resourceUrl ||
-
-            resource?.url ||
-
-            resource?.fileURL ||
-
-            resource?.downloadURL ||
-
-            resource?.storageUrl ||
-
-            resource?.storageURL ||
-
-            resource?.fileLink ||
-
-            resource?.downloadLink ||
-
-            null;
-
-
-        console.log(
-            "🔗 DOWNLOAD URL:",
-            downloadUrl
-        );
-
-
-        /* =================================================
-           SHOW PAYMENT SUCCESS
-           EVEN IF URL IS MISSING
-        ================================================= */
 
         const result =
             await Swal.fire({
@@ -19395,7 +19407,7 @@ async function(
                         ? "94%"
                         : 520,
 
-                html:`
+                html: `
 
                     <div style="
                         line-height:1.7;
@@ -19412,7 +19424,6 @@ async function(
                         </strong>
 
                         <br><br>
-
 
                         <div style="
                             background:#f0fdf4;
@@ -19442,9 +19453,7 @@ async function(
 
                         </div>
 
-
                         <br>
-
 
                         <div style="
                             background:#eff6ff;
@@ -19455,10 +19464,6 @@ async function(
                         ">
 
                             🔓 Your resource has been unlocked.
-
-                            <br>
-
-                            Click the button below to access it.
 
                         </div>
 
@@ -19481,198 +19486,54 @@ async function(
             });
 
 
-        /* =================================================
-           DOWNLOAD BUTTON CLICKED
-        ================================================= */
+        if (!result.isConfirmed) {
 
-        if(
-            result.isConfirmed
-        ){
+            return false;
 
-            console.log(
-                "📥 DOWNLOAD BUTTON CLICKED"
+        }
+
+
+        if (downloadUrl) {
+
+            const link =
+                document.createElement("a");
+
+
+            link.href =
+                downloadUrl;
+
+
+            link.target =
+                "_blank";
+
+
+            link.rel =
+                "noopener noreferrer";
+
+
+            link.style.display =
+                "none";
+
+
+            document.body.appendChild(
+                link
             );
 
 
-            /* =============================================
-               URL AVAILABLE
-            ============================================= */
-
-            if(downloadUrl){
-
-                console.log(
-                    "🔗 Opening resource URL:",
-                    downloadUrl
-                );
+            link.click();
 
 
-                const link =
-                    document.createElement("a");
+            setTimeout(
+                () => {
 
+                    try {
+                        link.remove();
+                    }
+                    catch(_) {}
 
-                link.href =
-                    downloadUrl;
-
-
-                link.target =
-                    "_blank";
-
-
-                link.rel =
-                    "noopener noreferrer";
-
-
-                link.style.display =
-                    "none";
-
-
-                document.body.appendChild(
-                    link
-                );
-
-
-                link.click();
-
-
-                setTimeout(
-                    () => {
-
-                        try{
-
-                            link.remove();
-
-                        }
-                        catch(_){}
-
-                    },
-                    1000
-                );
-
-
-                console.log(
-                    "✅ Resource opened."
-                );
-
-
-                return true;
-
-            }
-
-
-            /* =============================================
-               URL NOT FOUND
-               DO NOT SAY PAYMENT FAILED
-            ============================================= */
-
-            console.warn(
-                "⚠️ Payment confirmed but no resource URL was found."
+                },
+                1000
             );
-
-
-            /* =============================================
-               TRY COMMON DOM DOWNLOAD LINKS
-               ============================================= */
-
-            const possibleLinks = [
-
-                document.querySelector(
-                    `[data-resource-id="${resourceId}"]`
-                ),
-
-                document.querySelector(
-                    `[data-download-id="${resourceId}"]`
-                ),
-
-                document.querySelector(
-                    `a[data-resource="${resourceId}"]`
-                ),
-
-                document.querySelector(
-                    `a[data-resource-id="${resourceId}"]`
-                )
-
-            ].filter(Boolean);
-
-
-            if(
-                possibleLinks.length > 0
-            ){
-
-                console.log(
-                    "🔗 Existing resource link found."
-                );
-
-
-                possibleLinks[0].click();
-
-
-                return true;
-
-            }
-
-
-            /* =============================================
-               SHOW RESOURCE ACCESS MESSAGE
-            ============================================= */
-
-            await Swal.fire({
-
-                icon:
-                    "info",
-
-                title:
-                    "📥 Resource Unlocked",
-
-                html:`
-
-                    <div style="
-                        line-height:1.7;
-                        text-align:center;
-                    ">
-
-                        Your payment has been
-                        <strong style="color:#16a34a;">
-                            successfully confirmed
-                        </strong>.
-
-                        <br><br>
-
-                        The resource is unlocked,
-                        but its download file has not been
-                        linked yet.
-
-                        <br><br>
-
-                        <strong>
-                            Resource:
-                        </strong>
-
-                        <br>
-
-                        ${escapeResourceHTML(title)}
-
-                        <br><br>
-
-                        <small style="
-                            color:#64748b;
-                        ">
-
-                            Please contact support if the
-                            download does not appear.
-
-                        </small>
-
-                    </div>
-
-                `,
-
-                confirmButtonText:
-                    "OK",
-
-                confirmButtonColor:
-                    "#16a34a"
-
-            });
 
 
             return true;
@@ -19680,31 +19541,61 @@ async function(
         }
 
 
-        return false;
+        await Swal.fire({
+
+            icon:
+                "info",
+
+            title:
+                "📥 Resource Unlocked",
+
+            html: `
+
+                Payment has been
+                <strong style="color:#16a34a;">
+                    successfully confirmed
+                </strong>.
+
+                <br><br>
+
+                The resource is unlocked,
+                but no download file is currently
+                linked to it.
+
+                <br><br>
+
+                <strong>
+                    ${escapeResourceHTML(title)}
+                </strong>
+
+            `,
+
+            confirmButtonColor:
+                "#16a34a"
+
+        });
+
+
+        return true;
 
     }
-    catch(error){
+    catch(error) {
 
         console.error(
-            "❌ PAID RESOURCE ACCESS ERROR:",
+            "❌ RESOURCE ACCESS ERROR:",
             error
         );
 
 
-        /* =================================================
-           PAYMENT IS STILL SUCCESSFUL
-           NEVER TELL USER TO PAY AGAIN
-        ================================================= */
-
         await Swal.fire({
 
             icon:
-                "success",
+                "warning",
 
             title:
-                "🎉 Payment Confirmed",
+                "Payment Confirmed",
 
-            html:`
+            html: `
 
                 <div style="
                     line-height:1.7;
@@ -19713,206 +19604,79 @@ async function(
 
                     Your M-PESA payment was
                     <strong style="color:#16a34a;">
-                        successful
+                        successfully confirmed
                     </strong>.
 
                     <br><br>
 
-                    <button
-                        type="button"
-                        id="manualResourceDownloadButton"
-                        style="
-                            width:100%;
-                            padding:14px 18px;
-                            border:none;
-                            border-radius:12px;
-                            background:#16a34a;
-                            color:white;
-                            font-size:16px;
-                            font-weight:bold;
-                            cursor:pointer;
-                        "
-                    >
-
-                        📥 Download Resource
-
-                    </button>
+                    The resource could not be opened
+                    automatically.
 
                     <br><br>
 
-                    <small style="
-                        color:#64748b;
-                    ">
-
-                        Your payment has been recorded.
-
-                    </small>
+                    You can try opening the resource
+                    again from your purchases.
 
                 </div>
 
             `,
 
-            showConfirmButton:
-                false,
-
-            allowOutsideClick:
-                false,
-
-            didOpen: () => {
-
-                const button =
-                    document.getElementById(
-                        "manualResourceDownloadButton"
-                    );
-
-
-                if(button){
-
-                    button.onclick =
-                    async function(){
-
-                        console.log(
-                            "📥 Manual resource download requested."
-                        );
-
-
-                        try{
-
-                            const latestResource =
-                                await getTeachersHubResource(
-                                    resourceId
-                                );
-
-
-                            const url =
-
-                                latestResource?.downloadUrl ||
-
-                                latestResource?.fileUrl ||
-
-                                latestResource?.resourceUrl ||
-
-                                latestResource?.url ||
-
-                                latestResource?.fileURL ||
-
-                                latestResource?.downloadURL ||
-
-                                latestResource?.storageUrl ||
-
-                                latestResource?.storageURL ||
-
-                                latestResource?.fileLink ||
-
-                                latestResource?.downloadLink;
-
-
-                            if(url){
-
-                                window.open(
-                                    url,
-                                    "_blank",
-                                    "noopener,noreferrer"
-                                );
-
-                                return;
-
-                            }
-
-
-                            Swal.fire({
-
-                                icon:
-                                    "info",
-
-                                title:
-                                    "Resource Unlocked",
-
-                                text:
-                                    "Payment is confirmed, but the resource file has not been linked yet.",
-
-                                confirmButtonColor:
-                                    "#16a34a"
-
-                            });
-
-                        }
-                        catch(downloadError){
-
-                            console.error(
-                                "❌ MANUAL DOWNLOAD ERROR:",
-                                downloadError
-                            );
-
-
-                            Swal.fire({
-
-                                icon:
-                                    "warning",
-
-                                title:
-                                    "Download Not Available",
-
-                                text:
-                                    "Payment is confirmed, but the resource file could not be located.",
-
-                                confirmButtonColor:
-                                    "#16a34a"
-
-                            });
-
-                        }
-
-                    };
-
-                }
-
-            }
+            confirmButtonColor:
+                "#16a34a"
 
         });
 
 
-        return true;
+        return false;
 
     }
 
 };
 
+
 /* =========================================================
    🔎 PAYMENT STATUS REQUEST
+   =========================================================
+
+   THIS IS WHERE THE CODE YOU ASKED ABOUT GOES.
+
+   It replaces the older status-fetch logic.
+
 ========================================================= */
 
 async function getTeachersHubPaymentStatus(
     accountReference
-){
+) {
 
-    const cleanBackend =
-        String(
-            MPESA_BACKEND_URL
-        )
-            .replace(/\/+$/, "");
+    if (!accountReference) {
+
+        throw new Error(
+            "Payment account reference is missing."
+        );
+
+    }
 
 
     const encodedReference =
         encodeURIComponent(
-            accountReference
+            String(accountReference).trim()
         );
 
 
-    const url =
-        `${cleanBackend}/payment-status/${encodedReference}?t=${Date.now()}`;
+    const statusUrl =
+        `${MPESA_BACKEND_URL}/payment-status/${encodedReference}?t=${Date.now()}`;
 
 
     console.log(
-        "🌐 STATUS URL:",
-        url
+        "🌐 PAYMENT STATUS URL:",
+        statusUrl
     );
 
 
     const response =
         await teachersHubRequest(
 
-            url,
+            statusUrl,
 
             {
 
@@ -19922,13 +19686,7 @@ async function getTeachersHubPaymentStatus(
                 mode:
                     "cors",
 
-                credentials:
-                    "omit",
-
-                cache:
-                    "no-store",
-
-                headers:{
+                headers: {
 
                     "Accept":
                         "application/json"
@@ -19943,17 +19701,25 @@ async function getTeachersHubPaymentStatus(
 
 
     console.log(
-        "📡 STATUS HTTP:",
+        "📡 PAYMENT STATUS HTTP:",
         response.status
     );
 
+
+    /* =====================================================
+       IMPORTANT:
+       Read text first.
+
+       This prevents JSON parsing from hiding an
+       ngrok/server error page.
+    ===================================================== */
 
     const raw =
         await response.text();
 
 
     console.log(
-        "📥 STATUS RAW:",
+        "📥 PAYMENT STATUS RAW:",
         raw
     );
 
@@ -19961,23 +19727,32 @@ async function getTeachersHubPaymentStatus(
     let data;
 
 
-    try{
+    try {
 
         data =
             JSON.parse(raw);
 
     }
-    catch(error){
+    catch(error) {
 
-        throw new Error(
-            "Payment server returned invalid JSON."
-        );
+        data = {
+
+            success:
+                false,
+
+            status:
+                "INVALID_RESPONSE",
+
+            raw:
+                raw
+
+        };
 
     }
 
 
     console.log(
-        "📊 STATUS DATA:",
+        "📊 PAYMENT STATUS DATA:",
         data
     );
 
@@ -19998,7 +19773,108 @@ async function getTeachersHubPaymentStatus(
 
 
 /* =========================================================
-   🎯 WAIT FOR PAYMENT
+   🎯 COMMON PAYMENT STATUS NORMALIZER
+========================================================= */
+
+function normalizeTeachersHubPaymentStatus(data) {
+
+    return String(
+
+        data?.status ??
+
+        data?.paymentStatus ??
+
+        data?.payment_status ??
+
+        data?.transactionStatus ??
+
+        "PENDING"
+
+    )
+    .trim()
+    .toUpperCase();
+
+}
+
+
+/* =========================================================
+   💳 PAYMENT SUCCESS DETECTOR
+========================================================= */
+
+function isTeachersHubPaymentPaid(data) {
+
+    const status =
+        normalizeTeachersHubPaymentStatus(
+            data
+        );
+
+
+    const resultCode =
+        data?.ResultCode ??
+        data?.resultCode ??
+        data?.result_code ??
+        null;
+
+
+    const explicitSuccess =
+        data?.success === true ||
+        data?.paid === true ||
+        data?.paymentSuccessful === true ||
+        data?.payment_successful === true;
+
+
+    const successfulStatus = [
+
+        "PAID",
+        "SUCCESS",
+        "SUCCESSFUL",
+        "COMPLETED",
+        "COMPLETE",
+        "CONFIRMED",
+        "PAYMENT_SUCCESS",
+        "PAYMENT_SUCCESSFUL"
+
+    ].includes(status);
+
+
+    const successfulResultCode =
+        String(resultCode) === "0";
+
+
+    return (
+
+        (
+            explicitSuccess &&
+            successfulStatus
+        )
+
+        ||
+
+        (
+            explicitSuccess &&
+            successfulResultCode
+        )
+
+        ||
+
+        (
+            data?.paid === true &&
+            successfulResultCode
+        )
+
+        ||
+
+        (
+            status === "PAID"
+        )
+
+    );
+
+}
+
+
+/* =========================================================
+   🎯 MAIN PAYMENT MONITOR
 ========================================================= */
 
 window.waitForResourcePayment =
@@ -20010,48 +19886,40 @@ async function(
 
     userId,
 
-    checkoutRequestId = null
+    checkoutRequestId = null,
 
-){
+    options = {}
+
+) {
 
     const state =
         window.__teachersHubPaymentState;
 
 
-    /* -----------------------------------------------------
-       NEVER ALLOW TWO PAYMENT MONITORS
-    ----------------------------------------------------- */
+    if (!accountReference) {
 
-    if(
-        state.active
-    ){
-
-        console.warn(
-            "⚠️ A payment monitor is already running."
+        throw new Error(
+            "Payment account reference is missing."
         );
 
+    }
 
-        if(
-            state.reference === accountReference
-        ){
 
-            console.log(
-                "ℹ️ Same payment already being monitored."
-            );
+    /* =====================================================
+       STOP PREVIOUS MONITOR
+    ===================================================== */
 
-            return;
+    if (state.active) {
 
-        }
+        console.warn(
+            "⚠️ Existing payment monitor found. Stopping it."
+        );
 
 
         stopTeachersHubPaymentMonitor();
 
     }
 
-
-    /* -----------------------------------------------------
-       CREATE MONITOR
-    ----------------------------------------------------- */
 
     const controller =
         new AbortController();
@@ -20076,54 +19944,25 @@ async function(
         false;
 
 
-    console.log("");
-    console.log(
-        "=============================================="
-    );
-
-    console.log(
-        "🔎 PAYMENT CONFIRMATION STARTED"
-    );
-
-    console.log(
-        "=============================================="
-    );
-
-    console.log(
-        "Reference:",
-        accountReference
-    );
-
-    console.log(
-        "Resource:",
-        resourceId
-    );
-
-    console.log(
-        "User:",
-        userId
-    );
-
-    console.log(
-        "CheckoutRequestID:",
-        checkoutRequestId
-    );
-
-    console.log(
-        "=============================================="
-    );
-
-
-    /* -----------------------------------------------------
-       SETTINGS
-    ----------------------------------------------------- */
-
-    const interval =
-        3000;
+    const pollInterval =
+        Number(
+            options.pollInterval ||
+            3000
+        );
 
 
     const maxDuration =
-        180000;
+        Number(
+            options.timeout ||
+            180000
+        );
+
+
+    const maxNetworkErrors =
+        Number(
+            options.maxNetworkErrors ||
+            10
+        );
 
 
     const startedAt =
@@ -20134,13 +19973,25 @@ async function(
         0;
 
 
-    /* -----------------------------------------------------
-       UI UPDATE
-    ----------------------------------------------------- */
+    let networkErrors =
+        0;
+
+
+    console.log("");
+    console.log("==============================================");
+    console.log("🔎 PAYMENT CONFIRMATION STARTED");
+    console.log("==============================================");
+    console.log("Reference:", accountReference);
+    console.log("Resource:", resourceId);
+    console.log("User:", userId);
+    console.log("CheckoutRequestID:", checkoutRequestId);
+    console.log("==============================================");
+
 
     function updateWaitingUI(
-        message = "Waiting for payment confirmation..."
-    ){
+        message =
+            "Waiting for payment confirmation..."
+    ) {
 
         const status =
             document.getElementById(
@@ -20148,9 +19999,7 @@ async function(
             );
 
 
-        if(
-            !status
-        ){
+        if (!status) {
 
             return;
 
@@ -20171,10 +20020,8 @@ async function(
                 <br>
 
                 <small>
-
                     Check your M-PESA phone
                     and enter your PIN.
-
                 </small>
 
                 <br><br>
@@ -20205,30 +20052,36 @@ async function(
     }
 
 
-    /* -----------------------------------------------------
+    /* =====================================================
        POLLING LOOP
-    ----------------------------------------------------- */
+    ===================================================== */
 
-    while(
-        Date.now() - startedAt < maxDuration
-    ){
+    while (
+        Date.now() - startedAt <
+        maxDuration
+    ) {
 
         attempt++;
 
 
-        /* -----------------------------------------------
-           CHECK ABORT
-        ----------------------------------------------- */
-
-        if(
+        if (
             controller.signal.aborted
-        ){
+        ) {
 
             console.log(
-                "🛑 Payment monitor was stopped."
+                "🛑 Payment monitor aborted."
             );
 
-            return;
+
+            return {
+
+                success:
+                    false,
+
+                status:
+                    "ABORTED"
+
+            };
 
         }
 
@@ -20242,7 +20095,7 @@ async function(
         );
 
 
-        try{
+        try {
 
             const result =
                 await getTeachersHubPaymentStatus(
@@ -20254,156 +20107,79 @@ async function(
                 result.data;
 
 
-            /* =============================================
-               ⭐ THIS IS THE IMPORTANT PART
-               Your backend returns:
+            if (
+                !result.ok
+            ) {
 
-               {
-                 success: true,
-                 status: "PAID",
-                 ResultCode: 0,
-                 ...
-               }
-
-               Therefore status === PAID is enough.
-            ============================================= */
-
-         /* =========================================================
-   🎯 NORMALIZE PAYMENT STATUS
-========================================================= */
-
-const status = String(
-    data?.status ??
-    data?.paymentStatus ??
-    data?.payment_status ??
-    data?.transactionStatus ??
-    data?.ResultDesc ??
-    ""
-)
-.trim()
-.toUpperCase();
+                console.warn(
+                    "⚠️ Payment status HTTP error:",
+                    result.httpStatus
+                );
 
 
-/* =========================================================
-   🎯 NORMALIZE RESULT CODE
-========================================================= */
-
-const resultCode =
-    data?.ResultCode ??
-    data?.resultCode ??
-    data?.result_code ??
-    null;
+                networkErrors++;
 
 
-/* =========================================================
-   🎯 CHECK PAYMENT SUCCESS
-========================================================= */
-
-const explicitSuccess =
-    data?.success === true ||
-    data?.paid === true ||
-    data?.paymentSuccessful === true ||
-    data?.payment_successful === true;
+                updateWaitingUI(
+                    "Reconnecting to payment server..."
+                );
 
 
-const successfulStatus =
-    [
-        "PAID",
-        "SUCCESS",
-        "SUCCESSFUL",
-        "COMPLETED",
-        "COMPLETE",
-        "CONFIRMED",
-        "PAYMENT_SUCCESS",
-        "PAYMENT_SUCCESSFUL"
-    ].includes(status);
+                if (
+                    networkErrors >=
+                    maxNetworkErrors
+                ) {
+
+                    throw new Error(
+                        `Payment status server returned HTTP ${result.httpStatus}.`
+                    );
+
+                }
 
 
-const successfulResultCode =
-    String(resultCode) === "0";
+                await teachersHubSleep(
+                    pollInterval
+                );
 
 
-const paymentIsPaid =
-    explicitSuccess &&
-    (
-        successfulStatus ||
-        successfulResultCode
-    );
+                continue;
+
+            }
 
 
-console.log("==============================================");
-console.log("💳 PAYMENT DECISION");
-console.log("==============================================");
-console.log("Status:", status);
-console.log("ResultCode:", resultCode);
-console.log("Explicit Success:", explicitSuccess);
-console.log("Successful Status:", successfulStatus);
-console.log("Successful ResultCode:", successfulResultCode);
-console.log("🔥 PAYMENT IS PAID:", paymentIsPaid);
-console.log("==============================================");
+            networkErrors =
+                0;
+
+
+            const status =
+                normalizeTeachersHubPaymentStatus(
+                    data
+                );
 
 
             console.log(
-                "📊 PAYMENT STATUS:",
+                "📊 NORMALIZED STATUS:",
                 status
             );
 
 
-            console.log(
-                "📊 PAYMENT SUCCESS:",
-                data?.success
-            );
+            /* =================================================
+               🎉 PAYMENT PAID
+            ================================================= */
 
-
-            console.log(
-                "📊 RESULT CODE:",
-                data?.ResultCode
-            );
-
-
-            /* =============================================
-               🎉 PAID
-            ============================================= */
-
-            if(
-                data?.success === true &&
-                status === "PAID"
-            ){
+            if (
+                isTeachersHubPaymentPaid(
+                    data
+                )
+            ) {
 
                 console.log("");
                 console.log(
                     "=============================================="
                 );
-
                 console.log(
                     "🎉🎉🎉 PAYMENT IS PAID"
                 );
-
-                console.log(
-                    "=============================================="
-                );
-
-                console.log(
-                    "Reference:",
-                    accountReference
-                );
-
-                console.log(
-                    "Amount:",
-                    data.paidAmount ??
-                    data.amount
-                );
-
-                console.log(
-                    "Receipt:",
-                    data.MpesaReceiptNumber
-                );
-
-                console.log(
-                    "Paid phone:",
-                    data.paidPhone
-                );
-
                 console.log(
                     "=============================================="
                 );
@@ -20415,12 +20191,15 @@ console.log("==============================================");
                 state.active =
                     false;
 
+                state.controller =
+                    null;
 
-                /* -----------------------------------------
-                   SAVE PURCHASE LOCALLY
-                ----------------------------------------- */
 
-                try{
+                /* =================================================
+                   SAVE PURCHASE
+                ================================================= */
+
+                try {
 
                     const purchase = {
 
@@ -20438,30 +20217,30 @@ console.log("==============================================");
 
                         amount:
                             Number(
-                                data.paidAmount ??
-                                data.amount ??
+                                data?.paidAmount ??
+                                data?.amount ??
                                 0
                             ),
 
                         receipt:
-                            data.MpesaReceiptNumber ||
+                            data?.MpesaReceiptNumber ||
                             null,
 
                         CheckoutRequestID:
-                            data.CheckoutRequestID ||
+                            data?.CheckoutRequestID ||
                             checkoutRequestId ||
                             null,
 
                         MerchantRequestID:
-                            data.MerchantRequestID ||
+                            data?.MerchantRequestID ||
                             null,
 
                         paidPhone:
-                            data.paidPhone ||
+                            data?.paidPhone ||
                             null,
 
                         paidAt:
-                            data.paidAt ||
+                            data?.paidAt ||
                             new Date().toISOString()
 
                     };
@@ -20479,35 +20258,36 @@ console.log("==============================================");
 
 
                     console.log(
-                        "💾 Purchase saved locally."
+                        "💾 PURCHASE SAVED:",
+                        purchase
                     );
 
                 }
-                catch(storageError){
+                catch(storageError) {
 
                     console.warn(
-                        "⚠️ Local purchase save failed:",
+                        "⚠️ Could not save purchase locally:",
                         storageError
                     );
 
                 }
 
 
-                /* -----------------------------------------
-                   CLOSE WAITING MODAL
-                ----------------------------------------- */
+                /* =================================================
+                   CLOSE WAITING UI
+                ================================================= */
 
-                try{
+                try {
 
                     Swal.close();
 
                 }
-                catch(_){}
+                catch(_) {}
 
 
-                /* -----------------------------------------
-                   UPDATE PAGE STATUS
-                ----------------------------------------- */
+                /* =================================================
+                   UPDATE STATUS
+                ================================================= */
 
                 const statusElement =
                     document.getElementById(
@@ -20515,9 +20295,7 @@ console.log("==============================================");
                     );
 
 
-                if(
-                    statusElement
-                ){
+                if (statusElement) {
 
                     statusElement.innerHTML = `
 
@@ -20538,7 +20316,7 @@ console.log("==============================================");
 
                             Receipt:
                             ${escapeResourceHTML(
-                                data.MpesaReceiptNumber ||
+                                data?.MpesaReceiptNumber ||
                                 "Confirmed"
                             )}
 
@@ -20549,24 +20327,26 @@ console.log("==============================================");
                 }
 
 
-                /* -----------------------------------------
-                   OPEN RESOURCE
-                ----------------------------------------- */
+                /* =================================================
+                   UNLOCK RESOURCE
+                ================================================= */
 
-                await downloadPaidResource(
+                if (resourceId) {
 
-                    accountReference,
+                    await downloadPaidResource(
 
-                    resourceId
+                        accountReference,
 
-                );
+                        resourceId
 
+                    );
 
-                /* -----------------------------------------
-                   FINISHED
-                ----------------------------------------- */
+                }
+
 
                 return {
+
+                    ...data,
 
                     success:
                         true,
@@ -20574,33 +20354,42 @@ console.log("==============================================");
                     status:
                         "PAID",
 
-                    payment:
-                        data
+                    accountReference:
+                        data?.accountReference ||
+                        accountReference
 
                 };
 
             }
 
 
-            /* =============================================
-               ❌ EXPLICIT FAILURE
-            ============================================= */
+            /* =================================================
+               ❌ FAILED
+            ================================================= */
 
-            if(
+            if (
+
                 status === "FAILED" ||
-                status === "CANCELLED"
-            ){
+
+                status === "CANCELLED" ||
+
+                status === "CANCELED"
+
+            ) {
 
                 state.active =
                     false;
 
+                state.controller =
+                    null;
 
-                try{
+
+                try {
 
                     Swal.close();
 
                 }
-                catch(_){}
+                catch(_) {}
 
 
                 console.error(
@@ -20617,9 +20406,141 @@ console.log("==============================================");
                     title:
                         "Payment Failed",
 
-                    text:
-                        data.ResultDesc ||
-                        "The M-PESA payment was not completed."
+                    html: `
+
+                        <div style="
+                            line-height:1.7;
+                        ">
+
+                            ${
+                                escapeResourceHTML(
+                                    data?.ResultDesc ||
+                                    data?.message ||
+                                    "The M-PESA payment was not completed."
+                                )
+                            }
+
+                        </div>
+
+                    `,
+
+                    confirmButtonColor:
+                        "#dc2626"
+
+                });
+
+
+                return {
+
+                    ...data,
+
+                    success:
+                        false,
+
+                    status:
+                        "FAILED",
+
+                    accountReference:
+                        accountReference
+
+                };
+
+            }
+
+
+            /* =================================================
+               NOT FOUND = KEEP WAITING
+            ================================================= */
+
+            if (
+                status === "NOT_FOUND"
+            ) {
+
+                console.warn(
+                    "⚠️ PAYMENT RECORD NOT FOUND YET."
+                );
+
+                updateWaitingUI(
+                    "Waiting for payment record..."
+                );
+
+            }
+            else {
+
+                updateWaitingUI(
+                    "Waiting for payment confirmation..."
+                );
+
+            }
+
+        }
+        catch(error) {
+
+            console.warn(
+                `⚠️ STATUS CHECK ERROR #${attempt}:`,
+                error?.message ||
+                error
+            );
+
+
+            networkErrors++;
+
+
+            /*
+             * IMPORTANT:
+             *
+             * Network errors do NOT mean payment failed.
+             */
+
+            updateWaitingUI(
+                "Reconnecting to payment server..."
+            );
+
+
+            if (
+                networkErrors >=
+                maxNetworkErrors
+            ) {
+
+                state.active =
+                    false;
+
+                state.controller =
+                    null;
+
+
+                try {
+
+                    Swal.close();
+
+                }
+                catch(_) {}
+
+
+                await Swal.fire({
+
+                    icon:
+                        "warning",
+
+                    title:
+                        "Payment Server Connection Problem",
+
+                    html: `
+
+                        We could not communicate with
+                        the payment server.
+
+                        <br><br>
+
+                        <strong>
+                            If M-PESA deducted your money,
+                            DO NOT PAY AGAIN.
+                        </strong>
+
+                    `,
+
+                    confirmButtonColor:
+                        "#f59e0b"
 
                 });
 
@@ -20630,88 +20551,42 @@ console.log("==============================================");
                         false,
 
                     status:
-                        status,
+                        "ERROR",
 
-                    payment:
-                        data
+                    accountReference:
+                        accountReference
 
                 };
 
             }
 
-
-            /* =============================================
-               ⏳ NOT PAID YET
-            ============================================= */
-
-            console.log(
-                "⏳ Payment not confirmed yet."
-            );
-
-
-            updateWaitingUI(
-                "Waiting for payment confirmation..."
-            );
-
-        }
-        catch(error){
-
-            /*
-             * VERY IMPORTANT:
-             *
-             * Network/ngrok/CORS errors do NOT mean
-             * that M-PESA payment failed.
-             *
-             * Continue polling.
-             */
-
-            console.warn(
-                `⚠️ STATUS CHECK ERROR #${attempt}:`,
-                error.message
-            );
-
-
-            updateWaitingUI(
-                "Reconnecting to payment server..."
-            );
-
-        }
-
-
-        /* -----------------------------------------------
-           WAIT
-        ----------------------------------------------- */
-
-        if(
-            Date.now() - startedAt >= maxDuration
-        ){
-
-            break;
-
         }
 
 
         await teachersHubSleep(
-            interval
+            pollInterval
         );
 
     }
 
 
-    /* =====================================================
-       TIMEOUT
-    ===================================================== */
+    /* =========================================================
+       ⏰ TIMEOUT
+    ========================================================= */
 
     state.active =
         false;
 
+    state.controller =
+        null;
 
-    try{
+
+    try {
 
         Swal.close();
 
     }
-    catch(_){}
+    catch(_) {}
 
 
     console.warn(
@@ -20727,7 +20602,7 @@ console.log("==============================================");
         title:
             "Payment Confirmation Pending",
 
-        html:`
+        html: `
 
             <div style="
                 line-height:1.7;
@@ -20749,23 +20624,18 @@ console.log("==============================================");
 
                 <br><br>
 
-                <small style="
-                    color:#64748b;
-                ">
-
-                    M-PESA Receipt:
-                    ${
-                        "Check your M-PESA messages"
-                    }
-
-                </small>
+                Check your M-PESA message for the
+                transaction receipt.
 
             </div>
 
         `,
 
         confirmButtonText:
-            "OK"
+            "OK",
+
+        confirmButtonColor:
+            "#f59e0b"
 
     });
 
@@ -20776,7 +20646,360 @@ console.log("==============================================");
             false,
 
         status:
-            "TIMEOUT"
+            "TIMEOUT",
+
+        accountReference:
+            accountReference
+
+    };
+
+};
+
+
+/* =========================================================
+   🔄 BACKWARD-COMPATIBILITY PAYMENT FUNCTION
+   =========================================================
+
+   Your other pages may already call:
+
+   waitForMpesaPayment(reference)
+
+   We keep that function so existing code does NOT break.
+
+========================================================= */
+
+window.waitForMpesaPayment =
+async function(
+    accountReference,
+    options = {}
+) {
+
+    console.log(
+        "🔄 waitForMpesaPayment() compatibility wrapper"
+    );
+
+
+    const API_BASE_URL =
+        String(
+            options.apiBaseUrl ||
+            MPESA_BACKEND_URL
+        )
+        .trim()
+        .replace(/\/+$/, "");
+
+
+    const pollInterval =
+        Number(
+            options.pollInterval ||
+            3000
+        );
+
+
+    const timeout =
+        Number(
+            options.timeout ||
+            120000
+        );
+
+
+    const maxNetworkErrors =
+        Number(
+            options.maxNetworkErrors ||
+            10
+        );
+
+
+    if (!accountReference) {
+
+        return {
+
+            success:
+                false,
+
+            status:
+                "ERROR",
+
+            message:
+                "Missing payment account reference."
+
+        };
+
+    }
+
+
+    const startedAt =
+        Date.now();
+
+
+    let networkErrors =
+        0;
+
+
+    let attempt =
+        0;
+
+
+    while (
+        Date.now() - startedAt <
+        timeout
+    ) {
+
+        attempt++;
+
+
+        try {
+
+            const encodedReference =
+                encodeURIComponent(
+                    String(accountReference).trim()
+                );
+
+
+            const statusUrl =
+                `${API_BASE_URL}/payment-status/${encodedReference}?t=${Date.now()}`;
+
+
+            console.log(
+                `🔎 PAYMENT STATUS CHECK #${attempt}`
+            );
+
+
+            const response =
+                await teachersHubRequest(
+
+                    statusUrl,
+
+                    {
+
+                        method:
+                            "GET",
+
+                        mode:
+                            "cors",
+
+                        headers: {
+
+                            "Accept":
+                                "application/json"
+
+                        }
+
+                    },
+
+                    15000
+
+                );
+
+
+            const raw =
+                await response.text();
+
+
+            console.log(
+                "📥 PAYMENT STATUS RAW:",
+                raw
+            );
+
+
+            let data;
+
+
+            try {
+
+                data =
+                    JSON.parse(raw);
+
+            }
+            catch {
+
+                data = {
+
+                    success:
+                        false,
+
+                    status:
+                        "INVALID_RESPONSE",
+
+                    raw:
+                        raw
+
+                };
+
+            }
+
+
+            console.log(
+                "📊 PAYMENT STATUS DATA:",
+                data
+            );
+
+
+            if (!response.ok) {
+
+                networkErrors++;
+
+
+                if (
+                    networkErrors >=
+                    maxNetworkErrors
+                ) {
+
+                    return {
+
+                        success:
+                            false,
+
+                        status:
+                            "ERROR",
+
+                        accountReference:
+                            accountReference,
+
+                        message:
+                            `Payment status server returned HTTP ${response.status}.`
+
+                    };
+
+                }
+
+
+                await teachersHubSleep(
+                    pollInterval
+                );
+
+
+                continue;
+
+            }
+
+
+            networkErrors =
+                0;
+
+
+            const status =
+                normalizeTeachersHubPaymentStatus(
+                    data
+                );
+
+
+            if (
+                isTeachersHubPaymentPaid(
+                    data
+                )
+            ) {
+
+                return {
+
+                    ...data,
+
+                    success:
+                        true,
+
+                    status:
+                        "PAID",
+
+                    accountReference:
+                        data?.accountReference ||
+                        accountReference
+
+                };
+
+            }
+
+
+            if (
+
+                status === "FAILED" ||
+
+                status === "CANCELLED" ||
+
+                status === "CANCELED"
+
+            ) {
+
+                return {
+
+                    ...data,
+
+                    success:
+                        false,
+
+                    status:
+                        "FAILED",
+
+                    accountReference:
+                        data?.accountReference ||
+                        accountReference
+
+                };
+
+            }
+
+
+            await teachersHubSleep(
+                pollInterval
+            );
+
+        }
+        catch(error) {
+
+            networkErrors++;
+
+
+            console.warn(
+                `⚠️ STATUS CHECK ERROR #${attempt}:`,
+                error?.message ||
+                error
+            );
+
+
+            if (
+                networkErrors >=
+                maxNetworkErrors
+            ) {
+
+                return {
+
+                    success:
+                        false,
+
+                    status:
+                        "ERROR",
+
+                    accountReference:
+                        accountReference,
+
+                    message:
+                        "Unable to communicate with the payment server."
+
+                };
+
+            }
+
+
+            await teachersHubSleep(
+                pollInterval
+            );
+
+        }
+
+    }
+
+
+    return {
+
+        success:
+            false,
+
+        status:
+            "TIMEOUT",
+
+        accountReference:
+            accountReference,
+
+        message:
+            "Payment confirmation timed out."
 
     };
 
@@ -20788,30 +21011,18 @@ console.log("==============================================");
 ========================================================= */
 
 window.buyLearningResource =
-async function(resourceId){
+async function(resourceId) {
 
     console.log("");
-    console.log(
-        "=============================================="
-    );
-
-    console.log(
-        "🛒 BUY LEARNING RESOURCE"
-    );
-
-    console.log(
-        "=============================================="
-    );
-
-    console.log(
-        "Resource ID:",
-        resourceId
-    );
+    console.log("==============================================");
+    console.log("🛒 BUY LEARNING RESOURCE");
+    console.log("==============================================");
+    console.log("Resource ID:", resourceId);
 
 
-    try{
+    try {
 
-        if(!resourceId){
+        if (!resourceId) {
 
             throw new Error(
                 "Learning resource ID is missing."
@@ -20821,7 +21032,7 @@ async function(resourceId){
 
 
         /* =================================================
-           STOP OLD PAYMENT MONITOR
+           STOP OLD PAYMENT
         ================================================= */
 
         stopTeachersHubPaymentMonitor();
@@ -20849,11 +21060,9 @@ async function(resourceId){
             );
 
 
-        if(
-            previousPurchase
-        ){
+        if (previousPurchase) {
 
-            try{
+            try {
 
                 const purchase =
                     JSON.parse(
@@ -20861,9 +21070,9 @@ async function(resourceId){
                     );
 
 
-                if(
+                if (
                     purchase?.status === "PAID"
-                ){
+                ) {
 
                     console.log(
                         "🔓 RESOURCE ALREADY PAID"
@@ -20884,7 +21093,12 @@ async function(resourceId){
                 }
 
             }
-            catch(error){
+            catch(error) {
+
+                console.warn(
+                    "⚠️ Invalid previous purchase removed."
+                );
+
 
                 localStorage.removeItem(
                     purchaseKey
@@ -20911,10 +21125,10 @@ async function(resourceId){
             );
 
 
-        if(
+        if (
             !Number.isFinite(price) ||
             price <= 0
-        ){
+        ) {
 
             throw new Error(
                 "This learning resource has an invalid price."
@@ -20948,7 +21162,7 @@ async function(resourceId){
                         ? "94%"
                         : 520,
 
-                html:`
+                html: `
 
                     <div style="
                         text-align:left;
@@ -20965,12 +21179,11 @@ async function(resourceId){
                                 font-size:17px;
                             ">
 
-                                ${
-                                    escapeResourceHTML(
-                                        resource.title ||
-                                        "Learning Resource"
-                                    )
-                                }
+                                ${escapeResourceHTML(
+                                    resource?.title ||
+                                    resource?.name ||
+                                    "Learning Resource"
+                                )}
 
                             </strong>
 
@@ -21023,11 +21236,9 @@ async function(resourceId){
 
                             type="tel"
 
-                            value="${
-                                escapeResourceHTML(
-                                    savedPhone
-                                )
-                            }"
+                            value="${escapeResourceHTML(
+                                savedPhone
+                            )}"
 
                             placeholder="07XXXXXXXX"
 
@@ -21072,7 +21283,7 @@ async function(resourceId){
                 confirmButtonColor:
                     "#16a34a",
 
-                preConfirm:() => {
+                preConfirm: () => {
 
                     const input =
                         document.getElementById(
@@ -21086,7 +21297,7 @@ async function(resourceId){
                         );
 
 
-                    if(!normalized){
+                    if (!normalized) {
 
                         Swal.showValidationMessage(
                             "Enter a valid Kenyan M-PESA number."
@@ -21105,9 +21316,7 @@ async function(resourceId){
             });
 
 
-        if(
-            !result.isConfirmed
-        ){
+        if (!result.isConfirmed) {
 
             return;
 
@@ -21151,6 +21360,42 @@ async function(resourceId){
 
 
         /* =================================================
+           STK REQUEST BODY
+           THIS WAS MISSING FROM YOUR OLD SCRIPT
+        ================================================= */
+
+        const stkPayload = {
+
+            phone:
+                buyerPhone,
+
+            amount:
+                price,
+
+            accountReference:
+                accountReference,
+
+            itemId:
+                resourceId,
+
+            itemName:
+                resource?.title ||
+                resource?.name ||
+                "Learning Resource",
+
+            userId:
+                userId
+
+        };
+
+
+        console.log(
+            "📦 STK PAYLOAD:",
+            stkPayload
+        );
+
+
+        /* =================================================
            SENDING MODAL
         ================================================= */
 
@@ -21159,7 +21404,7 @@ async function(resourceId){
             title:
                 "📲 Sending STK Push...",
 
-            html:`
+            html: `
 
                 <div style="
                     line-height:1.7;
@@ -21173,6 +21418,14 @@ async function(resourceId){
                         ${escapeResourceHTML(
                             buyerPhone
                         )}
+                    </strong>
+
+                    <br><br>
+
+                    Amount:
+
+                    <strong>
+                        KES ${price.toLocaleString()}
                     </strong>
 
                     <br><br>
@@ -21192,7 +21445,7 @@ async function(resourceId){
             showConfirmButton:
                 false,
 
-            didOpen:() => {
+            didOpen: () => {
 
                 Swal.showLoading();
 
@@ -21205,30 +21458,14 @@ async function(resourceId){
            SEND STK
         ================================================= */
 
-        const backend =
-            String(
-                MPESA_BACKEND_URL
-            )
-                .replace(
-                    /\/+$/,
-                    ""
-                );
-
-
         const stkUrl =
-            `${backend}/stkpush`;
-
-
-        console.log(
-            "📡 STK URL:",
-            stkUrl
-        );
+            `${MPESA_BACKEND_URL}/stkpush`;
 
 
         let response;
 
 
-        try{
+        try {
 
             response =
                 await teachersHubRequest(
@@ -21240,16 +21477,7 @@ async function(resourceId){
                         method:
                             "POST",
 
-                        mode:
-                            "cors",
-
-                        credentials:
-                            "omit",
-
-                        cache:
-                            "no-store",
-
-                        headers:{
+                        headers: {
 
                             "Content-Type":
                                 "application/json",
@@ -21260,28 +21488,9 @@ async function(resourceId){
                         },
 
                         body:
-                            JSON.stringify({
-
-                                phone:
-                                    buyerPhone,
-
-                                amount:
-                                    Math.floor(price),
-
-                                accountReference:
-                                    accountReference,
-
-                                itemId:
-                                    resourceId,
-
-                                itemName:
-                                    resource.title ||
-                                    "Learning Resource",
-
-                                userId:
-                                    userId
-
-                            })
+                            JSON.stringify(
+                                stkPayload
+                            )
 
                     },
 
@@ -21290,7 +21499,7 @@ async function(resourceId){
                 );
 
         }
-        catch(error){
+        catch(error) {
 
             console.error(
                 "❌ STK CONNECTION ERROR:",
@@ -21299,7 +21508,7 @@ async function(resourceId){
 
 
             throw new Error(
-                "Could not connect to the M-PESA payment server. Please check that your payment backend and ngrok tunnel are running."
+                "Could not connect to the M-PESA payment server. Make sure the Node server and ngrok tunnel are running."
             );
 
         }
@@ -21324,13 +21533,13 @@ async function(resourceId){
         let data;
 
 
-        try{
+        try {
 
             data =
                 JSON.parse(raw);
 
         }
-        catch(error){
+        catch {
 
             throw new Error(
                 `Payment server returned invalid data. HTTP ${response.status}.`
@@ -21345,9 +21554,7 @@ async function(resourceId){
         );
 
 
-        if(
-            !response.ok
-        ){
+        if (!response.ok) {
 
             throw new Error(
 
@@ -21371,17 +21578,27 @@ async function(resourceId){
         ================================================= */
 
         const accepted =
+
             data?.success === true &&
+
             (
+
                 String(
                     data?.ResponseCode
-                ) === "0" ||
-                data?.ResponseCode === 0 ||
-                data?.CheckoutRequestID
+                ) === "0"
+
+                ||
+
+                data?.ResponseCode === 0
+
+                ||
+
+                !!data?.CheckoutRequestID
+
             );
 
 
-        if(!accepted){
+        if (!accepted) {
 
             throw new Error(
 
@@ -21407,9 +21624,16 @@ async function(resourceId){
             "✅ STK PUSH ACCEPTED"
         );
 
+
         console.log(
             "CheckoutRequestID:",
             checkoutRequestId
+        );
+
+
+        console.log(
+            "MerchantRequestID:",
+            data?.MerchantRequestID
         );
 
 
@@ -21425,7 +21649,7 @@ async function(resourceId){
             title:
                 "📲 STK Push Sent",
 
-            html:`
+            html: `
 
                 <div style="
                     line-height:1.7;
@@ -21487,7 +21711,7 @@ async function(resourceId){
 
 
         /* =================================================
-           START POLLING
+           START PAYMENT MONITOR
         ================================================= */
 
         const finalResult =
@@ -21509,8 +21733,11 @@ async function(resourceId){
             finalResult
         );
 
+
+        return finalResult;
+
     }
-    catch(error){
+    catch(error) {
 
         console.error(
             "❌ BUY RESOURCE ERROR:",
@@ -21521,12 +21748,12 @@ async function(resourceId){
         stopTeachersHubPaymentMonitor();
 
 
-        try{
+        try {
 
             Swal.close();
 
         }
-        catch(_){}
+        catch(_) {}
 
 
         await Swal.fire({
@@ -21537,7 +21764,7 @@ async function(resourceId){
             title:
                 "Payment Error",
 
-            html:`
+            html: `
 
                 <div style="
                     line-height:1.7;
@@ -21553,9 +21780,27 @@ async function(resourceId){
             `,
 
             confirmButtonText:
-                "OK"
+                "OK",
+
+            confirmButtonColor:
+                "#dc2626"
 
         });
+
+
+        return {
+
+            success:
+                false,
+
+            status:
+                "ERROR",
+
+            message:
+                error?.message ||
+                "Unable to process payment."
+
+        };
 
     }
 
@@ -21563,24 +21808,20 @@ async function(resourceId){
 
 
 /* =========================================================
-   🧪 OPTIONAL PAYMENT STATUS TEST
-   Useful from browser console.
-
-   Example:
-
-   testTeachersHubPaymentStatus(
-       "TH_xxxxxxxxx"
-   )
-
+   🧪 PAYMENT STATUS TEST
 ========================================================= */
 
 window.testTeachersHubPaymentStatus =
-async function(accountReference){
+async function(accountReference) {
 
-    if(!accountReference){
+    if (!accountReference) {
 
         console.error(
-            "❌ Provide an accountReference."
+            "❌ Usage:"
+        );
+
+        console.error(
+            'testTeachersHubPaymentStatus("YOUR_REFERENCE")'
         );
 
         return;
@@ -21588,12 +21829,13 @@ async function(accountReference){
     }
 
 
-    console.log(
-        "🧪 TESTING PAYMENT STATUS"
-    );
+    console.log("");
+    console.log("==============================================");
+    console.log("🧪 TESTING PAYMENT STATUS");
+    console.log("==============================================");
 
 
-    try{
+    try {
 
         const result =
             await getTeachersHubPaymentStatus(
@@ -21602,35 +21844,50 @@ async function(accountReference){
 
 
         console.log(
-            "=============================================="
+            "HTTP:",
+            result.httpStatus
         );
 
-        console.log(
-            "🧪 PAYMENT STATUS TEST RESULT"
-        );
 
         console.log(
-            "=============================================="
+            "OK:",
+            result.ok
         );
 
+
         console.log(
+            "DATA:",
             result.data
         );
 
-        console.log(
-            "=============================================="
-        );
+
+        console.log("==============================================");
 
 
         return result.data;
 
     }
-    catch(error){
+    catch(error) {
 
         console.error(
-            "❌ STATUS TEST FAILED:",
+            "❌ PAYMENT STATUS TEST FAILED:",
             error
         );
+
+
+        return {
+
+            success:
+                false,
+
+            status:
+                "ERROR",
+
+            message:
+                error?.message ||
+                String(error)
+
+        };
 
     }
 
@@ -21638,21 +21895,396 @@ async function(accountReference){
 
 
 /* =========================================================
-   🚀 LOADED
+   🧪 STK BACKEND TEST
+========================================================= */
+
+window.testTeachersHubStkEndpoint =
+async function() {
+
+    console.log("");
+    console.log("==============================================");
+    console.log("🧪 TESTING M-PESA CONFIG ENDPOINT");
+    console.log("==============================================");
+
+
+    try {
+
+        const response =
+            await teachersHubRequest(
+
+                `${MPESA_BACKEND_URL}/mpesa-config-check?t=${Date.now()}`,
+
+                {
+
+                    method:
+                        "GET"
+
+                },
+
+                15000
+
+            );
+
+
+        const raw =
+            await response.text();
+
+
+        console.log(
+            "HTTP:",
+            response.status
+        );
+
+
+        console.log(
+            "RAW:",
+            raw
+        );
+
+
+        let data;
+
+
+        try {
+
+            data =
+                JSON.parse(raw);
+
+        }
+        catch {
+
+            data = {
+
+                raw:
+                    raw
+
+            };
+
+        }
+
+
+        console.log(
+            "CONFIG:",
+            data
+        );
+
+
+        return data;
+
+    }
+    catch(error) {
+
+        console.error(
+            "❌ STK BACKEND TEST FAILED:",
+            error
+        );
+
+
+        return {
+
+            success:
+                false,
+
+            status:
+                "ERROR",
+
+            message:
+                error?.message ||
+                String(error)
+
+        };
+
+    }
+
+};
+
+
+/* =========================================================
+   🧪 COMPLETE BACKEND TEST
+========================================================= */
+
+window.testTeachersHubMpesaBackend =
+async function() {
+
+    const backend =
+        MPESA_BACKEND_URL;
+
+
+    console.log("");
+    console.log("==============================================");
+    console.log("🧪 TEACHERS HUB M-PESA BACKEND TEST");
+    console.log("==============================================");
+    console.log(
+        "🌐 Backend:",
+        backend
+    );
+    console.log("==============================================");
+
+
+    async function testEndpoint(
+        name,
+        url
+    ) {
+
+        console.log("");
+        console.log(
+            "🔎 Testing:",
+            name
+        );
+
+
+        console.log(
+            "🌐 URL:",
+            url
+        );
+
+
+        try {
+
+            const response =
+                await teachersHubRequest(
+
+                    `${url}${url.includes("?") ? "&" : "?"}t=${Date.now()}`,
+
+                    {
+
+                        method:
+                            "GET"
+
+                    },
+
+                    15000
+
+                );
+
+
+            console.log(
+                "📡 HTTP STATUS:",
+                response.status
+            );
+
+
+            const corsHeader =
+                response.headers.get(
+                    "Access-Control-Allow-Origin"
+                );
+
+
+            console.log(
+                "🌐 CORS HEADER:",
+                corsHeader
+            );
+
+
+            const raw =
+                await response.text();
+
+
+            console.log(
+                "📥 RAW RESPONSE:",
+                raw
+            );
+
+
+            let data;
+
+
+            try {
+
+                data =
+                    JSON.parse(raw);
+
+            }
+            catch {
+
+                data = {
+
+                    raw:
+                        raw
+
+                };
+
+            }
+
+
+            console.log(
+                "📊 RESPONSE DATA:",
+                data
+            );
+
+
+            return {
+
+                success:
+                    response.ok,
+
+                status:
+                    response.status,
+
+                cors:
+                    corsHeader,
+
+                data
+
+            };
+
+        }
+        catch(error) {
+
+            console.error(
+                `❌ ${name} FAILED:`,
+                error
+            );
+
+
+            return {
+
+                success:
+                    false,
+
+                error:
+                    error?.message ||
+                    String(error)
+
+            };
+
+        }
+
+    }
+
+
+    const root =
+        await testEndpoint(
+            "ROOT /",
+            backend
+        );
+
+
+    const cors =
+        await testEndpoint(
+            "CORS /cors-test",
+            `${backend}/cors-test`
+        );
+
+
+    const health =
+        await testEndpoint(
+            "HEALTH /health",
+            `${backend}/health`
+        );
+
+
+    const config =
+        await testEndpoint(
+            "M-PESA CONFIG",
+            `${backend}/mpesa-config-check`
+        );
+
+
+    console.log("");
+    console.log("==============================================");
+    console.log("🏁 BACKEND TEST COMPLETE");
+    console.log("==============================================");
+
+
+    console.log(
+        "ROOT:",
+        root.success
+            ? "✅ PASS"
+            : "❌ FAIL"
+    );
+
+
+    console.log(
+        "CORS:",
+        cors.success
+            ? "✅ PASS"
+            : "❌ FAIL"
+    );
+
+
+    console.log(
+        "HEALTH:",
+        health.success
+            ? "✅ PASS"
+            : "❌ FAIL"
+    );
+
+
+    console.log(
+        "M-PESA CONFIG:",
+        config.success
+            ? "✅ PASS"
+            : "❌ FAIL"
+    );
+
+
+    const allPassed =
+        root.success &&
+        cors.success &&
+        health.success &&
+        config.success;
+
+
+    console.log(
+        "=============================================="
+    );
+
+
+    if (allPassed) {
+
+        console.log(
+            "🎉 BACKEND CONNECTION TEST PASSED"
+        );
+
+    }
+    else {
+
+        console.warn(
+            "⚠️ SOME BACKEND TESTS FAILED"
+        );
+
+    }
+
+
+    console.log(
+        "=============================================="
+    );
+
+
+    return {
+
+        success:
+            allPassed,
+
+        backend:
+            backend,
+
+        root:
+            root,
+
+        cors:
+            cors,
+
+        health:
+            health,
+
+        config:
+            config
+
+    };
+
+};
+
+
+/* =========================================================
+   🚀 PAYMENT ENGINE READY
 ========================================================= */
 
 console.log("");
-console.log(
-    "=============================================="
-);
-
-console.log(
-    "✅ TEACHERS HUB M-PESA PAYMENT ENGINE READY"
-);
-
-console.log(
-    "=============================================="
-);
+console.log("==============================================");
+console.log("✅ TEACHERS HUB M-PESA PAYMENT ENGINE READY");
+console.log("==============================================");
 
 console.log(
     "Backend:",
@@ -21660,22 +22292,41 @@ console.log(
 );
 
 console.log(
-    "STK endpoint:",
+    "STK:",
     `${MPESA_BACKEND_URL}/stkpush`
 );
 
 console.log(
-    "Status endpoint:",
+    "Status:",
     `${MPESA_BACKEND_URL}/payment-status/:accountReference`
 );
 
 console.log(
-    "=============================================="
+    "Callback:",
+    `${MPESA_BACKEND_URL}/mpesa/callback`
 );
 
-/* =========================================================
-   INITIALIZE RESOURCE FEATURES
-========================================================= */
+console.log(
+    "==============================================");
+
+console.log(
+    "🧪 Backend test:"
+);
+
+console.log(
+    "testTeachersHubMpesaBackend()"
+);
+
+console.log(
+    "🧪 Status test:"
+);
+
+console.log(
+    'testTeachersHubPaymentStatus("REFERENCE")'
+);
+
+console.log(
+    "==============================================");
 
 
 /* =========================================================
