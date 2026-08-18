@@ -8132,7 +8132,7 @@ window.postSwap = async function(){
 
 
         let charge =
-            2;
+            200;
 
 
         if(
@@ -9172,7 +9172,7 @@ function render(swaps){
         let charge =
             Number(
                 item.charge
-            ) || 2;
+            ) || 200;
 
 
         if(
@@ -9764,7 +9764,7 @@ function render(swaps){
                                 ${
                                     Number(
                                         matchedTeacher.charge ||
-                                        2
+                                        200
                                     )
                                 }
                             )
@@ -12045,1335 +12045,211 @@ window.showTriangularOptions = function (swapId) {
 };
 
 /* =========================================================
-   🔓 TEACHER SWAP CONTACT UNLOCK
-   RASM 360 — M-PESA STK PAYMENT + BACKEND AUTHORIZATION
-   =========================================================
-
-   SECURE FLOW:
-
-   Teacher Swap
-        ↓
-   Visitor enters M-PESA number
-        ↓
-   STK Push
-        ↓
-   M-PESA payment confirmed
-        ↓
-   /payment-status/:reference
-        ↓
-   Payment = PAID
-        ↓
-   POST /reveal-paid-contact
-        ↓
-   Backend verifies:
-        - exact payment reference
-        - payment is PAID
-        - itemId matches this swap
-        - flow = swap
-        ↓
-   Backend returns ONLY this swap's contact
-        ↓
-   Contact displayed
-
-   IMPORTANT:
-
-   ❌ Browser NEVER reads swap.phone
-   ❌ Browser NEVER reads swapContacts directly
-   ❌ Browser NEVER trusts localStorage as proof of payment
-   ❌ Visitor does NOT need Firebase login
-
-   The backend is the authority.
+   🔓 SHOW PAYMENT / UNLOCK CONTACT
+   RASM 360 — PREMIUM PAYMENT MODAL
 ========================================================= */
 
+/* =========================================================
+   🔓 SWAP CONTACT UNLOCK — M-PESA STK PUSH
+   Replaces the old manual "I Have Paid" / WhatsApp flow.
+========================================================= */
 window.showPayment = async function(
     swapId,
     teacherName,
     currentCounty,
     swapCounty,
-    charge = 2
+    charge = 200
 ){
-
     try{
-
-        /* =====================================================
-           🔐 BASIC VALIDATION
-        ===================================================== */
-
-        const safeSwapId =
-            String(
-                swapId || ""
-            ).trim();
-
-        if(!safeSwapId){
-
-            throw new Error(
-                "Swap ID is missing."
-            );
-
-        }
-
-
-        const amount =
-            Math.max(
-                1,
-                Number(charge) || 2
-            );
-
-
-        const teacher =
-            String(
-                teacherName ||
-                "Teacher"
-            );
-
-
-        const current =
-            String(
-                currentCounty ||
-                "-"
-            );
-
-
-        const destination =
-            String(
-                swapCounty ||
-                "-"
-            );
-
-
-        /* =====================================================
-           🔎 FIND PUBLIC SWAP DATA ONLY
-           =====================================================
-
-           This is okay because the public swap posting can
-           remain visible.
-
-           IMPORTANT:
-           We DO NOT read swap.phone here.
-        ===================================================== */
-
-        const swap =
-            Array.isArray(window.allSwaps)
-                ? window.allSwaps.find(
-                    x =>
-                        String(
-                            x?.swapId ||
-                            x?.id ||
-                            ""
-                        ) === safeSwapId
-                  )
-                : null;
-
+        const safeSwapId = String(swapId || "");
+        const amount = Math.max(1, Number(charge) || 200);
+        const teacher = String(teacherName || "Teacher");
+        const current = String(currentCounty || "-");
+        const destination = String(swapCounty || "-");
+        const refCode = safeSwapId.slice(-6).toUpperCase() || "SWAP";
+        const swap = Array.isArray(allSwaps)
+            ? allSwaps.find(x => String(x.swapId) === safeSwapId)
+            : null;
 
         if(!swap){
-
-            throw new Error(
-                "This teacher swap is no longer available."
-            );
-
+            throw new Error("This swap is no longer available.");
         }
 
-
-        /* =====================================================
-           🛡️ HTML ESCAPE
-        ===================================================== */
-
-        const escapeHTML =
-            value => {
-
-                const div =
-                    document.createElement(
-                        "div"
-                    );
-
-                div.textContent =
-                    value ?? "";
-
-                return div.innerHTML;
-
-            };
-
-
-        /* =====================================================
-           🏷️ CATEGORY
-        ===================================================== */
-
-        const category =
-            amount === 500
-                ? "🚧 Hardship Swap"
-                : amount === 400
-                    ? "🔥 Hot County Swap"
-                    : "📍 Normal Swap";
-
-
-        /* =====================================================
-           📱 SAVED PHONE
-        ===================================================== */
-
-        const savedPhone =
-            localStorage.getItem(
-                "myPhone"
-            ) || "";
-
-
-        /* =====================================================
-           💳 PAYMENT DIALOG
-        ===================================================== */
-
-        const result =
-            await Swal.fire({
-
-                title:
-                    "🔓 Unlock Teacher Contact",
-
-                width:
-                    520,
-
-                html:`
-
-                    <div style="
-                        text-align:left;
-                        line-height:1.6;
-                    ">
-
-                        <div style="
-                            background:#eff6ff;
-                            border:1px solid #bfdbfe;
-                            border-left:5px solid #2563eb;
-                            border-radius:12px;
-                            padding:14px;
-                            margin-bottom:13px;
-                        ">
-
-                            <div style="
-                                color:#1d4ed8;
-                                font-size:11px;
-                                font-weight:900;
-                            ">
-                                TEACHER SWAP CONTACT
-                            </div>
-
-                            <strong style="
-                                display:block;
-                                color:#0f172a;
-                                font-size:18px;
-                                margin-top:4px;
-                            ">
-                                ${escapeHTML(teacher)}
-                            </strong>
-
-                            <div style="
-                                color:#64748b;
-                                font-size:12px;
-                                margin-top:4px;
-                            ">
-                                ${escapeHTML(current)}
-                                ➜
-                                ${escapeHTML(destination)}
-                            </div>
-
-                            <div style="
-                                margin-top:8px;
-                                display:inline-block;
-                                background:#fff7ed;
-                                color:#9a3412;
-                                padding:5px 9px;
-                                border-radius:999px;
-                                font-size:10px;
-                                font-weight:900;
-                            ">
-                                ${escapeHTML(category)}
-                            </div>
-
-                        </div>
-
-
-                        <div style="
-                            background:#ecfdf5;
-                            border:1px solid #bbf7d0;
-                            border-radius:13px;
-                            padding:17px;
-                            text-align:center;
-                            margin-bottom:13px;
-                        ">
-
-                            <div style="
-                                color:#166534;
-                                font-size:11px;
-                                font-weight:900;
-                                text-transform:uppercase;
-                            ">
-                                Contact Unlock Fee
-                            </div>
-
-                            <div style="
-                                color:#16a34a;
-                                font-size:36px;
-                                font-weight:900;
-                                margin:3px 0;
-                            ">
-                                KES ${amount.toLocaleString()}
-                            </div>
-
-                            <div style="
-                                color:#64748b;
-                                font-size:11px;
-                            ">
-                                Teacher Swap Contact
-                            </div>
-
-                        </div>
-
-
-                        <label style="
-                            display:block;
-                            font-weight:900;
-                            font-size:12px;
-                            margin-bottom:7px;
-                        ">
-                            M-PESA Phone Number
-                        </label>
-
-
-                        <input
-                            id="swapUnlockMpesaPhone"
-                            type="tel"
-                            value="${escapeHTML(savedPhone)}"
-                            placeholder="07XXXXXXXX"
-                            autocomplete="tel"
-                            style="
-                                width:100%;
-                                box-sizing:border-box;
-                                padding:14px;
-                                border:2px solid #e2e8f0;
-                                border-radius:10px;
-                                font-size:16px;
-                            "
-                        >
-
-
-                        <div style="
-                            margin-top:8px;
-                            color:#64748b;
-                            font-size:11px;
-                        ">
-
-                            An M-PESA STK Push will be sent
-                            to this number.
-
-                            <br><br>
-
-                            <strong>
-                                The teacher contact will only
-                                be revealed after the backend
-                                confirms your payment.
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                `,
-
-                showCancelButton:
-                    true,
-
-                confirmButtonText:
-                    `📲 Pay KES ${amount.toLocaleString()} & Reveal`,
-
-                cancelButtonText:
-                    "Cancel",
-
-                confirmButtonColor:
-                    "#16a34a",
-
-                cancelButtonColor:
-                    "#64748b",
-
-
-                preConfirm:()=>{
-
-                    let phone =
-                        String(
-                            document.getElementById(
-                                "swapUnlockMpesaPhone"
-                            )?.value || ""
-                        )
-                        .replace(
-                            /[\s\-()]/g,
-                            ""
-                        );
-
-
-                    if(
-                        phone.startsWith("+254")
-                    ){
-
-                        phone =
-                            "0" +
-                            phone.substring(4);
-
-                    }
-                    else if(
-                        phone.startsWith("254")
-                    ){
-
-                        phone =
-                            "0" +
-                            phone.substring(3);
-
-                    }
-
-
-                    if(
-                        !/^(07\d{8}|01\d{8})$/.test(
-                            phone
-                        )
-                    ){
-
-                        Swal.showValidationMessage(
-                            "Enter a valid Kenyan M-PESA number."
-                        );
-
-                        return false;
-
-                    }
-
-
-                    return phone;
-
-                }
-
-            });
-
-
-        /* =====================================================
-           ❌ CANCELLED
-        ===================================================== */
-
-        if(
-            !result.isConfirmed
-        ){
-
-            return;
-
-        }
-
-
-        /* =====================================================
-           📱 BUYER PHONE
-        ===================================================== */
-
-        const paymentPhone =
-            result.value;
-
-
-        localStorage.setItem(
-            "myPhone",
-            paymentPhone
-        );
-
-
-        /* =====================================================
-           👤 OPTIONAL USER ID
-           =====================================================
-
-           Visitors are allowed.
-
-           This ID is NOT used as proof of payment.
-           The payment reference is the important identifier.
-        ===================================================== */
-
-        let firebaseUser =
-            null;
-
-
-        try{
-
-            if(
-                window.firebase &&
-                typeof window.firebase.auth ===
-                    "function"
-            ){
-
-                firebaseUser =
-                    window.firebase.auth().currentUser;
-
-            }
-
-        }
-        catch(e){
-
-            console.warn(
-                "Firebase auth lookup warning:",
-                e
-            );
-
-        }
-
-
-        if(
-            !firebaseUser &&
-            typeof window.getFirebaseCurrentUser ===
-                "function"
-        ){
-
-            try{
-
-                firebaseUser =
-                    window.getFirebaseCurrentUser();
-
-            }
-            catch(e){
-
-                console.warn(
-                    "Firebase modular auth lookup warning:",
-                    e
-                );
-
-            }
-
-        }
-
-
-        const userId =
-            firebaseUser?.uid ||
-            (
-                typeof window.getTeachersHubUserId ===
-                    "function"
-                    ? window.getTeachersHubUserId()
-                    : "anonymous"
-            );
-
-
-        /* =====================================================
-           🌐 BACKEND
-        ===================================================== */
-
-        const backend =
-            String(
-                window.TEACHERS_HUB_MPESA_BACKEND ||
-                ""
-            )
-            .trim()
-            .replace(
-                /\/+$/,
-                ""
-            );
-
-
-        if(!backend){
-
-            throw new Error(
-                "M-PESA backend URL is not configured."
-            );
-
-        }
-
-
-        /* =====================================================
-           🧾 UNIQUE PAYMENT REFERENCE
-        ===================================================== */
-
-        const safeReferenceId =
-            safeSwapId
-                .replace(
-                    /[^a-zA-Z0-9_-]/g,
-                    ""
-                )
-                .substring(
-                    0,
-                    40
-                );
-
-
-        const accountReference =
-            `SWAP_${safeReferenceId}_${Date.now()}`;
-
-
-        /* =====================================================
-           💳 PAYMENT PAYLOAD
-        ===================================================== */
-
-        const stkPayload = {
-
-            phone:
-                paymentPhone,
-
-            amount:
-                amount,
-
-            accountReference:
-                accountReference,
-
-            itemId:
-                safeSwapId,
-
-            itemName:
-                "Teacher Swap Contact",
-
-            userId:
-                userId,
-
-            flow:
-                "swap",
-
-            paymentType:
-                "swap_contact"
-
+        const escapeHTML = value => {
+            const div=document.createElement("div");
+            div.textContent=value ?? "";
+            return div.innerHTML;
         };
 
+        const category = amount === 500
+            ? "🚧 Hardship Swap"
+            : amount === 400
+                ? "🔥 Hot County Swap"
+                : "📍 Normal Swap";
 
-        console.log(
-            "📲 TEACHER SWAP STK REQUEST:",
-            {
-                swapId:
-                    safeSwapId,
+        const savedPhone = localStorage.getItem("myPhone") || "";
 
-                amount:
-                    amount,
-
-                accountReference:
-                    accountReference,
-
-                flow:
-                    "swap",
-
-                paymentType:
-                    "swap_contact"
-            }
-        );
-
-
-        /* =====================================================
-           📲 SENDING STK
-        ===================================================== */
-
-        Swal.fire({
-
-            title:
-                "📲 Sending STK Push...",
-
+        const result = await Swal.fire({
+            title:"🔓 Unlock Teacher Contact",
+            width:520,
             html:`
+              <div style="text-align:left;line-height:1.6;">
+                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;border-radius:12px;padding:14px;margin-bottom:13px;">
+                  <div style="color:#1d4ed8;font-size:11px;font-weight:900;">TEACHER SWAP CONTACT</div>
+                  <strong style="display:block;color:#0f172a;font-size:18px;margin-top:4px;">${escapeHTML(teacher)}</strong>
+                  <div style="color:#64748b;font-size:12px;margin-top:4px;">${escapeHTML(current)} ➜ ${escapeHTML(destination)}</div>
+                  <div style="margin-top:8px;display:inline-block;background:#fff7ed;color:#9a3412;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:900;">${escapeHTML(category)}</div>
+                </div>
 
-                Sending payment request to
+                <div style="background:#ecfdf5;border:1px solid #bbf7d0;border-radius:13px;padding:17px;text-align:center;margin-bottom:13px;">
+                  <div style="color:#166534;font-size:11px;font-weight:900;text-transform:uppercase;">Contact Unlock Fee</div>
+                  <div style="color:#16a34a;font-size:36px;font-weight:900;margin:3px 0;">KES ${amount.toLocaleString()}</div>
+                  <div style="color:#64748b;font-size:11px;">Reference: ${escapeHTML(refCode)}</div>
+                </div>
 
-                <br>
-
-                <strong>
-                    ${escapeHTML(paymentPhone)}
-                </strong>
-
-                <br><br>
-
-                Amount:
-
-                <strong>
-                    KES ${amount.toLocaleString()}
-                </strong>
-
-                <br><br>
-
-                Please check your phone and complete
-                the M-PESA prompt.
-
-            `,
-
-            allowOutsideClick:
-                false,
-
-            allowEscapeKey:
-                false,
-
-            showConfirmButton:
-                false,
-
-            didOpen:()=>{
-
-                Swal.showLoading();
-
+                <label style="display:block;font-weight:900;font-size:12px;margin-bottom:7px;">M-PESA Phone Number</label>
+                <input id="swapUnlockMpesaPhone" type="tel" value="${escapeHTML(savedPhone)}" placeholder="07XXXXXXXX" autocomplete="tel"
+                  style="width:100%;box-sizing:border-box;padding:14px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;">
+                <div style="margin-top:8px;color:#64748b;font-size:11px;">
+                  An STK Push will be sent to this number. The teacher contact is revealed only after payment is confirmed.
+                </div>
+              </div>`,
+            showCancelButton:true,
+            confirmButtonText:`📲 Pay KES ${amount.toLocaleString()} & Reveal`,
+            cancelButtonText:"Cancel",
+            confirmButtonColor:"#16a34a",
+            cancelButtonColor:"#64748b",
+            preConfirm:()=>{
+                let phone=String(document.getElementById("swapUnlockMpesaPhone")?.value||"").replace(/[\s\-()]/g,"");
+                if(phone.startsWith("+254")) phone="0"+phone.substring(4);
+                else if(phone.startsWith("254")) phone="0"+phone.substring(3);
+                if(!/^(07\d{8}|01\d{8})$/.test(phone)){
+                    Swal.showValidationMessage("Enter a valid Kenyan M-PESA number.");
+                    return false;
+                }
+                return phone;
             }
-
         });
 
+        if(!result.isConfirmed) return;
 
-        /* =====================================================
-           🚀 SEND STK
-        ===================================================== */
+        const paymentPhone=result.value;
+        localStorage.setItem("myPhone",paymentPhone);
 
-        const response =
-            await fetch(
-                `${backend}/stkpush`,
-                {
+        const backend=String(window.TEACHERS_HUB_MPESA_BACKEND||"").trim().replace(/\/+$/g,"");
+        if(!backend) throw new Error("M-PESA backend URL is not configured.");
 
-                    method:
-                        "POST",
+        const userId=typeof window.getTeachersHubUserId === "function"
+            ? window.getTeachersHubUserId()
+            : "anonymous";
 
-                    headers:{
+        const accountReference=`SWAP_UNLOCK_${safeSwapId}_${Date.now()}`;
 
-                        "Content-Type":
-                            "application/json",
+        Swal.fire({
+            title:"📲 Sending STK Push...",
+            html:`Sending payment request to <strong>${escapeHTML(paymentPhone)}</strong><br><br>Please check your phone and complete the M-PESA prompt.`,
+            allowOutsideClick:false,
+            allowEscapeKey:false,
+            showConfirmButton:false,
+            didOpen:()=>Swal.showLoading()
+        });
 
-                        "Accept":
-                            "application/json"
+        const response=await fetch(`${backend}/stkpush`,{
+            method:"POST",
+            headers:{"Content-Type":"application/json","Accept":"application/json"},
+            body:JSON.stringify({
+                phone:paymentPhone,
+                amount,
+                accountReference,
+                itemId:safeSwapId,
+                itemName:"Teacher Swap Contact Unlock",
+                userId
+            })
+        });
 
-                    },
-
-                    body:
-                        JSON.stringify(
-                            stkPayload
-                        )
-
-                }
-            );
-
-
-        const raw =
-            await response.text();
-
-
+        const raw=await response.text();
         let data;
+        try{ data=JSON.parse(raw); }
+        catch(_){ throw new Error(`Payment server returned invalid data. HTTP ${response.status}.`); }
 
-
-        try{
-
-            data =
-                JSON.parse(
-                    raw
-                );
-
-        }
-        catch(e){
-
-            throw new Error(
-                `Payment server returned invalid data. HTTP ${response.status}.`
-            );
-
+        if(!response.ok){
+            throw new Error(data?.errorMessage||data?.message||data?.ResultDesc||`Payment server returned HTTP ${response.status}.`);
         }
 
-
-        console.log(
-            "📥 SWAP STK RESPONSE:",
-            data
+        const accepted=data?.success===true && (
+            String(data?.ResponseCode)==="0" ||
+            data?.ResponseCode===0 ||
+            !!data?.CheckoutRequestID
         );
-
-
-        /* =====================================================
-           ❌ BACKEND ERROR
-        ===================================================== */
-
-        if(
-            !response.ok
-        ){
-
-            throw new Error(
-
-                data?.errorMessage ||
-
-                data?.message ||
-
-                data?.ResultDesc ||
-
-                data?.ResponseDescription ||
-
-                `Payment server returned HTTP ${response.status}.`
-
-            );
-
-        }
-
-
-        /* =====================================================
-           ✅ STK ACCEPTED
-        ===================================================== */
-
-        const accepted =
-            data?.success === true &&
-            (
-                String(
-                    data?.ResponseCode
-                ) === "0" ||
-
-                data?.ResponseCode === 0 ||
-
-                !!data?.CheckoutRequestID
-            );
-
 
         if(!accepted){
-
-            throw new Error(
-
-                data?.errorMessage ||
-
-                data?.ResponseDescription ||
-
-                data?.ResultDesc ||
-
-                "M-PESA did not accept the payment request."
-
-            );
-
+            throw new Error(data?.errorMessage||data?.ResponseDescription||data?.ResultDesc||"M-PESA did not accept the payment request.");
         }
 
-
-        const checkoutRequestId =
-            data?.CheckoutRequestID ||
-            null;
-
-
-        /* =====================================================
-           ⏳ WAIT FOR PAYMENT
-        ===================================================== */
+        if(typeof window.waitForResourcePayment !== "function"){
+            throw new Error("The M-PESA confirmation engine is not available. Please reload and try again.");
+        }
 
         Swal.fire({
-
-            title:
-                "⏳ Confirming Payment...",
-
-            html:`
-
-                We are waiting for M-PESA confirmation.
-
-                <br><br>
-
-                <strong>
-                    Complete the payment on your phone.
-                </strong>
-
-                <br><br>
-
-                Your teacher contact will be requested
-                from the secure payment server only after
-                payment is confirmed.
-
-            `,
-
-            allowOutsideClick:
-                false,
-
-            allowEscapeKey:
-                false,
-
-            showConfirmButton:
-                false,
-
-            didOpen:()=>{
-
-                Swal.showLoading();
-
-            }
-
+            title:"⏳ Confirming Payment...",
+            html:"Please complete the M-PESA prompt. Your teacher contact will appear automatically after confirmation.",
+            allowOutsideClick:false,
+            allowEscapeKey:false,
+            showConfirmButton:false,
+            didOpen:()=>Swal.showLoading()
         });
 
-
-        /* =====================================================
-           🔎 SHARED PAYMENT MONITOR
-        ===================================================== */
-
-        if(
-            typeof window.waitForResourcePayment !==
-                "function"
-        ){
-
-            throw new Error(
-                "The M-PESA payment confirmation engine is not available. Please reload the page and try again."
-            );
-
-        }
-
-
-        const payment =
-            await window.waitForResourcePayment(
-
-                accountReference,
-
-                safeSwapId,
-
-                userId,
-
-                checkoutRequestId,
-
-                {
-
-                    pollInterval:
-                        3000,
-
-                    timeout:
-                        180000,
-
-                    maxNetworkErrors:
-                        10,
-
-                    autoUnlockResource:
-                        false,
-
-                    flow:
-                        "swap",
-
-                    swapId:
-                        safeSwapId,
-
-                    paymentType:
-                        "swap_contact"
-
-                }
-
-            );
-
-
-        /* =====================================================
-           💰 PAYMENT MUST BE PAID
-        ===================================================== */
-
-        if(
-            !payment ||
-            String(
-                payment.status ||
-                ""
-            ).toUpperCase() !==
-                "PAID"
-        ){
-
-            throw new Error(
-
-                payment?.message ||
-
-                payment?.ResultDesc ||
-
-                "M-PESA payment was not confirmed."
-
-            );
-
-        }
-
-
-        console.log(
-            "🎉 TEACHER SWAP PAYMENT CONFIRMED.",
+        const payment=await window.waitForResourcePayment(
+            accountReference,
+            safeSwapId,
+            userId,
+            data?.CheckoutRequestID||null,
             {
-                swapId:
-                    safeSwapId,
-
-                accountReference:
-                    accountReference
+                pollInterval:3000,
+                timeout:180000,
+                maxNetworkErrors:10,
+                autoUnlockResource:false,
+                flow:"swap"
             }
         );
 
-
-        /* =====================================================
-           🔐 REQUEST CONTACT FROM BACKEND
-           =====================================================
-
-           THIS IS THE IMPORTANT NEW PART.
-
-           We do NOT use:
-
-               swap.phone
-
-           We do NOT use:
-
-               get(swapContacts/...)
-
-           We do NOT trust localStorage.
-
-           The backend must independently check that this
-           exact payment reference is PAID and belongs to
-           this exact swap.
-        ===================================================== */
-
-        Swal.fire({
-
-            title:
-                "🔐 Authorizing Contact...",
-
-            html:`
-
-                <div style="
-                    line-height:1.7;
-                    text-align:center;
-                ">
-
-                    M-PESA payment confirmed.
-
-                    <br><br>
-
-                    <strong>
-                        Securely authorizing this
-                        teacher contact...
-                    </strong>
-
-                </div>
-
-            `,
-
-            allowOutsideClick:
-                false,
-
-            allowEscapeKey:
-                false,
-
-            showConfirmButton:
-                false,
-
-            didOpen:()=>{
-
-                Swal.showLoading();
-
-            }
-
-        });
-
-
-        const revealResponse =
-            await fetch(
-                `${backend}/reveal-paid-contact`,
-                {
-
-                    method:
-                        "POST",
-
-                    headers:{
-
-                        "Content-Type":
-                            "application/json",
-
-                        "Accept":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            accountReference:
-                                accountReference,
-
-                            resourceId:
-                                safeSwapId,
-
-                            flow:
-                                "swap",
-
-                            paymentType:
-                                "swap_contact",
-
-                            userId:
-                                userId
-
-                        })
-
-                }
-            );
-
-
-        const revealRaw =
-            await revealResponse.text();
-
-
-        let revealData;
-
-
-        try{
-
-            revealData =
-                JSON.parse(
-                    revealRaw
-                );
-
-        }
-        catch(e){
-
-            throw new Error(
-                `Contact authorization server returned invalid data. HTTP ${revealResponse.status}.`
-            );
-
+        if(!payment || payment.status!=="PAID"){
+            throw new Error(payment?.message||"M-PESA payment was not confirmed.");
         }
 
-
-        console.log(
-            "📥 SWAP CONTACT AUTHORIZATION RESPONSE:",
-            {
-                status:
-                    revealResponse.status,
-
-                success:
-                    revealData?.success,
-
-                authorized:
-                    revealData?.contactAuthorized,
-
-                flow:
-                    revealData?.flow
-            }
+        localStorage.setItem(
+            `paid_swap_unlock_${safeSwapId}_${userId}`,
+            JSON.stringify({status:"PAID",reference:accountReference,paidAt:Date.now()})
         );
 
-
-        /* =====================================================
-           ❌ CONTACT NOT AUTHORIZED
-        ===================================================== */
-
-        if(
-            !revealResponse.ok ||
-            revealData?.success !== true ||
-            revealData?.contactAuthorized !== true
-        ){
-
-            throw new Error(
-
-                revealData?.message ||
-
-                "Payment was confirmed, but the teacher contact was not authorized."
-
-            );
-
-        }
-
-
-        /* =====================================================
-           🔐 VERIFY BACKEND RETURNED THIS EXACT SWAP
-        ===================================================== */
-
-        if(
-            String(
-                revealData?.resourceId ||
-                ""
-            ) !== safeSwapId
-        ){
-
-            throw new Error(
-                "Security check failed: returned contact does not belong to this swap."
-            );
-
-        }
-
-
-        if(
-            String(
-                revealData?.flow ||
-                ""
-            ).toLowerCase() !==
-                "swap"
-        ){
-
-            throw new Error(
-                "Security check failed: invalid contact flow."
-            );
-
-        }
-
-
-        /* =====================================================
-           📞 CONTACT COMES ONLY FROM BACKEND
-        ===================================================== */
-
-        const contact =
-            String(
-
-                revealData?.contact?.phone ||
-
-                revealData?.contact?.contactPhone ||
-
-                revealData?.contact?.phoneNumber ||
-
-                ""
-
-            ).trim();
-
-
-        if(!contact){
-
-            throw new Error(
-                "Payment was confirmed, but the authorized teacher contact is unavailable."
-            );
-
-        }
-
-
-        /* =====================================================
-           💾 SAVE LOCAL PURCHASE
-        =====================================================
-
-           This is only for the UI remembering the purchase.
-
-           IMPORTANT:
-           This local record is NEVER treated as proof
-           by the backend.
-        ===================================================== */
-
-        try{
-
-            localStorage.setItem(
-
-                `paid_swap_unlock_${safeSwapId}_${userId}`,
-
-                JSON.stringify({
-
-                    status:
-                        "PAID",
-
-                    accountReference:
-                        accountReference,
-
-                    reference:
-                        accountReference,
-
-                    swapId:
-                        safeSwapId,
-
-                    paymentType:
-                        "swap_contact",
-
-                    flow:
-                        "swap",
-
-                    paidAt:
-                        revealData?.paidAt ||
-
-                        payment?.paidAt ||
-
-                        Date.now()
-
-                })
-
-            );
-
-        }
-        catch(storageError){
-
-            console.warn(
-                "⚠️ Could not save local purchase:",
-                storageError
-            );
-
-        }
-
-
-        /* =====================================================
-           🎉 CONTACT REVEALED
-        ===================================================== */
+        const contact=String(swap.phone||"");
 
         await Swal.fire({
-
-            icon:
-                "success",
-
-            title:
-                "🔓 Contact Revealed",
-
-            width:
-                500,
-
+            icon:"success",
+            title:"🔓 Contact Revealed",
+            width:500,
             html:`
-
-                <div style="
-                    text-align:left;
-                    line-height:1.75;
-                ">
-
-                    <div style="
-                        background:#ecfdf5;
-                        border:1px solid #86efac;
-                        border-radius:12px;
-                        padding:15px;
-                    ">
-
-                        <strong style="
-                            display:block;
-                            color:#166534;
-                            font-size:18px;
-                        ">
-                            ${escapeHTML(teacher)}
-                        </strong>
-
-
-                        <div>
-                            📍
-                            ${escapeHTML(current)}
-                            ➜
-                            ${escapeHTML(destination)}
-                        </div>
-
-
-                        <div style="
-                            margin-top:10px;
-                            font-size:20px;
-                            font-weight:900;
-                            color:#166534;
-                        ">
-
-                            📞
-                            ${escapeHTML(contact)}
-
-                        </div>
-
-
-                        <div style="
-                            margin-top:8px;
-                            color:#64748b;
-                            font-size:11px;
-                        ">
-
-                            M-PESA payment confirmed
-
-                            <br>
-
-                            Receipt:
-                            ${escapeHTML(
-                                payment?.MpesaReceiptNumber ||
-                                revealData?.MpesaReceiptNumber ||
-                                "Confirmed"
-                            )}
-
-                        </div>
-
-                    </div>
-
+              <div style="text-align:left;line-height:1.75;">
+                <div style="background:#ecfdf5;border:1px solid #86efac;border-radius:12px;padding:15px;">
+                  <strong style="display:block;color:#166534;font-size:18px;">${escapeHTML(teacher)}</strong>
+                  <div>📍 ${escapeHTML(current)} ➜ ${escapeHTML(destination)}</div>
+                  <div style="margin-top:8px;font-size:20px;font-weight:900;color:#166534;">📞 ${escapeHTML(contact||"Contact unavailable")}</div>
+                  <div style="margin-top:6px;color:#64748b;font-size:11px;">Payment confirmed • Ref: ${escapeHTML(refCode)}</div>
                 </div>
-
-            `,
-
-            confirmButtonText:
-                "Done",
-
-            confirmButtonColor:
-                "#16a34a"
-
+              </div>`,
+            confirmButtonText:"Done",
+            confirmButtonColor:"#16a34a"
         });
 
-
-    }
-    catch(error){
-
-        console.error(
-            "❌ SWAP CONTACT PAYMENT ERROR:",
-            error
-        );
-
-
-        let message =
-            error?.message ||
-
-            "The teacher contact could not be unlocked. Please try again.";
-
-
+    }catch(error){
+        console.error("❌ SWAP CONTACT PAYMENT ERROR:",error);
         Swal.fire({
-
-            icon:
-                "error",
-
-            title:
-                "Payment / Unlock Failed",
-
-            text:
-                message,
-
-            confirmButtonColor:
-                "#dc2626"
-
+            icon:"error",
+            title:"Payment / Unlock Failed",
+            text:error?.message||"The teacher contact could not be unlocked. Please try again.",
+            confirmButtonColor:"#dc2626"
         });
-
     }
-
 };
 
 /* =========================================================
@@ -16750,918 +15626,96 @@ window.findTriangularSwap = function(){
     result.innerHTML =
         html;
 
-};
-
-/* =========================================================
+};/* =========================================================
    🔺 UNLOCK TRIANGULAR CONTACTS
-   SECURE SERVER-SIDE 3-WAY CONTACT REVEAL
+   PREMIUM 3-WAY CONTACT UNLOCK
 ========================================================= */
 
 window.unlockTriangularContacts = async function(id1,id2,id3){
-
     try{
-
-        // -------------------------------------------------
-        // NORMALIZE IDS
-        // -------------------------------------------------
-
-        const ids = [
-            String(id1 || "").trim(),
-            String(id2 || "").trim(),
-            String(id3 || "").trim()
-        ];
-
-        if(
-            ids.some(id => !id)
-        ){
-
-            throw new Error(
-                "One or more triangular swap IDs are missing."
-            );
-
-        }
-
-        if(
-            new Set(ids).size !== 3
-        ){
-
-            throw new Error(
-                "A triangular match must contain three different teachers."
-            );
-
-        }
-
-
-        // -------------------------------------------------
-        // SORT IDS
-        // -------------------------------------------------
-        //
-        // The same three teachers must always produce the
-        // same resource ID regardless of their display order.
-        // -------------------------------------------------
-
-        const sortedIds =
-            [...ids]
-                .map(String)
-                .sort();
-
-
-        const triangleResourceId =
-            sortedIds.join("_");
-
-
-        // -------------------------------------------------
-        // GET DISPLAY INFORMATION ONLY
-        // -------------------------------------------------
-        //
-        // IMPORTANT:
-        // allSwaps is used ONLY for names/counties.
-        //
-        // NEVER read phone numbers from allSwaps here.
-        // -------------------------------------------------
-
-        const teachers =
-            ids.map(
-                id =>
-                    allSwaps.find(
-                        x =>
-                            String(x.swapId) === id
-                    )
-            );
-
-
-        if(
-            teachers.some(
-                t => !t
-            )
-        ){
-
-            throw new Error(
-                "One or more teachers in this triangular match are no longer available."
-            );
-
-        }
-
-
-        // -------------------------------------------------
-        // SAFE HTML
-        // -------------------------------------------------
-
-        const escapeHTML =
-            value => {
-
-                const div =
-                    document.createElement(
-                        "div"
-                    );
-
-                div.textContent =
-                    value ?? "";
-
-                return div.innerHTML;
-
-            };
-
-
-        const savedPhone =
-            localStorage.getItem(
-                "myPhone"
-            ) || "";
-
-
-        // -------------------------------------------------
-        // PAYMENT CONFIRMATION MODAL
-        // -------------------------------------------------
-
-        const result =
-            await Swal.fire({
-
-                title:
-                    "🔺 Unlock 3 Teacher Contacts",
-
-                width:
-                    560,
-
-                html: `
-
-                    <div style="text-align:left;line-height:1.6;">
-
-                        <div style="
-                            background:#eff6ff;
-                            border:1px solid #bfdbfe;
-                            border-left:5px solid #2563eb;
-                            border-radius:12px;
-                            padding:14px;
-                            margin-bottom:13px;
-                        ">
-
-                            <strong style="color:#1d4ed8;">
-                                3-WAY SWAP CONTACT UNLOCK
-                            </strong>
-
-                            <div style="
-                                color:#64748b;
-                                font-size:12px;
-                                margin-top:5px;
-                            ">
-                                One secure M-PESA payment reveals all three participating teacher contacts.
-                            </div>
-
-                        </div>
-
-
-                        <div style="
-                            display:grid;
-                            grid-template-columns:repeat(3,1fr);
-                            gap:8px;
-                            margin-bottom:13px;
-                        ">
-
-                            ${teachers.map(
-                                (t,i) => `
-
-                                    <div style="
-                                        background:#f8fafc;
-                                        border:1px solid #e2e8f0;
-                                        border-radius:10px;
-                                        padding:10px;
-                                    ">
-
-                                        <strong style="
-                                            font-size:10px;
-                                            color:${[
-                                                "#2563eb",
-                                                "#7c3aed",
-                                                "#d97706"
-                                            ][i]};
-                                        ">
-                                            TEACHER ${i+1}
-                                        </strong>
-
-                                        <div style="
-                                            font-size:11px;
-                                            font-weight:800;
-                                            margin-top:4px;
-                                        ">
-                                            👤 ${escapeHTML(
-                                                t.name ||
-                                                "Teacher"
-                                            )}
-                                        </div>
-
-                                        <div style="
-                                            font-size:10px;
-                                            color:#64748b;
-                                            margin-top:3px;
-                                        ">
-                                            ${escapeHTML(
-                                                t.currentCounty ||
-                                                "-"
-                                            )}
-                                            ➜
-                                            ${escapeHTML(
-                                                t.swapCounty ||
-                                                "-"
-                                            )}
-                                        </div>
-
-                                    </div>
-
-                                `
-                            ).join("")}
-
-                        </div>
-
-
-                        <div style="
-                            background:#ecfdf5;
-                            border:1px solid #bbf7d0;
-                            border-radius:13px;
-                            padding:17px;
-                            text-align:center;
-                            margin-bottom:13px;
-                        ">
-
-                            <div style="
-                                color:#166534;
-                                font-size:11px;
-                                font-weight:900;
-                                text-transform:uppercase;
-                            ">
-                                Triangle Contact Unlock Fee
-                            </div>
-
-                            <div style="
-                                color:#16a34a;
-                                font-size:36px;
-                                font-weight:900;
-                            ">
-                                KES 1,000
-                            </div>
-
-                            <div style="
-                                color:#64748b;
-                                font-size:11px;
-                            ">
-                                One payment • 3 contacts
-                            </div>
-
-                        </div>
-
-
-                        <label style="
-                            display:block;
-                            font-weight:900;
-                            font-size:12px;
-                            margin-bottom:7px;
-                        ">
-                            M-PESA Phone Number
-                        </label>
-
-
-                        <input
-                            id="triangleMpesaPhone"
-                            type="tel"
-                            value="${escapeHTML(savedPhone)}"
-                            placeholder="07XXXXXXXX"
-                            autocomplete="tel"
-                            style="
-                                width:100%;
-                                box-sizing:border-box;
-                                padding:14px;
-                                border:2px solid #e2e8f0;
-                                border-radius:10px;
-                                font-size:16px;
-                            "
-                        >
-
-
-                        <div style="
-                            margin-top:8px;
-                            color:#64748b;
-                            font-size:11px;
-                        ">
-                            An STK Push will be sent.
-                            Contacts are revealed only after confirmed payment.
-                        </div>
-
-                    </div>
-                `,
-
-                showCancelButton:
-                    true,
-
-                confirmButtonText:
-                    "📲 Pay KES 1,000 & Reveal All",
-
-                cancelButtonText:
-                    "Cancel",
-
-                confirmButtonColor:
-                    "#16a34a",
-
-                preConfirm: () => {
-
-                    let p =
-                        String(
-                            document.getElementById(
-                                "triangleMpesaPhone"
-                            )?.value || ""
-                        )
-                        .replace(
-                            /[\s\-()]/g,
-                            ""
-                        );
-
-
-                    if(
-                        p.startsWith("+254")
-                    ){
-
-                        p =
-                            "0" +
-                            p.substring(4);
-
-                    }
-                    else if(
-                        p.startsWith("254")
-                    ){
-
-                        p =
-                            "0" +
-                            p.substring(3);
-
-                    }
-
-
-                    if(
-                        !/^(07\d{8}|01\d{8})$/.test(p)
-                    ){
-
-                        Swal.showValidationMessage(
-                            "Enter a valid Kenyan M-PESA number."
-                        );
-
-                        return false;
-
-                    }
-
-
-                    return p;
-
-                }
-
-            });
-
-
-        if(
-            !result.isConfirmed
-        ){
-
-            return;
-
-        }
-
-
-        // -------------------------------------------------
-        // PAYMENT PHONE
-        // -------------------------------------------------
-
-        const paymentPhone =
-            result.value;
-
-
-        localStorage.setItem(
-            "myPhone",
-            paymentPhone
-        );
-
-
-        // -------------------------------------------------
-        // BACKEND
-        // -------------------------------------------------
-
-        const backend =
-            String(
-                window.TEACHERS_HUB_MPESA_BACKEND ||
-                ""
-            )
-            .trim()
-            .replace(
-                /\/+$/g,
-                ""
-            );
-
-
-        if(!backend){
-
-            throw new Error(
-                "M-PESA backend URL is not configured."
-            );
-
-        }
-
-
-        // -------------------------------------------------
-        // USER ID
-        // -------------------------------------------------
-
-        const userId =
-            typeof window.getTeachersHubUserId ===
-            "function"
-
-                ? window.getTeachersHubUserId()
-
-                : "anonymous";
-
-
-        // -------------------------------------------------
-        // PAYMENT REFERENCE
-        // -------------------------------------------------
-
-        const accountReference =
-            `TRIANGLE_UNLOCK_${sortedIds
-                .map(x => x.slice(-5))
-                .join("")}_${Date.now()}`;
-
-
-        // -------------------------------------------------
-        // STK PUSH
-        // -------------------------------------------------
-
-        await Swal.fire({
-
-            title:
-                "📲 Sending STK Push...",
-
-            html:
-                `Sending KES 1,000 payment request to <strong>${escapeHTML(paymentPhone)}</strong><br><br>Please check your phone.`,
-
-            allowOutsideClick:
-                false,
-
-            allowEscapeKey:
-                false,
-
-            showConfirmButton:
-                false,
-
-            didOpen:
-                () =>
-                    Swal.showLoading()
-
-        });
-
-
-        const response =
-            await fetch(
-                `${backend}/stkpush`,
-                {
-
-                    method:
-                        "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json",
-
-                        "Accept":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            phone:
-                                paymentPhone,
-
-                            amount:
-                                1000,
-
-                            accountReference,
-
-                            itemId:
-                                triangleResourceId,
-
-                            itemName:
-                                "Triangular Teacher Swap Contact Unlock",
-
-                            userId,
-
-                            flow:
-                                "swap",
-
-                            paymentType:
-                                "triangle_swap_contact"
-
-                        })
-
-                }
-            );
-
-
-        const raw =
-            await response.text();
-
-
-        let data;
-
-
-        try{
-
-            data =
-                JSON.parse(raw);
-
-        }
-        catch(_){
-
-            throw new Error(
-                `Payment server returned invalid data. HTTP ${response.status}.`
-            );
-
-        }
-
-
-        if(
-            !response.ok
-        ){
-
-            throw new Error(
-                data?.errorMessage ||
-                data?.message ||
-                data?.ResultDesc ||
-                `Payment server returned HTTP ${response.status}.`
-            );
-
-        }
-
-
-        const accepted =
-            data?.success === true &&
-            (
-                String(
-                    data?.ResponseCode
-                ) === "0" ||
-
-                data?.ResponseCode === 0 ||
-
-                !!data?.CheckoutRequestID
-            );
-
-
-        if(!accepted){
-
-            throw new Error(
-                data?.errorMessage ||
-                data?.ResponseDescription ||
-                data?.ResultDesc ||
-                "M-PESA did not accept the payment request."
-            );
-
-        }
-
-
-        if(
-            typeof window.waitForResourcePayment !==
-            "function"
-        ){
-
-            throw new Error(
-                "The M-PESA confirmation engine is not available. Please reload and try again."
-            );
-
-        }
-
-
-        // -------------------------------------------------
-        // WAIT FOR PAYMENT
-        // -------------------------------------------------
-
-        await Swal.fire({
-
-            title:
-                "⏳ Confirming Payment...",
-
-            html:
-                "Complete the M-PESA prompt. All three contacts will appear automatically after confirmation.",
-
-            allowOutsideClick:
-                false,
-
-            allowEscapeKey:
-                false,
-
-            showConfirmButton:
-                false,
-
-            didOpen:
-                () =>
-                    Swal.showLoading()
-
-        });
-
-
-        const payment =
-            await window.waitForResourcePayment(
-
-                accountReference,
-
-                triangleResourceId,
-
-                userId,
-
-                data?.CheckoutRequestID ||
-                null,
-
-                {
-
-                    pollInterval:
-                        3000,
-
-                    timeout:
-                        180000,
-
-                    maxNetworkErrors:
-                        10,
-
-                    autoUnlockResource:
-                        false,
-
-                    flow:
-                        "swap"
-
-                }
-
-            );
-
-
-        if(
-            !payment ||
-            payment.status !== "PAID"
-        ){
-
-            throw new Error(
-                payment?.message ||
-                "M-PESA payment was not confirmed."
-            );
-
-        }
-
-
-        // -------------------------------------------------
-        // ASK SERVER FOR THE ACTUAL CONTACTS
-        // -------------------------------------------------
-        //
-        // IMPORTANT:
-        // NO t.phone
-        // NO Firebase browser read
-        // NO contact data from allSwaps
-        //
-        // The server now decides whether the payment is
-        // authorized and returns the three contacts.
-        // -------------------------------------------------
-
-        const revealResponse =
-            await fetch(
-                `${backend}/triangle-contact-reveal`,
-                {
-
-                    method:
-                        "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json",
-
-                        "Accept":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            accountReference,
-
-                            resourceId:
-                                triangleResourceId
-
-                        })
-
-                }
-            );
-
-
-        const revealRaw =
-            await revealResponse.text();
-
-
-        let revealData;
-
-
-        try{
-
-            revealData =
-                JSON.parse(
-                    revealRaw
-                );
-
-        }
-        catch(_){
-
-            throw new Error(
-                `Contact server returned invalid data. HTTP ${revealResponse.status}.`
-            );
-
-        }
-
-
-        if(
-            !revealResponse.ok ||
-            revealData?.success !== true ||
-            revealData?.status !== "AUTHORIZED"
-        ){
-
-            throw new Error(
-                revealData?.message ||
-                "Payment was confirmed, but the contacts could not be authorized."
-            );
-
-        }
-
-
-        const contacts =
-            Array.isArray(
-                revealData.contacts
-            )
-                ? revealData.contacts
-                : [];
-
-
-        if(
-            contacts.length !== 3
-        ){
-
-            throw new Error(
-                "Payment was confirmed, but all three teacher contacts were not returned."
-            );
-
-        }
-
-
-        // -------------------------------------------------
-        // SAVE LOCAL PAID STATE
-        // -------------------------------------------------
-
-        localStorage.setItem(
-
-            `paid_triangle_${sortedIds.join("_")}_${userId}`,
-
-            JSON.stringify({
-
-                status:
-                    "PAID",
-
-                reference:
-                    accountReference,
-
-                paidAt:
-                    Date.now()
-
-            })
-
-        );
-
-
-        // -------------------------------------------------
-        // RENDER SERVER-AUTHORIZED CONTACTS
-        // -------------------------------------------------
-
-        const contactsHTML =
-            contacts
-                .map(
-                    (contact,i) => `
-
-                        <div style="
-                            padding:10px;
-                            border:1px solid #bbf7d0;
-                            background:#f0fdf4;
-                            border-radius:10px;
-                            margin-top:8px;
-                        ">
-
-                            <strong style="
-                                color:#166534;
-                            ">
-                                TEACHER ${i+1}
-                                —
-                                ${escapeHTML(
-                                    contact.contactName ||
-                                    "Teacher"
-                                )}
-                            </strong>
-
-                            <br>
-
-                            <span style="
-                                font-size:18px;
-                                font-weight:900;
-                                color:#166534;
-                            ">
-                                📞 ${escapeHTML(
-                                    contact.phone ||
-                                    "Contact unavailable"
-                                )}
-                            </span>
-
-                            ${
-                                contact.email
-                                    ? `<br>✉️ ${escapeHTML(contact.email)}`
-                                    : ""
-                            }
-
-                        </div>
-
-                    `
-                )
-                .join("");
-
-
-        await Swal.fire({
-
-            icon:
-                "success",
-
-            title:
-                "🔓 3 Contacts Revealed",
-
-            width:
-                560,
-
-            html: `
-
-                <div style="
-                    text-align:left;
-                    line-height:1.65;
-                ">
-
-                    <div style="
-                        background:#ecfdf5;
-                        border:1px solid #86efac;
-                        border-radius:12px;
-                        padding:12px;
-                        margin-bottom:10px;
-                        color:#166534;
-                        font-weight:800;
-                    ">
-                        Payment confirmed • KES 1,000
-                    </div>
-
-                    ${contactsHTML}
-
+        const ids=[String(id1||""),String(id2||""),String(id3||"")];
+        const teachers=ids.map(id=>allSwaps.find(x=>String(x.swapId)===id));
+        if(teachers.some(t=>!t)) throw new Error("One or more teachers in this triangular match are no longer available.");
+
+        const escapeHTML=value=>{const div=document.createElement("div");div.textContent=value??"";return div.innerHTML;};
+        const savedPhone=localStorage.getItem("myPhone")||"";
+
+        const result=await Swal.fire({
+            title:"🔺 Unlock 3 Teacher Contacts",
+            width:560,
+            html:`
+              <div style="text-align:left;line-height:1.6;">
+                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;border-radius:12px;padding:14px;margin-bottom:13px;">
+                  <strong style="color:#1d4ed8;">3-WAY SWAP CONTACT UNLOCK</strong>
+                  <div style="color:#64748b;font-size:12px;margin-top:5px;">One secure M-PESA payment reveals all three participating teacher contacts.</div>
                 </div>
-
-            `,
-
-            confirmButtonText:
-                "Done",
-
-            confirmButtonColor:
-                "#16a34a"
-
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px;">
+                  ${teachers.map((t,i)=>`<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px;"><strong style="font-size:10px;color:${["#2563eb","#7c3aed","#d97706"][i]};">TEACHER ${i+1}</strong><div style="font-size:11px;font-weight:800;margin-top:4px;">👤 ${escapeHTML(t.name||"Teacher")}</div><div style="font-size:10px;color:#64748b;margin-top:3px;">${escapeHTML(t.currentCounty||"-")} ➜ ${escapeHTML(t.swapCounty||"-")}</div></div>`).join("")}
+                </div>
+                <div style="background:#ecfdf5;border:1px solid #bbf7d0;border-radius:13px;padding:17px;text-align:center;margin-bottom:13px;">
+                  <div style="color:#166534;font-size:11px;font-weight:900;text-transform:uppercase;">Triangle Contact Unlock Fee</div>
+                  <div style="color:#16a34a;font-size:36px;font-weight:900;">KES 1,000</div>
+                  <div style="color:#64748b;font-size:11px;">One payment • 3 contacts</div>
+                </div>
+                <label style="display:block;font-weight:900;font-size:12px;margin-bottom:7px;">M-PESA Phone Number</label>
+                <input id="triangleMpesaPhone" type="tel" value="${escapeHTML(savedPhone)}" placeholder="07XXXXXXXX" autocomplete="tel" style="width:100%;box-sizing:border-box;padding:14px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;">
+                <div style="margin-top:8px;color:#64748b;font-size:11px;">An STK Push will be sent. Contacts are revealed only after confirmed payment.</div>
+              </div>`,
+            showCancelButton:true,
+            confirmButtonText:"📲 Pay KES 1,000 & Reveal All",
+            cancelButtonText:"Cancel",
+            confirmButtonColor:"#16a34a",
+            preConfirm:()=>{
+                let p=String(document.getElementById("triangleMpesaPhone")?.value||"").replace(/[\s\-()]/g,"");
+                if(p.startsWith("+254")) p="0"+p.substring(4);
+                else if(p.startsWith("254")) p="0"+p.substring(3);
+                if(!/^(07\d{8}|01\d{8})$/.test(p)){Swal.showValidationMessage("Enter a valid Kenyan M-PESA number.");return false;}
+                return p;
+            }
         });
+        if(!result.isConfirmed)return;
 
-    }
-    catch(error){
+        const paymentPhone=result.value;
+        localStorage.setItem("myPhone",paymentPhone);
+        const backend=String(window.TEACHERS_HUB_MPESA_BACKEND||"").trim().replace(/\/+$/g,"");
+        if(!backend)throw new Error("M-PESA backend URL is not configured.");
+        const userId=typeof window.getTeachersHubUserId==="function"?window.getTeachersHubUserId():"anonymous";
+        const accountReference=`TRIANGLE_UNLOCK_${ids.map(x=>x.slice(-5)).join("")}_${Date.now()}`;
 
-        console.error(
-            "❌ TRIANGLE CONTACT PAYMENT ERROR:",
-            error
+        Swal.fire({title:"📲 Sending STK Push...",html:`Sending KES 1,000 payment request to <strong>${escapeHTML(paymentPhone)}</strong><br><br>Please check your phone.`,allowOutsideClick:false,allowEscapeKey:false,showConfirmButton:false,didOpen:()=>Swal.showLoading()});
+
+        const response=await fetch(`${backend}/stkpush`,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({phone:paymentPhone,amount:1000,accountReference,itemId:ids.join("_"),itemName:"Triangular Teacher Swap Contact Unlock",userId})});
+        const raw=await response.text();
+        let data;try{data=JSON.parse(raw);}catch(_){throw new Error(`Payment server returned invalid data. HTTP ${response.status}.`);}
+        if(!response.ok)throw new Error(data?.errorMessage||data?.message||data?.ResultDesc||`Payment server returned HTTP ${response.status}.`);
+        const accepted=data?.success===true&&(String(data?.ResponseCode)==="0"||data?.ResponseCode===0||!!data?.CheckoutRequestID);
+        if(!accepted)throw new Error(data?.errorMessage||data?.ResponseDescription||data?.ResultDesc||"M-PESA did not accept the payment request.");
+        if(typeof window.waitForResourcePayment!=="function")throw new Error("The M-PESA confirmation engine is not available. Please reload and try again.");
+
+        Swal.fire({title:"⏳ Confirming Payment...",html:"Complete the M-PESA prompt. All three contacts will appear automatically after confirmation.",allowOutsideClick:false,allowEscapeKey:false,showConfirmButton:false,didOpen:()=>Swal.showLoading()});
+        const payment=await window.waitForResourcePayment(
+            accountReference,
+            ids.join("_"),
+            userId,
+            data?.CheckoutRequestID||null,
+            {
+                pollInterval:3000,
+                timeout:180000,
+                maxNetworkErrors:10,
+                autoUnlockResource:false,
+                flow:"swap"
+            }
         );
+        if(!payment||payment.status!=="PAID")throw new Error(payment?.message||"M-PESA payment was not confirmed.");
 
+        localStorage.setItem(`paid_triangle_${ids.sort().join("_")}_${userId}`,JSON.stringify({status:"PAID",reference:accountReference,paidAt:Date.now()}));
 
-        Swal.fire({
-
-            icon:
-                "error",
-
-            title:
-                "Payment / Unlock Failed",
-
-            text:
-                error?.message ||
-                "The triangular contacts could not be unlocked. Please try again.",
-
-            confirmButtonColor:
-                "#dc2626"
-
-        });
-
+        const contacts=teachers.map((t,i)=>`<div style="padding:10px;border:1px solid #bbf7d0;background:#f0fdf4;border-radius:10px;margin-top:8px;"><strong style="color:#166534;">TEACHER ${i+1} — ${escapeHTML(t.name||"Teacher")}</strong><br>📍 ${escapeHTML(t.currentCounty||"-")} ➜ ${escapeHTML(t.swapCounty||"-")}<br><span style="font-size:18px;font-weight:900;color:#166534;">📞 ${escapeHTML(t.phone||"Contact unavailable")}</span></div>`).join("");
+        await Swal.fire({icon:"success",title:"🔓 3 Contacts Revealed",width:560,html:`<div style="text-align:left;line-height:1.65;"><div style="background:#ecfdf5;border:1px solid #86efac;border-radius:12px;padding:12px;margin-bottom:10px;color:#166534;font-weight:800;">Payment confirmed • KES 1,000</div>${contacts}</div>`,confirmButtonText:"Done",confirmButtonColor:"#16a34a"});
+    }catch(error){
+        console.error("❌ TRIANGLE CONTACT PAYMENT ERROR:",error);
+        Swal.fire({icon:"error",title:"Payment / Unlock Failed",text:error?.message||"The triangular contacts could not be unlocked. Please try again.",confirmButtonColor:"#dc2626"});
     }
-
 };
 
 /* =========================================================
@@ -22990,774 +21044,17 @@ async function(
     };
 
 };
-/* =========================================================
-   🔓 REVEAL PAID TEACHER SWAP CONTACT
-   RASM 360 — SECURE BACKEND REVEAL
-   =========================================================
-
-   IMPORTANT SECURITY CHANGE:
-
-   ❌ DO NOT READ:
-      swap.phone
-      swap.contactPhone
-      swap.contact
-
-   ✅ Instead:
-
-      Payment = PAID
-             ↓
-      /reveal-paid-contact
-             ↓
-      Backend verifies payment
-             ↓
-      Backend verifies swapId
-             ↓
-      Backend returns authorized contact
-             ↓
-      Show contact
-
-   The browser NEVER reads the protected contact directly.
-========================================================= */
-
-window.revealPaidSwapContact = async function(
-    swapId,
-    accountReference
-){
-
-    try{
-
-        /* =====================================================
-           🔐 BASIC VALIDATION
-        ===================================================== */
-
-        const safeSwapId =
-            String(
-                swapId || ""
-            ).trim();
-
-
-        const safeReference =
-            String(
-                accountReference || ""
-            ).trim();
-
-
-        if(!safeSwapId){
-
-            throw new Error(
-                "Swap ID is missing."
-            );
-
-        }
-
-
-        if(!safeReference){
-
-            throw new Error(
-                "Payment reference is missing."
-            );
-
-        }
-
-
-        /* =====================================================
-           🔎 FIND PUBLIC SWAP INFORMATION ONLY
-           
-           This is SAFE because we are NOT reading the
-           protected phone/contact field from the swap.
-        ===================================================== */
-
-        const swap =
-            Array.isArray(window.allSwaps)
-                ? window.allSwaps.find(
-                    x =>
-                        String(
-                            x?.swapId ||
-                            x?.id ||
-                            ""
-                        ) === safeSwapId
-                  )
-                : null;
-
-
-        if(!swap){
-
-            throw new Error(
-                "This teacher swap is no longer available."
-            );
-
-        }
-
-
-        /* =====================================================
-           🛡️ HTML ESCAPE
-        ===================================================== */
-
-        const escapeHTML =
-            value => {
-
-                const div =
-                    document.createElement(
-                        "div"
-                    );
-
-                div.textContent =
-                    value ?? "";
-
-                return div.innerHTML;
-
-            };
-
-
-        /* =====================================================
-           👤 GET USER ID
-        ===================================================== */
-
-        let userId =
-            "anonymous";
-
-
-        try{
-
-            if(
-                window.firebase &&
-                typeof window.firebase.auth ===
-                    "function"
-            ){
-
-                userId =
-                    window.firebase.auth()
-                        .currentUser?.uid ||
-                    "anonymous";
-
-            }
-
-        }
-        catch(error){
-
-            console.warn(
-                "Firebase auth lookup warning:",
-                error
-            );
-
-        }
-
-
-        if(
-            userId === "anonymous" &&
-            typeof window.getTeachersHubUserId ===
-                "function"
-        ){
-
-            try{
-
-                userId =
-                    window.getTeachersHubUserId() ||
-                    "anonymous";
-
-            }
-            catch(error){
-
-                console.warn(
-                    "Teachers Hub user ID warning:",
-                    error
-                );
-
-            }
-
-        }
-
-
-        /* =====================================================
-           🌐 BACKEND URL
-        ===================================================== */
-
-        const backend =
-            String(
-                window.TEACHERS_HUB_MPESA_BACKEND ||
-                ""
-            )
-            .trim()
-            .replace(
-                /\/+$/,
-                ""
-            );
-
-
-        if(!backend){
-
-            throw new Error(
-                "M-PESA backend URL is not configured."
-            );
-
-        }
-
-
-        /* =====================================================
-           ⏳ SHOW SECURE REVEAL LOADING
-        ===================================================== */
-
-        Swal.fire({
-
-            title:
-                "🔐 Authorizing Contact...",
-
-            html:`
-
-                <div style="
-                    line-height:1.7;
-                    text-align:center;
-                ">
-
-                    Your M-PESA payment has been
-                    confirmed.
-
-                    <br><br>
-
-                    <span style="
-                        color:#64748b;
-                        font-size:12px;
-                    ">
-
-                        Securely verifying your
-                        payment before revealing
-                        this teacher's contact...
-
-                    </span>
-
-                </div>
-
-            `,
-
-            allowOutsideClick:
-                false,
-
-            allowEscapeKey:
-                false,
-
-            showConfirmButton:
-                false,
-
-            didOpen:()=>{
-
-                Swal.showLoading();
-
-            }
-
-        });
-
-
-        /* =====================================================
-           🔐 SECURE BACKEND CONTACT REVEAL
-        ===================================================== */
-
-        console.log(
-            "🔐 REQUESTING SECURE SWAP CONTACT:",
-            {
-                swapId:
-                    safeSwapId,
-
-                accountReference:
-                    safeReference,
-
-                userId:
-                    userId,
-
-                flow:
-                    "swap",
-
-                paymentType:
-                    "swap_contact"
-            }
-        );
-
-
-        const response =
-            await fetch(
-                `${backend}/reveal-paid-contact`,
-                {
-
-                    method:
-                        "POST",
-
-                    headers:{
-
-                        "Content-Type":
-                            "application/json",
-
-                        "Accept":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            accountReference:
-                                safeReference,
-
-                            resourceId:
-                                safeSwapId,
-
-                            swapId:
-                                safeSwapId,
-
-                            userId:
-                                userId,
-
-                            flow:
-                                "swap",
-
-                            paymentType:
-                                "swap_contact"
-
-                        })
-
-                }
-            );
-
-
-        /* =====================================================
-           📥 READ BACKEND RESPONSE
-        ===================================================== */
-
-        const raw =
-            await response.text();
-
-
-        let data;
-
-
-        try{
-
-            data =
-                JSON.parse(
-                    raw
-                );
-
-        }
-        catch(error){
-
-            console.error(
-                "❌ INVALID REVEAL RESPONSE:",
-                raw
-            );
-
-            throw new Error(
-                `Contact server returned invalid data. HTTP ${response.status}.`
-            );
-
-        }
-
-
-        console.log(
-            "📥 SECURE CONTACT RESPONSE:",
-            data
-        );
-
-
-        /* =====================================================
-           ❌ BACKEND REJECTED REQUEST
-        ===================================================== */
-
-        if(
-            !response.ok
-        ){
-
-            throw new Error(
-
-                data?.errorMessage ||
-
-                data?.message ||
-
-                data?.error ||
-
-                `Contact server returned HTTP ${response.status}.`
-
-            );
-
-        }
-
-
-        /* =====================================================
-           🔐 PAYMENT MUST BE AUTHORIZED
-        ===================================================== */
-
-        if(
-            data?.contactAuthorized !== true
-        ){
-
-            throw new Error(
-
-                data?.message ||
-
-                "Payment was confirmed, but the teacher contact was not authorized."
-
-            );
-
-        }
-
-
-        /* =====================================================
-           📞 GET CONTACT ONLY FROM BACKEND
-           
-           NEVER use swap.phone here.
-        ===================================================== */
-
-        const contact =
-            String(
-
-                data?.contact?.phone ||
-
-                data?.contact?.contactPhone ||
-
-                data?.contact?.phoneNumber ||
-
-                data?.phone ||
-
-                data?.contactPhone ||
-
-                ""
-
-            ).trim();
-
-
-        if(!contact){
-
-            throw new Error(
-                "Payment was confirmed, but the teacher contact was not returned by the secure server."
-            );
-
-        }
-
-
-        /* =====================================================
-           👨‍🏫 PUBLIC TEACHER NAME
-        ===================================================== */
-
-        const teacherName =
-            String(
-
-                swap?.teacherName ||
-
-                swap?.name ||
-
-                data?.contact?.teacherName ||
-
-                data?.teacherName ||
-
-                "Teacher"
-
-            );
-
-
-        /* =====================================================
-           📍 PUBLIC SWAP LOCATION
-        ===================================================== */
-
-        const currentCounty =
-            String(
-
-                swap?.currentCounty ||
-
-                swap?.county ||
-
-                data?.contact?.currentCounty ||
-
-                data?.currentCounty ||
-
-                "-"
-
-            );
-
-
-        const destinationCounty =
-            String(
-
-                swap?.swapCounty ||
-
-                swap?.destinationCounty ||
-
-                data?.contact?.swapCounty ||
-
-                data?.swapCounty ||
-
-                "-"
-
-            );
-
-
-        /* =====================================================
-           💾 SAVE AUTHORIZED PURCHASE LOCALLY
-           
-           This is only a convenience/cache record.
-           It is NOT the security mechanism.
-        ===================================================== */
-
-        try{
-
-            localStorage.setItem(
-
-                `paid_swap_unlock_${safeSwapId}_${userId}`,
-
-                JSON.stringify({
-
-                    status:
-                        "PAID",
-
-                    accountReference:
-                        safeReference,
-
-                    swapId:
-                        safeSwapId,
-
-                    paymentType:
-                        "swap_contact",
-
-                    flow:
-                        "swap",
-
-                    contactAuthorized:
-                        true,
-
-                    revealedAt:
-                        Date.now()
-
-                })
-
-            );
-
-        }
-        catch(storageError){
-
-            console.warn(
-                "⚠️ Could not save swap unlock locally:",
-                storageError
-            );
-
-        }
-
-
-        /* =====================================================
-           🎉 CONTACT REVEALED
-        ===================================================== */
-
-        await Swal.fire({
-
-            icon:
-                "success",
-
-            title:
-                "🔓 Contact Revealed",
-
-            width:
-                520,
-
-            html:`
-
-                <div style="
-                    text-align:left;
-                    line-height:1.75;
-                ">
-
-                    <div style="
-                        background:#ecfdf5;
-                        border:1px solid #86efac;
-                        border-radius:12px;
-                        padding:15px;
-                    ">
-
-                        <div style="
-                            color:#166534;
-                            font-size:11px;
-                            font-weight:900;
-                            margin-bottom:5px;
-                        ">
-
-                            TEACHER SWAP CONTACT
-
-                        </div>
-
-
-                        <strong style="
-                            display:block;
-                            color:#166534;
-                            font-size:18px;
-                        ">
-
-                            ${escapeHTML(
-                                teacherName
-                            )}
-
-                        </strong>
-
-
-                        <div style="
-                            margin-top:5px;
-                            color:#475569;
-                        ">
-
-                            📍
-
-                            ${escapeHTML(
-                                currentCounty
-                            )}
-
-                            ➜
-
-                            ${escapeHTML(
-                                destinationCounty
-                            )}
-
-                        </div>
-
-
-                        <div style="
-                            margin-top:12px;
-                            font-size:21px;
-                            font-weight:900;
-                            color:#166534;
-                        ">
-
-                            📞 ${escapeHTML(contact)}
-
-                        </div>
-
-
-                        <div style="
-                            margin-top:8px;
-                            color:#64748b;
-                            font-size:11px;
-                        ">
-
-                            ✓ M-PESA payment confirmed
-
-                            <br>
-
-                            ✓ Contact authorization confirmed
-
-                            <br>
-
-                            Payment Ref:
-                            ${escapeHTML(
-                                safeReference
-                            )}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            `,
-
-            confirmButtonText:
-                "Done",
-
-            confirmButtonColor:
-                "#16a34a"
-
-        });
-
-
-        /* =====================================================
-           🔄 REFRESH SWAPS
-        ===================================================== */
-
-        if(
-            typeof window.renderTeacherSwaps ===
-                "function"
-        ){
-
-            try{
-
-                window.renderTeacherSwaps();
-
-            }
-            catch(error){
-
-                console.warn(
-                    "Swap render refresh warning:",
-                    error
-                );
-
-            }
-
-        }
-        else if(
-            typeof window.renderSwaps ===
-                "function"
-        ){
-
-            try{
-
-                window.renderSwaps();
-
-            }
-            catch(error){
-
-                console.warn(
-                    "Swap render refresh warning:",
-                    error
-                );
-
-            }
-
-        }
-
-
-        return {
-
-            success:
-                true,
-
-            status:
-                "PAID",
-
-            contactAuthorized:
-                true,
-
-            contact:
-                {
-                    phone:
-                        contact
-                },
-
-            swapId:
-                safeSwapId,
-
-            accountReference:
-                safeReference
-
-        };
-
-    }
-    catch(error){
-
-        console.error(
-            "❌ SECURE SWAP CONTACT REVEAL ERROR:",
-            error
-        );
-
-
-        throw error;
-
-    }
-
-};
 
 
 /* =========================================================
    🔄 BACKWARD-COMPATIBILITY PAYMENT FUNCTION
    =========================================================
 
-   KEEP THIS FUNCTION.
+   Your other pages may already call:
 
-   Existing pages that call:
+   waitForMpesaPayment(reference)
 
-       waitForMpesaPayment(reference)
-
-   will continue working.
+   We keep that function so existing code does NOT break.
 
 ========================================================= */
 
@@ -23765,7 +21062,7 @@ window.waitForMpesaPayment =
 async function(
     accountReference,
     options = {}
-){
+) {
 
     console.log(
         "🔄 waitForMpesaPayment() compatibility wrapper"
@@ -23778,10 +21075,7 @@ async function(
             MPESA_BACKEND_URL
         )
         .trim()
-        .replace(
-            /\/+$/,
-            ""
-        );
+        .replace(/\/+$/, "");
 
 
     const pollInterval =
@@ -23805,9 +21099,7 @@ async function(
         );
 
 
-    if(
-        !accountReference
-    ){
+    if (!accountReference) {
 
         return {
 
@@ -23837,21 +21129,19 @@ async function(
         0;
 
 
-    while(
+    while (
         Date.now() - startedAt <
         timeout
-    ){
+    ) {
 
         attempt++;
 
 
-        try{
+        try {
 
             const encodedReference =
                 encodeURIComponent(
-                    String(
-                        accountReference
-                    ).trim()
+                    String(accountReference).trim()
                 );
 
 
@@ -23877,7 +21167,7 @@ async function(
                         mode:
                             "cors",
 
-                        headers:{
+                        headers: {
 
                             "Accept":
                                 "application/json"
@@ -23904,15 +21194,13 @@ async function(
             let data;
 
 
-            try{
+            try {
 
                 data =
-                    JSON.parse(
-                        raw
-                    );
+                    JSON.parse(raw);
 
             }
-            catch{
+            catch {
 
                 data = {
 
@@ -23936,17 +21224,15 @@ async function(
             );
 
 
-            if(
-                !response.ok
-            ){
+            if (!response.ok) {
 
                 networkErrors++;
 
 
-                if(
+                if (
                     networkErrors >=
                     maxNetworkErrors
-                ){
+                ) {
 
                     return {
 
@@ -23987,11 +21273,11 @@ async function(
                 );
 
 
-            if(
+            if (
                 isTeachersHubPaymentPaid(
                     data
                 )
-            ){
+            ) {
 
                 return {
 
@@ -24012,7 +21298,7 @@ async function(
             }
 
 
-            if(
+            if (
 
                 status === "FAILED" ||
 
@@ -24020,7 +21306,7 @@ async function(
 
                 status === "CANCELED"
 
-            ){
+            ) {
 
                 return {
 
@@ -24046,7 +21332,7 @@ async function(
             );
 
         }
-        catch(error){
+        catch(error) {
 
             networkErrors++;
 
@@ -24058,10 +21344,10 @@ async function(
             );
 
 
-            if(
+            if (
                 networkErrors >=
                 maxNetworkErrors
-            ){
+            ) {
 
                 return {
 
@@ -24108,6 +21394,7 @@ async function(
     };
 
 };
+
 
 /* =========================================================
    💳 BUY LEARNING RESOURCE
@@ -25792,179 +23079,151 @@ async function revealPaidJobContact(jobId, accountReference){
 
   try{
 
+    /* =====================================================
+       💼 JOB CONTACT REVEAL
+       ===================================================== */
+
     if(!jobId){
-      throw new Error("Job ID is missing.");
-    }
-
-    if(!accountReference){
-      throw new Error("Payment reference is missing.");
-    }
-
-    /* =====================================================
-       🌐 M-PESA BACKEND
-       ===================================================== */
-
-    const backend =
-      String(
-        window.TEACHERS_HUB_MPESA_BACKEND || ""
-      )
-      .trim()
-      .replace(/\/+$/, "");
-
-    if(!backend){
-      throw new Error(
-        "M-PESA backend URL is not configured."
-      );
-    }
-
-
-    console.log(
-      "🔐 Requesting SERVER-SIDE job contact reveal:",
-      {
-        jobId,
-        accountReference,
-        flow: "job",
-        paymentType: "job_contact"
-      }
-    );
-
-
-    /* =====================================================
-       🔐 SERVER-SIDE CONTACT REVEAL
-       
-       IMPORTANT:
-       DO NOT READ jobContacts FROM FIREBASE HERE.
-
-       The browser is NOT Firebase-authenticated.
-
-       The SERVER will:
-       1. Check payment
-       2. Check PAID status
-       3. Check exact jobId
-       4. Check flow = job
-       5. Check paymentType = job_contact
-       6. Read jobContacts/{jobId} using Firebase Admin
-       ===================================================== */
-
-    const response =
-      await teachersHubRequest(
-
-        `${backend}/reveal-paid-contact`,
-
-        {
-
-          method:
-            "POST",
-
-          headers:{
-
-            "Content-Type":
-              "application/json",
-
-            "Accept":
-              "application/json"
-
-          },
-
-          body:
-            JSON.stringify({
-
-              accountReference:
-                accountReference,
-
-              resourceId:
-                jobId,
-
-              flow:
-                "job"
-
-            })
-
-        },
-
-        30000
-
-      );
-
-
-    /* =====================================================
-       📥 READ SERVER RESPONSE
-       ===================================================== */
-
-    const raw =
-      await response.text();
-
-    let data;
-
-    try{
-
-      data =
-        JSON.parse(raw);
-
-    }catch(e){
 
       throw new Error(
-        `Contact server returned invalid data. HTTP ${response.status}.`
+        "Job ID is missing."
       );
 
     }
 
 
-    console.log(
-      "📥 SERVER JOB CONTACT RESPONSE:",
-      data
-    );
-
-
     /* =====================================================
-       ❌ SERVER DENIED ACCESS
+       🔥 FIREBASE DATABASE READY CHECK
        ===================================================== */
 
     if(
-      !response.ok ||
-      data?.success !== true ||
-      data?.contactAuthorized !== true
+      !window.__firebaseDB ||
+      typeof get !== "function" ||
+      typeof ref !== "function"
     ){
 
       throw new Error(
+        "Firebase is not ready. Please reload the page and try again."
+      );
 
-        data?.message ||
+    }
 
-        data?.errorMessage ||
 
-        data?.ResultDesc ||
+    console.log(
+      "🔓 Revealing paid job contact:",
+      {
+        jobId,
+        accountReference
+      }
+    );
 
-        "The employer contact could not be authorized."
 
+    /* =====================================================
+       🔎 READ ONLY THIS JOB'S CONTACT
+       
+       IMPORTANT:
+       Website visitors do NOT sign in.
+       Therefore DO NOT require Firebase Auth here.
+       ===================================================== */
+
+    const contactRef =
+      ref(
+        window.__firebaseDB,
+        `jobContacts/${jobId}`
+      );
+
+
+    let contactSnap;
+
+
+    try{
+
+      contactSnap =
+        await get(
+          contactRef
+        );
+
+    }catch(firebaseError){
+
+      console.error(
+        "❌ JOB CONTACT FIREBASE READ ERROR:",
+        firebaseError
+      );
+
+
+      const firebaseCode =
+        String(
+          firebaseError?.code ||
+          ""
+        ).toLowerCase();
+
+
+      const firebaseMessage =
+        String(
+          firebaseError?.message ||
+          ""
+        ).toLowerCase();
+
+
+      if(
+        firebaseCode.includes("permission") ||
+        firebaseMessage.includes("permission denied")
+      ){
+
+        throw new Error(
+          "Firebase is blocking access to job contacts. Your current jobContacts Firebase rule requires a signed-in user, but website visitors do not sign in."
+        );
+
+      }
+
+
+      throw firebaseError;
+
+    }
+
+
+    /* =====================================================
+       ❌ CONTACT RECORD DOES NOT EXIST
+       ===================================================== */
+
+    if(!contactSnap.exists()){
+
+      console.error(
+        "❌ JOB CONTACT NOT FOUND:",
+        jobId
+      );
+
+
+      throw new Error(
+        "Payment was confirmed, but the employer contact record is unavailable. Please contact the administrator."
       );
 
     }
 
 
     /* =====================================================
-       📋 CONTACT RETURNED BY SERVER
+       📋 CONTACT DATA
        ===================================================== */
 
     const contact =
-      data.contact || {};
+      contactSnap.val() || {};
 
 
     console.log(
-      "✅ AUTHORIZED JOB CONTACT RECEIVED:",
+      "✅ JOB CONTACT LOADED:",
       {
         jobId,
-        hasName:
-          !!contact.contactName,
-        hasPhone:
-          !!contact.phone,
-        hasEmail:
-          !!contact.email
+        hasName:!!contact.contactName,
+        hasPhone:!!contact.phone,
+        hasEmail:!!contact.email
       }
     );
 
 
     /* =====================================================
-       💾 SAVE LOCAL PURCHASE
+       👤 LOCAL USER IDENTIFIER
+       
+       No Firebase authentication required.
        ===================================================== */
 
     let localUserId = "";
@@ -25977,28 +23236,37 @@ async function revealPaidJobContact(jobId, accountReference){
       ){
 
         localUserId =
-          String(
-            getTeachersHubUserId() || ""
-          ).trim();
+          getTeachersHubUserId() || "";
 
       }
 
-    }catch(e){}
+    }catch(e){
 
-
-    if(!localUserId){
-
-      try{
-
-        localUserId =
-          localStorage.getItem(
-            "teachersHubGuestId"
-          ) || "";
-
-      }catch(e){}
+      console.warn(
+        "⚠️ Could not obtain local Teachers Hub user ID:",
+        e
+      );
 
     }
 
+
+    /*
+     * Fallback for completely anonymous visitors.
+     */
+
+    if(!localUserId){
+
+      localUserId =
+        localStorage.getItem(
+          "teachersHubGuestId"
+        ) || "";
+
+    }
+
+
+    /*
+     * Create a stable anonymous browser ID if necessary.
+     */
 
     if(!localUserId){
 
@@ -26009,6 +23277,7 @@ async function revealPaidJobContact(jobId, accountReference){
         Math.random()
           .toString(36)
           .substring(2,10);
+
 
       try{
 
@@ -26021,6 +23290,10 @@ async function revealPaidJobContact(jobId, accountReference){
 
     }
 
+
+    /* =====================================================
+       💾 SAVE LOCAL PURCHASE
+       ===================================================== */
 
     try{
 
@@ -26037,7 +23310,7 @@ async function revealPaidJobContact(jobId, accountReference){
             "PAID",
 
           accountReference:
-            accountReference,
+            accountReference || "",
 
           jobId:
             jobId,
@@ -26097,6 +23370,7 @@ async function revealPaidJobContact(jobId, accountReference){
               EMPLOYER CONTACT
             </div>
 
+
             <strong style="
               display:block;
               color:#166534;
@@ -26112,6 +23386,7 @@ async function revealPaidJobContact(jobId, accountReference){
               }
 
             </strong>
+
 
             ${
               contact.phone
@@ -26136,6 +23411,7 @@ async function revealPaidJobContact(jobId, accountReference){
               : ""
             }
 
+
             ${
               contact.email
               ? `
@@ -26158,6 +23434,7 @@ async function revealPaidJobContact(jobId, accountReference){
               `
               : ""
             }
+
 
             ${
               contact.instructions
@@ -26186,7 +23463,9 @@ async function revealPaidJobContact(jobId, accountReference){
               : ""
             }
 
+
           </div>
+
 
           <div style="
             margin-top:12px;
@@ -26226,6 +23505,10 @@ async function revealPaidJobContact(jobId, accountReference){
     }
 
 
+    /* =====================================================
+       ✅ RETURN CONTACT
+       ===================================================== */
+
     return {
 
       success:
@@ -26249,16 +23532,16 @@ async function revealPaidJobContact(jobId, accountReference){
   }catch(error){
 
     console.error(
-      "❌ Secure job contact reveal error:",
+      "❌ Reveal job contact error:",
       error
     );
+
 
     throw error;
 
   }
 
 }
-
 window.unlockJobContact = async function(jobId){
 
   try{
@@ -27171,18 +24454,27 @@ window.unlockJobContact = async function(jobId){
     /* =====================================================
        💰 PAYMENT MUST BE PAID
        ===================================================== */
-if(
-    !payment ||
-    String(payment.status || "").toUpperCase() !== "PAID"
-){
 
-    throw new Error(
+    if(
+      !payment ||
+      String(
+        payment.status ||
+        ""
+      ).toUpperCase() !==
+      "PAID"
+    ){
+
+      throw new Error(
+
         payment?.message ||
-        payment?.ResultDesc ||
-        "M-PESA payment was not confirmed."
-    );
 
-}
+        payment?.ResultDesc ||
+
+        "Payment was not confirmed."
+
+      );
+
+    }
 
 
     console.log(
