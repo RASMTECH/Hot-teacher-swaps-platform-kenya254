@@ -20348,67 +20348,270 @@ async function(resourceId) {
 
 
 /* =========================================================
-   📥 RESOURCE DOWNLOAD URL
+   📥 RESOURCE DOWNLOAD URL — ROBUST VERSION
 ========================================================= */
 
 function getTeachersHubResourceUrl(resource) {
 
-    return (
+    if (!resource || typeof resource !== "object") {
+        console.warn("⚠️ Resource object is missing.");
+        return null;
+    }
 
-        resource?.downloadUrl ||
+    console.log("📚 RESOURCE DATA:", resource);
 
-        resource?.fileUrl ||
+    /* =====================================================
+       DIRECT URL FIELDS
+    ===================================================== */
 
-        resource?.resourceUrl ||
+    const possibleUrls = [
 
-        resource?.url ||
+        resource.downloadUrl,
+        resource.fileUrl,
+        resource.resourceUrl,
+        resource.url,
+        resource.fileURL,
+        resource.downloadURL,
+        resource.storageUrl,
+        resource.storageURL,
+        resource.fileLink,
+        resource.downloadLink,
 
-        resource?.fileURL ||
+        /* Common Firebase Storage names */
+        resource.firebaseUrl,
+        resource.firebaseURL,
+        resource.storageDownloadUrl,
+        resource.storageDownloadURL,
 
-        resource?.downloadURL ||
+        /* Common upload fields */
+        resource.pdfUrl,
+        resource.pdfURL,
+        resource.documentUrl,
+        resource.documentURL,
+        resource.documentLink,
 
-        resource?.storageUrl ||
+        /* Possible generic file fields */
+        resource.file,
+        resource.download,
+        resource.link
 
-        resource?.storageURL ||
+    ];
 
-        resource?.fileLink ||
 
-        resource?.downloadLink ||
+    /* =====================================================
+       FIND FIRST VALID STRING URL
+    ===================================================== */
 
-        null
+    for (const value of possibleUrls) {
 
+        if (
+            typeof value === "string" &&
+            value.trim()
+        ) {
+
+            const url =
+                value.trim();
+
+            if (
+                url.startsWith("http://") ||
+                url.startsWith("https://") ||
+                url.startsWith("blob:")
+            ) {
+
+                console.log(
+                    "✅ RESOURCE DOWNLOAD URL FOUND:",
+                    url
+                );
+
+                return url;
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       HANDLE NESTED FILE OBJECT
+    ===================================================== */
+
+    const fileObject =
+        resource.file;
+
+    if (
+        fileObject &&
+        typeof fileObject === "object"
+    ) {
+
+        const nestedUrl =
+
+            fileObject.downloadUrl ||
+
+            fileObject.downloadURL ||
+
+            fileObject.fileUrl ||
+
+            fileObject.fileURL ||
+
+            fileObject.url ||
+
+            fileObject.fullPath ||
+
+            null;
+
+
+        if (
+            typeof nestedUrl === "string" &&
+            nestedUrl.trim()
+        ) {
+
+            console.log(
+                "✅ NESTED RESOURCE URL FOUND:",
+                nestedUrl
+            );
+
+            return nestedUrl.trim();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       FIREBASE STORAGE PATH
+       If the database contains a storage path,
+       try resolving it through Firebase Storage.
+    ===================================================== */
+
+    const storagePath =
+
+        resource.storagePath ||
+
+        resource.filePath ||
+
+        resource.firebaseStoragePath ||
+
+        resource.fullPath ||
+
+
+        null;
+
+
+    if (
+        storagePath &&
+        typeof storagePath === "string"
+    ) {
+
+        console.log(
+            "📦 Firebase Storage path found:",
+            storagePath
+        );
+
+        /*
+         * If your project exposes Firebase Storage,
+         * this can be resolved elsewhere.
+         */
+
+        try {
+
+            if (
+                typeof window.getDownloadURL ===
+                "function"
+            ) {
+
+                return window.getDownloadURL(
+                    storagePath
+                );
+
+            }
+
+        }
+        catch(error) {
+
+            console.warn(
+                "⚠️ Could not resolve Firebase Storage path:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       NOTHING FOUND
+    ===================================================== */
+
+    console.error(
+        "❌ NO RESOURCE DOWNLOAD URL FOUND.",
+        resource
     );
 
+    return null;
+
 }
-
-
 /* =========================================================
    🔓 DOWNLOAD / OPEN PAID RESOURCE
 ========================================================= */
 
-window.downloadPaidResource =
-async function(
+/* =========================================================
+   🔓 DOWNLOAD / OPEN PAID RESOURCE
+   ROBUST FIREBASE STORAGE URL HANDLER
+========================================================= */
+
+window.downloadPaidResource = async function (
     accountReference,
     resourceId,
     flow = "resource"
 ) {
 
-    /*
-     * Hard safety boundary:
-     * Jobs and Swaps must never enter the resource opener.
-     */
-    if(String(flow).toLowerCase() !== "resource"){
-        console.warn("⛔ Resource opener blocked for non-resource flow:", flow);
+    /* =====================================================
+       🛡️ RESOURCE ONLY
+    ===================================================== */
+
+    if (
+        String(flow).toLowerCase() !== "resource"
+    ) {
+
+        console.warn(
+            "⛔ Resource opener blocked for non-resource flow:",
+            flow
+        );
+
         return false;
     }
 
+
     console.log("");
-    console.log("==============================================");
-    console.log("🔓 PAID RESOURCE ACCESS");
-    console.log("==============================================");
+    console.log(
+        "=============================================="
+    );
+
+    console.log(
+        "🔓 PAID RESOURCE ACCESS"
+    );
+
+    console.log(
+        "Resource ID:",
+        resourceId
+    );
+
+    console.log(
+        "Account Reference:",
+        accountReference
+    );
+
+    console.log(
+        "=============================================="
+    );
 
 
     try {
+
+        /* =================================================
+           LOAD RESOURCE
+        ================================================= */
 
         const resource =
             await getTeachersHubResource(
@@ -20416,17 +20619,198 @@ async function(
             );
 
 
+        if (!resource) {
+
+            throw new Error(
+                "The learning resource could not be found."
+            );
+
+        }
+
+
+        console.log(
+            "📚 RESOURCE RECORD:",
+            resource
+        );
+
+
+        /* =================================================
+           TITLE
+        ================================================= */
+
         const title =
             resource?.title ||
             resource?.name ||
+            resource?.resourceName ||
             "Learning Resource";
 
 
-        const downloadUrl =
-            getTeachersHubResourceUrl(
-                resource
-            );
+        /* =================================================
+           🔗 FIND DOWNLOAD URL
+        =================================================
+        
+        We check several possible field names so the
+        download works regardless of which field your
+        resource publisher used.
+        ================================================= */
 
+        let downloadUrl = null;
+
+
+        const possibleUrls = [
+
+            resource?.downloadUrl,
+
+            resource?.downloadURL,
+
+            resource?.fileUrl,
+
+            resource?.fileURL,
+
+            resource?.fileUrl,
+
+            resource?.storageUrl,
+
+            resource?.storageURL,
+
+            resource?.url,
+
+            resource?.file,
+
+            resource?.fileLink,
+
+            resource?.downloadLink,
+
+            resource?.resourceUrl,
+
+            resource?.resourceURL,
+
+            resource?.pdfUrl,
+
+            resource?.pdfURL,
+
+            resource?.documentUrl,
+
+            resource?.documentURL,
+
+            resource?.attachmentUrl,
+
+            resource?.attachmentURL
+
+        ];
+
+
+        for (
+            const candidate of possibleUrls
+        ) {
+
+            if (
+                typeof candidate === "string" &&
+                candidate.trim()
+            ) {
+
+                downloadUrl =
+                    candidate.trim();
+
+                break;
+
+            }
+
+        }
+
+
+        /* =================================================
+           🔍 TRY EXISTING URL HELPER
+        ================================================= */
+
+        if (!downloadUrl) {
+
+            try {
+
+                if (
+                    typeof getTeachersHubResourceUrl ===
+                    "function"
+                ) {
+
+                    const helperUrl =
+                        getTeachersHubResourceUrl(
+                            resource
+                        );
+
+
+                    if (
+                        typeof helperUrl === "string" &&
+                        helperUrl.trim()
+                    ) {
+
+                        downloadUrl =
+                            helperUrl.trim();
+
+                    }
+
+                }
+
+            }
+            catch(helperError) {
+
+                console.warn(
+                    "⚠️ Resource URL helper failed:",
+                    helperError
+                );
+
+            }
+
+        }
+
+
+        console.log(
+            "🔗 DETECTED RESOURCE URL:",
+            downloadUrl || "NONE"
+        );
+
+
+        /* =================================================
+           🔎 DEBUG RESOURCE FILE FIELDS
+        ================================================= */
+
+        console.log(
+            "📁 RESOURCE FILE INFORMATION:",
+            {
+
+                downloadUrl:
+                    resource?.downloadUrl,
+
+                downloadURL:
+                    resource?.downloadURL,
+
+                fileUrl:
+                    resource?.fileUrl,
+
+                fileURL:
+                    resource?.fileURL,
+
+                storageUrl:
+                    resource?.storageUrl,
+
+                url:
+                    resource?.url,
+
+                file:
+                    resource?.file,
+
+                downloadLink:
+                    resource?.downloadLink,
+
+                resourceUrl:
+                    resource?.resourceUrl
+
+            }
+        );
+
+
+        /* =================================================
+           PAYMENT CONFIRMED
+        ================================================= */
 
         const result =
             await Swal.fire({
@@ -20460,6 +20844,7 @@ async function(
 
                         <br><br>
 
+
                         <div style="
                             background:#f0fdf4;
                             border:1px solid #bbf7d0;
@@ -20471,11 +20856,14 @@ async function(
                                 font-size:17px;
                             ">
 
-                                ${escapeResourceHTML(title)}
+                                ${escapeResourceHTML(
+                                    title
+                                )}
 
                             </strong>
 
                             <br><br>
+
 
                             <span style="
                                 color:#15803d;
@@ -20489,6 +20877,7 @@ async function(
                         </div>
 
                         <br>
+
 
                         <div style="
                             background:#eff6ff;
@@ -20507,7 +20896,9 @@ async function(
                 `,
 
                 confirmButtonText:
-                    "📥 Download Resource",
+                    downloadUrl
+                        ? "📥 Download Resource"
+                        : "OK",
 
                 confirmButtonColor:
                     "#16a34a",
@@ -20521,17 +20912,31 @@ async function(
             });
 
 
-        if (!result.isConfirmed) {
+        if (
+            !result.isConfirmed
+        ) {
 
             return false;
 
         }
 
 
+        /* =================================================
+           📥 OPEN RESOURCE
+        ================================================= */
+
         if (downloadUrl) {
 
+            console.log(
+                "📥 OPENING RESOURCE:",
+                downloadUrl
+            );
+
+
             const link =
-                document.createElement("a");
+                document.createElement(
+                    "a"
+                );
 
 
             link.href =
@@ -20562,12 +20967,19 @@ async function(
                 () => {
 
                     try {
+
                         link.remove();
+
                     }
-                    catch(_) {}
+                    catch (_) {}
 
                 },
-                1000
+                1500
+            );
+
+
+            console.log(
+                "✅ RESOURCE OPENED"
             );
 
 
@@ -20576,32 +20988,60 @@ async function(
         }
 
 
+        /* =================================================
+           ❌ NO FILE LINK
+        ================================================= */
+
         await Swal.fire({
 
             icon:
-                "info",
+                "warning",
 
             title:
-                "📥 Resource Unlocked",
+                "Resource File Missing",
 
             html: `
 
-                Payment has been
-                <strong style="color:#16a34a;">
-                    successfully confirmed
-                </strong>.
+                <div style="
+                    line-height:1.7;
+                    text-align:center;
+                ">
 
-                <br><br>
+                    Payment has been
+                    <strong style="
+                        color:#16a34a;
+                    ">
+                        successfully confirmed
+                    </strong>.
 
-                The resource is unlocked,
-                but no download file is currently
-                linked to it.
+                    <br><br>
 
-                <br><br>
+                    However, this resource does not
+                    currently have a downloadable file
+                    attached to it.
 
-                <strong>
-                    ${escapeResourceHTML(title)}
-                </strong>
+                    <br><br>
+
+                    <strong>
+                        ${escapeResourceHTML(
+                            title
+                        )}
+                    </strong>
+
+                    <br><br>
+
+                    <small style="
+                        color:#64748b;
+                    ">
+
+                        Resource ID:
+                        ${escapeResourceHTML(
+                            String(resourceId)
+                        )}
+
+                    </small>
+
+                </div>
 
             `,
 
@@ -20611,7 +21051,7 @@ async function(
         });
 
 
-        return true;
+        return false;
 
     }
     catch(error) {
@@ -20638,8 +21078,13 @@ async function(
                 ">
 
                     Your M-PESA payment was
-                    <strong style="color:#16a34a;">
+
+                    <strong style="
+                        color:#16a34a;
+                    ">
+
                         successfully confirmed
+
                     </strong>.
 
                     <br><br>
@@ -20649,8 +21094,16 @@ async function(
 
                     <br><br>
 
-                    You can try opening the resource
-                    again from your purchases.
+                    <small style="
+                        color:#64748b;
+                    ">
+
+                        ${escapeResourceHTML(
+                            error?.message ||
+                            "Unknown resource error."
+                        )}
+
+                    </small>
 
                 </div>
 
@@ -20667,7 +21120,6 @@ async function(
     }
 
 };
-
 
 /* =========================================================
    🔎 PAYMENT STATUS REQUEST
