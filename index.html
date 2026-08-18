@@ -9001,7 +9001,7 @@ function render(swaps){
         let charge =
             Number(
                 item.charge
-            ) || 200;
+            ) || 2;
 
 
         if(
@@ -9593,7 +9593,7 @@ function render(swaps){
                                 ${
                                     Number(
                                         matchedTeacher.charge ||
-                                        200
+                                        2
                                     )
                                 }
                             )
@@ -11887,11 +11887,11 @@ window.showPayment = async function(
     teacherName,
     currentCounty,
     swapCounty,
-    charge = 200
+    charge = 2
 ){
     try{
         const safeSwapId = String(swapId || "");
-        const amount = Math.max(1, Number(charge) || 200);
+        const amount = Math.max(1, Number(charge) || 2);
         const teacher = String(teacherName || "Teacher");
         const current = String(currentCounty || "-");
         const destination = String(swapCounty || "-");
