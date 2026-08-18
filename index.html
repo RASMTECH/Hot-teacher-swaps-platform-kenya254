@@ -1836,8 +1836,6 @@ input[type="file"]::file-selector-button{
     padding:
         0 20px !important;
 
-    display:block !important;
-
     box-sizing:border-box !important;
 
     /*
@@ -2351,7 +2349,6 @@ input[type="file"]::file-selector-button{
     max-width:1400px !important;
     margin:40px auto 0 !important;
     padding:0 10px !important;
-    display:block !important;
     position:relative !important;
     box-sizing:border-box !important;
     grid-column:auto !important;
@@ -3675,12 +3672,28 @@ input[type="file"]::file-selector-button{
   cursor:pointer;
 }
 .admin-content-select input{width:17px;height:17px;accent-color:#dc2626;cursor:pointer;}
+.admin-swap-status-btn{min-height:40px;padding:9px 13px;border:0;border-radius:9px;color:#fff;font-weight:900;cursor:pointer;}
+.swap-closed-card{opacity:.96;border:2px solid #fecaca !important;}
+
 @media(max-width:650px){
   .admin-content-manager{align-items:stretch;flex-direction:column;}
   .admin-content-manager button{width:100%;}
 }
 
 
+</style>
+<style>
+/* =========================================================
+   🔒 FINAL INDEPENDENT SECTION VISIBILITY OVERRIDE
+   CSS must NEVER force the Swap section open.
+   The JavaScript router is the single source of truth.
+========================================================= */
+.swap-requests-section:not(.active-independent-section){
+  display:none !important;
+}
+.swap-requests-section.active-independent-section{
+  display:block !important;
+}
 </style>
 </head>
 <body>
@@ -9277,6 +9290,10 @@ window.postSwap = async function () {
             paymentPhone:
                 null,
 
+            /* ADMIN VISIBILITY STATUS */
+            status:
+                "active",
+
             createdAt:
                 createdAt,
 
@@ -9720,6 +9737,13 @@ window.postSwap = async function () {
    Faster + Cleaner + Better Data Arrangement
 ========================================================= */
 
+/* IMPORTANT: this renderer lives in a different <script type="module">
+   from the admin-management code below. Module scopes are isolated, so
+   the admin helper MUST be exposed on window before render() uses it. */
+window.isContentAdmin = window.isContentAdmin || function(){
+    return window.__isResourceAdmin === true;
+};
+
 function render(swaps){
 
     const container =
@@ -9899,6 +9923,29 @@ function render(swaps){
         const swapCounty =
             item.swapCounty ||
             "-";
+
+        /* ADMIN CONTROLLED OPEN/CLOSED STATUS */
+        const swapStatus =
+            String(item.status || "active")
+                .trim()
+                .toLowerCase() === "closed"
+                ? "closed"
+                : "active";
+
+        const isSwapClosed =
+            swapStatus === "closed";
+
+        const swapStatusBadge = isSwapClosed
+            ? `
+                <span style="display:inline-flex;align-items:center;gap:5px;padding:6px 10px;background:#fee2e2;color:#991b1b;border:1px solid #fecaca;border-radius:999px;font-size:14px;font-weight:900;white-space:nowrap;">
+                    🔴 CLOSED
+                </span>
+              `
+            : `
+                <span style="display:inline-flex;align-items:center;gap:5px;padding:6px 10px;background:#dcfce7;color:#166534;border:1px solid #bbf7d0;border-radius:999px;font-size:14px;font-weight:900;white-space:nowrap;">
+                    🟢 OPEN
+                </span>
+              `;
 
 
         const swapSubCounty =
@@ -10218,7 +10265,21 @@ function render(swaps){
         let phoneHTML = "";
 
 
-        if(isMine){
+        if(isSwapClosed){
+
+            phoneHTML = `
+                <div style="margin-top:12px;padding:13px 14px;background:#fef2f2;border:1px solid #fecaca;border-left:5px solid #dc2626;border-radius:10px;">
+                    <div style="color:#991b1b;font-size:15px;font-weight:900;">
+                        ⚠️ THIS SWAP IS CLOSED
+                    </div>
+                    <div style="margin-top:4px;color:#b91c1c;font-size:13px;line-height:1.5;">
+                        The administrator has temporarily closed this swap request. Contact unlocking and payments are unavailable until it is reopened.
+                    </div>
+                </div>
+            `;
+
+        }
+        else if(isMine){
 
             phoneHTML = `
 
@@ -10930,7 +10991,10 @@ function render(swaps){
                 </div>
 
 
-                ${topBadge}
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
+                    ${swapStatusBadge}
+                    ${topBadge}
+                </div>
 
             </div>
 
@@ -11264,6 +11328,19 @@ function render(swaps){
 
             ${analysisHTML}
 
+
+            <!-- =========================================
+                 ADMIN OPEN / CLOSE CONTROL
+            ========================================== -->
+
+            ${window.isContentAdmin() ? `
+                <div style="margin-top:12px;padding:10px 12px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+                    <div style="font-size:12px;font-weight:900;color:#334155;">👑 ADMIN: Swap visibility</div>
+                    <button type="button" onclick="toggleSwapStatus('${escapeHTML(swapId)}')" style="border:0;border-radius:8px;padding:9px 12px;background:${isSwapClosed ? '#16a34a' : '#dc2626'};color:#fff;font-weight:900;cursor:pointer;">
+                        ${isSwapClosed ? '🟢 Open Swap' : '🔴 Close Swap'}
+                    </button>
+                </div>
+            ` : ''}
 
             <!-- =========================================
                  CARD ACTIONS
@@ -12848,6 +12925,16 @@ window.showPayment = async function(
 
         if(!swap){
             throw new Error("This swap is no longer available.");
+        }
+
+        if(String(swap.status || "active").toLowerCase() === "closed"){
+            await Swal.fire({
+                icon:"warning",
+                title:"Swap Closed",
+                text:"This swap has been closed by the administrator. Contact unlocking is currently unavailable.",
+                confirmButtonColor:"#dc2626"
+            });
+            return;
         }
 
         const escapeHTML = value => {
@@ -18268,26 +18355,57 @@ window.closeIndependentSections = function(){
 
 
 
-window.__showOnlyIndependentSection = function(sectionId){
-  const ids = [
-    "swapRequestsSection",
-    "postSwapSection",
-    "learningResourcesSection",
-    "jobsSection"
-  ];
 
+/* =========================================================
+   🔒 INDEPENDENT SECTION ROUTER
+   Only ONE marketplace section may be visible at a time.
+========================================================= */
+window.__INDEPENDENT_SECTION_IDS = [
+  "swapRequestsSection",
+  "postSwapSection",
+  "learningResourcesSection",
+  "jobsSection"
+];
+
+window.__showOnlyIndependentSection = function(sectionId){
+  const ids = window.__INDEPENDENT_SECTION_IDS || [];
+
+  // FIRST: close every independent section and its content.
   ids.forEach(id => {
     const el = document.getElementById(id);
-    if(el) el.style.display = (id === sectionId) ? "block" : "none";
+    if(el){
+      el.classList.remove("active-independent-section");
+      el.style.setProperty("display", "none", "important");
+      el.setAttribute("aria-hidden", "true");
+    }
   });
 
   const listings = document.getElementById("listings");
   if(listings){
-    listings.style.display = sectionId === "swapRequestsSection" ? "grid" : "none";
+    listings.style.setProperty("display", "none", "important");
   }
 
   const hub = document.getElementById("actionHub");
   if(hub) hub.style.display = "none";
+
+  const target = document.getElementById(sectionId);
+  if(!target || !ids.includes(sectionId)){
+    console.warn("Independent section not found:", sectionId);
+    return false;
+  }
+
+  target.classList.add("active-independent-section");
+  target.style.setProperty("display", "block", "important");
+  target.setAttribute("aria-hidden", "false");
+
+  if(sectionId === "swapRequestsSection" && listings){
+    listings.style.setProperty("display", "grid", "important");
+  }
+  return true;
+};
+
+window.openIndependentSection = function(sectionId){
+  return window.__showOnlyIndependentSection(sectionId);
 };
 
 window.openSwapRequestsSection = function(){
@@ -18306,13 +18424,13 @@ window.openSwapRequestsSection = function(){
 
   if(section){
 
-    section.style.display = "block";
+    section.style.setProperty("display", "block", "important");
 
     const listings =
       document.getElementById("listings");
 
     if(listings){
-      listings.style.display = "grid";
+      listings.style.setProperty("display", "grid", "important");
     }
 
     if(typeof window.filterListings === "function"){
@@ -18414,6 +18532,17 @@ window.openJobsSection = function(){
   showAdminJobPublisher();
   loadJobsMarketplace();
 };
+
+/* Ensure all independent sections start closed. */
+(function initializeIndependentSections(){
+  (window.__INDEPENDENT_SECTION_IDS || []).forEach(id => {
+    const el = document.getElementById(id);
+    if(el){
+      el.style.display = "none";
+      el.setAttribute("aria-hidden", "true");
+    }
+  });
+})();
 
 function closeIndependentSectionsNoScroll(){
 
@@ -27067,6 +27196,60 @@ function addAdminSelectionControls(){
   });
 }
 
+window.toggleSwapStatus = async function(swapId){
+  if(!isContentAdmin()){
+    Swal.fire({icon:"error",title:"Admin Only",text:"Only the administrator can open or close swaps."});
+    return;
+  }
+
+  const id = String(swapId || "").trim();
+  if(!id) return;
+
+  const swap = Array.isArray(allSwaps)
+    ? allSwaps.find(x => String(x?.swapId || x?.firebaseKey || "") === id)
+    : null;
+
+  const currentStatus = String(swap?.status || "active").toLowerCase() === "closed" ? "closed" : "active";
+  const nextStatus = currentStatus === "closed" ? "active" : "closed";
+  const title = nextStatus === "closed" ? "Close this swap?" : "Open this swap?";
+  const text = nextStatus === "closed"
+    ? "Users will still see the swap, but it will be clearly marked CLOSED and contact unlocking will be disabled."
+    : "Users will be able to use the swap and unlock contact details again.";
+
+  const confirm = await Swal.fire({
+    icon: nextStatus === "closed" ? "warning" : "question",
+    title,
+    text,
+    showCancelButton:true,
+    confirmButtonText: nextStatus === "closed" ? "Yes, Close Swap" : "Yes, Open Swap",
+    cancelButtonText:"Cancel",
+    confirmButtonColor: nextStatus === "closed" ? "#dc2626" : "#16a34a"
+  });
+
+  if(!confirm.isConfirmed) return;
+
+  try{
+    await set(ref(window.__firebaseDB, `teacherSwaps/${id}/status`), nextStatus);
+    await set(ref(window.__firebaseDB, `teacherSwaps/${id}/updatedAt`), Date.now());
+
+    Swal.fire({
+      icon:"success",
+      title: nextStatus === "closed" ? "Swap Closed" : "Swap Opened",
+      text: nextStatus === "closed" ? "The swap is now marked CLOSED for users." : "The swap is now OPEN again.",
+      timer:1500,
+      showConfirmButton:false
+    });
+  }catch(error){
+    console.error("Admin swap status error:",error);
+    Swal.fire({
+      icon:"error",
+      title:"Status Update Failed",
+      text:error?.message || "Firebase rejected the status update.",
+      confirmButtonColor:"#dc2626"
+    });
+  }
+};
+
 window.deleteSingleJob = async function(jobId){
   if(!isContentAdmin()) {
     Swal.fire({icon:"error",title:"Admin Only",text:"Only the administrator can delete jobs."});
@@ -27202,3 +27385,30 @@ window.deleteSelectedContent = async function(type){
 </script>
 </body>
 </html>
+
+<script>
+/* FINAL SAFETY GUARD: keep marketplace sections mutually exclusive. */
+(function(){
+  const ids = window.__INDEPENDENT_SECTION_IDS || [
+    "swapRequestsSection","postSwapSection","learningResourcesSection","jobsSection"
+  ];
+  const observer = new MutationObserver(() => {
+    const active = ids.filter(id => {
+      const el = document.getElementById(id);
+      return el && getComputedStyle(el).display !== "none";
+    });
+    if(active.length > 1){
+      const keep = active[active.length - 1];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el && id !== keep){
+          el.classList.remove("active-independent-section");
+          el.style.setProperty("display","none","important");
+          el.setAttribute("aria-hidden","true");
+        }
+      });
+    }
+  });
+  if(document.body) observer.observe(document.body,{attributes:true,attributeFilter:["style","class"],subtree:true});
+})();
+</script>
