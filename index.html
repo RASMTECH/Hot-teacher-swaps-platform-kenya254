@@ -5086,103 +5086,586 @@ Join teachers across Kenya using Mwalimu Hub for trusted transfer swaps and lear
 >
 
 
-  <!-- =====================================================
-       👑 ADMIN-ONLY RESOURCE PUBLISHER
-  ====================================================== -->
-  <div id="adminResourceManager" class="admin-content-manager" style="display:none;">
-    <div>
-      <strong>🗑️ Manage Learning Resources</strong>
-      <span>Select resources and delete them in one action.</span>
-    </div>
-    <button type="button" onclick="deleteSelectedContent('resources')">🗑️ Delete Selected Resources</button>
-  </div>
-  <div id="adminResourceAdminAccess" style="display:none; margin-bottom:20px;">
-    <button
-      type="button"
-      id="adminResourceToggleBtn"
-      onclick="toggleAdminResourceForm()"
-      style="width:100%;min-height:46px;border:0;border-radius:12px;background:#991b1b;color:#fff;font-weight:900;cursor:pointer;"
-    >📤 Publish / Manage Learning Resources</button>
+ <!-- =====================================================
+     👑 ADMIN-ONLY RESOURCE PUBLISHER
+====================================================== -->
+
+<div id="adminResourceManager" class="admin-content-manager" style="display:none;">
+  <div>
+    <strong>🗑️ Manage Learning Resources</strong>
+    <span>Select resources and delete them in one action.</span>
   </div>
 
-  <div
-    id="adminResourcePublisher"
-    style="display:none;margin-bottom:22px;padding:20px;border-radius:18px;background:linear-gradient(135deg,#7f1d1d,#991b1b);color:#fff;box-shadow:0 12px 28px rgba(127,29,29,.16);"
+  <button
+    type="button"
+    onclick="deleteSelectedContent('resources')"
   >
-    <div style="margin-bottom:16px;">
-      <div style="font-size:11px;font-weight:900;color:#fecaca;letter-spacing:.08em;">👑 ADMIN ONLY</div>
-      <h3 style="margin:5px 0;color:#fff;font-size:21px;">Publish Learning Resource</h3>
-      <p style="margin:0;color:#fee2e2;font-size:13px;line-height:1.55;">
-        Add a resource for users to browse and purchase. This form is hidden from normal users.
-      </p>
+    🗑️ Delete Selected Resources
+  </button>
+</div>
+
+
+<div id="adminResourceAdminAccess" style="display:none;margin-bottom:20px;">
+
+  <button
+    type="button"
+    id="adminResourceToggleBtn"
+    onclick="toggleAdminResourceForm()"
+    style="
+      width:100%;
+      min-height:46px;
+      border:0;
+      border-radius:12px;
+      background:#991b1b;
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    "
+  >
+    📤 Publish / Manage Learning Resources
+  </button>
+
+</div>
+
+
+<div
+  id="adminResourcePublisher"
+  style="
+    display:none;
+    margin-bottom:22px;
+    padding:20px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#7f1d1d,#991b1b);
+    color:#fff;
+    box-shadow:0 12px 28px rgba(127,29,29,.16);
+  "
+>
+
+  <div style="margin-bottom:16px;">
+
+    <div
+      style="
+        font-size:11px;
+        font-weight:900;
+        color:#fecaca;
+        letter-spacing:.08em;
+      "
+    >
+      👑 ADMIN ONLY
     </div>
 
-    <form id="adminResourceForm" onsubmit="publishLearningResource(event)">
-      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;">
-        <div>
-          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Title *</label>
-          <input id="adminResourceTitle" required placeholder="Resource title" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
-        </div>
-        <div>
-          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Grade / Level *</label>
-          <select id="adminResourceLevel" required style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
-            <option value="">Select level</option>
-            <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
-            <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
-            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
-            <option>Primary School</option><option>Junior School</option><option>Senior School</option><option>Teacher Resource</option>
-          </select>
-        </div>
-        <div>
-          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Type *</label>
-          <select id="adminResourceType" required style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
-            <option value="">Select type</option>
-            <option>Notes</option><option>Revision</option><option>Past Paper</option><option>Assessment</option><option>Scheme of Work</option><option>Other</option>
-          </select>
-        </div>
-        <div>
-          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Subject *</label>
-          <input id="adminResourceSubject" required placeholder="e.g. Mathematics" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
-        </div>
-      </div>
+    <h3
+      style="
+        margin:5px 0;
+        color:#fff;
+        font-size:21px;
+      "
+    >
+      Publish Learning Resource
+    </h3>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
-        <div>
-          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Price (KES)</label>
-          <input id="adminResourcePrice" type="number" min="0" step="1" value="0" oninput="updateAdminResourcePricePreview()" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
-          <div id="adminResourcePricePreview" style="margin-top:5px;font-size:11px;color:#fecaca;"></div>
-          <div id="adminResourceEarningPreview" style="font-size:11px;color:#fecaca;"></div>
-        </div>
-        <div>
-          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Source</label>
-          <select id="adminResourceSource" onchange="toggleAdminResourceSource()" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
-            <option value="file">Upload File</option>
-            <option value="link">External Link</option>
-          </select>
-        </div>
-      </div>
+    <p
+      style="
+        margin:0;
+        color:#fee2e2;
+        font-size:13px;
+        line-height:1.55;
+      "
+    >
+      Add a resource for users to browse and purchase.
+      This form is hidden from normal users.
+    </p>
 
-      <div id="adminResourceFileBox" style="margin-top:12px;">
-        <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Resource File *</label>
-        <input id="adminResourceFile" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.txt" style="width:100%;box-sizing:border-box;padding:10px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;">
-      </div>
-
-      <div id="adminResourceLinkBox" style="display:none;margin-top:12px;">
-        <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Resource Link *</label>
-        <input id="adminResourceLink" type="url" placeholder="https://..." style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
-      </div>
-
-      <div style="margin-top:12px;">
-        <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Short Description</label>
-        <textarea id="adminResourceDescription" rows="3" placeholder="Brief description of the resource" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;resize:vertical;"></textarea>
-      </div>
-
-      <button id="adminPublishResourceBtn" type="submit" style="margin-top:12px;width:100%;min-height:47px;border:0;border-radius:11px;background:#16a34a;color:#fff;font-weight:900;cursor:pointer;">
-        📢 Publish Resource
-      </button>
-    </form>
   </div>
 
+
+  <form
+    id="adminResourceForm"
+    onsubmit="publishLearningResource(event)"
+  >
+
+    <!-- =================================================
+         MAIN RESOURCE DETAILS
+    ================================================== -->
+
+    <div
+      style="
+        display:grid;
+        grid-template-columns:repeat(4,minmax(0,1fr));
+        gap:12px;
+      "
+    >
+
+      <!-- TITLE -->
+
+      <div>
+
+        <label
+          style="
+            display:block;
+            margin-bottom:6px;
+            font-size:12px;
+            font-weight:800;
+            color:#fff;
+          "
+        >
+          Title *
+        </label>
+
+        <input
+          id="adminResourceTitle"
+          required
+          type="text"
+          placeholder="Resource title"
+          style="
+            width:100%;
+            box-sizing:border-box;
+            padding:11px;
+            border-radius:10px;
+            border:1px solid #cbd5e1;
+            background:#ffffff;
+            color:#0f172a;
+            caret-color:#0f172a;
+            outline:none;
+          "
+        >
+
+      </div>
+
+
+      <!-- GRADE -->
+
+      <div>
+
+        <label
+          style="
+            display:block;
+            margin-bottom:6px;
+            font-size:12px;
+            font-weight:800;
+            color:#fff;
+          "
+        >
+          Grade / Level *
+        </label>
+
+        <select
+          id="adminResourceLevel"
+          required
+          style="
+            width:100%;
+            box-sizing:border-box;
+            padding:11px;
+            border-radius:10px;
+            border:1px solid #cbd5e1;
+            background:#ffffff;
+            color:#0f172a;
+            color-scheme:light;
+            outline:none;
+          "
+        >
+
+          <option value="" style="color:#64748b;">
+            Select level
+          </option>
+
+          <option value="Grade 1">Grade 1</option>
+          <option value="Grade 2">Grade 2</option>
+          <option value="Grade 3">Grade 3</option>
+          <option value="Grade 4">Grade 4</option>
+          <option value="Grade 5">Grade 5</option>
+          <option value="Grade 6">Grade 6</option>
+          <option value="Grade 7">Grade 7</option>
+          <option value="Grade 8">Grade 8</option>
+          <option value="Grade 9">Grade 9</option>
+          <option value="Grade 10">Grade 10</option>
+          <option value="Grade 11">Grade 11</option>
+          <option value="Grade 12">Grade 12</option>
+          <option value="Primary School">Primary School</option>
+          <option value="Junior School">Junior School</option>
+          <option value="Senior School">Senior School</option>
+          <option value="Teacher Resource">Teacher Resource</option>
+
+        </select>
+
+      </div>
+
+
+      <!-- TYPE -->
+
+      <div>
+
+        <label
+          style="
+            display:block;
+            margin-bottom:6px;
+            font-size:12px;
+            font-weight:800;
+            color:#fff;
+          "
+        >
+          Type *
+        </label>
+
+        <select
+          id="adminResourceType"
+          required
+          style="
+            width:100%;
+            box-sizing:border-box;
+            padding:11px;
+            border-radius:10px;
+            border:1px solid #cbd5e1;
+            background:#ffffff;
+            color:#0f172a;
+            color-scheme:light;
+            outline:none;
+          "
+        >
+
+          <option value="" style="color:#64748b;">
+            Select type
+          </option>
+
+         <option value="Notes">Notes</option>
+<option value="Revision">Revision Materials</option>
+<option value="Past Paper">Past Paper</option>
+<option value="Assessment">Assessment</option>
+<option value="Scheme of Work">Scheme of Work</option>
+<option value="Lesson Plan">Lesson Plan</option>
+<option value="Teaching Guide">Teaching Guide</option>
+<option value="Teacher's Guide">Teacher's Guide</option>
+<option value="Guide Book">Guide Book</option>
+<option value="Study Guide">Study Guide</option>
+<option value="Revision Guide">Revision Guide</option>
+<option value="Learner's Guide">Learner's Guide</option>
+<option value="Reference Material">Reference Material</option>
+<option value="Textbook">Textbook</option>
+<option value="Revision Booklet">Revision Booklet</option>
+<option value="Workbook">Workbook</option>
+<option value="Worksheet">Worksheet</option>
+<option value="Question Bank">Question Bank</option>
+<option value="Examination">Examination</option>
+<option value="Marking Scheme">Marking Scheme</option>
+<option value="Answer Key">Answer Key</option>
+<option value="Teacher Resource">Teacher Resource</option>
+<option value="Student Resource">Student Resource</option>
+<option value="Curriculum Guide">Curriculum Guide</option>
+<option value="Syllabus">Syllabus</option>
+<option value="Literature Guide">Literature Guide</option>
+<option value="Novel Guide">Novel Guide</option>
+<option value="Poetry Guide">Poetry Guide</option>
+<option value="Set Book Guide">Set Book Guide</option>
+<option value="Flashcards">Flashcards</option>
+<option value="Practical Guide">Practical Guide</option>
+<option value="Project Guide">Project Guide</option>
+<option value="Activity Book">Activity Book</option>
+<option value="Digital Resource">Digital Resource</option>
+<option value="Other">Other</option>
+
+        </select>
+
+      </div>
+
+
+      <!-- SUBJECT -->
+
+      <div>
+
+        <label
+          style="
+            display:block;
+            margin-bottom:6px;
+            font-size:12px;
+            font-weight:800;
+            color:#fff;
+          "
+        >
+          Subject *
+        </label>
+
+        <input
+          id="adminResourceSubject"
+          required
+          type="text"
+          placeholder="e.g. Mathematics"
+          style="
+            width:100%;
+            box-sizing:border-box;
+            padding:11px;
+            border-radius:10px;
+            border:1px solid #cbd5e1;
+            background:#ffffff;
+            color:#0f172a;
+            caret-color:#0f172a;
+            outline:none;
+          "
+        >
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         PRICE + SOURCE
+    ================================================== -->
+
+    <div
+      style="
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+        margin-top:12px;
+      "
+    >
+
+      <!-- PRICE -->
+
+      <div>
+
+        <label
+          style="
+            display:block;
+            margin-bottom:6px;
+            font-size:12px;
+            font-weight:800;
+            color:#fff;
+          "
+        >
+          Price (KES)
+        </label>
+
+        <input
+          id="adminResourcePrice"
+          type="number"
+          min="0"
+          step="1"
+          value="0"
+          oninput="updateAdminResourcePricePreview()"
+          style="
+            width:100%;
+            box-sizing:border-box;
+            padding:11px;
+            border-radius:10px;
+            border:1px solid #cbd5e1;
+            background:#ffffff;
+            color:#0f172a;
+            caret-color:#0f172a;
+            outline:none;
+          "
+        >
+
+        <div
+          id="adminResourcePricePreview"
+          style="
+            margin-top:5px;
+            font-size:11px;
+            color:#fecaca;
+          "
+        ></div>
+
+        <div
+          id="adminResourceEarningPreview"
+          style="
+            font-size:11px;
+            color:#fecaca;
+          "
+        ></div>
+
+      </div>
+
+
+      <!-- SOURCE -->
+
+      <div>
+
+        <label
+          style="
+            display:block;
+            margin-bottom:6px;
+            font-size:12px;
+            font-weight:800;
+            color:#fff;
+          "
+        >
+          Source
+        </label>
+
+        <select
+          id="adminResourceSource"
+          onchange="toggleAdminResourceSource()"
+          style="
+            width:100%;
+            box-sizing:border-box;
+            padding:11px;
+            border-radius:10px;
+            border:1px solid #cbd5e1;
+            background:#ffffff;
+            color:#0f172a;
+            color-scheme:light;
+            outline:none;
+          "
+        >
+
+          <option value="file">Upload File</option>
+          <option value="link">External Link</option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         FILE UPLOAD
+    ================================================== -->
+
+    <div
+      id="adminResourceFileBox"
+      style="margin-top:12px;"
+    >
+
+      <label
+        style="
+          display:block;
+          margin-bottom:6px;
+          font-size:12px;
+          font-weight:800;
+          color:#fff;
+        "
+      >
+        Resource File *
+      </label>
+
+      <input
+        id="adminResourceFile"
+        type="file"
+        accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.txt"
+        style="
+          width:100%;
+          box-sizing:border-box;
+          padding:10px;
+          border-radius:10px;
+          border:1px solid #cbd5e1;
+          background:#fff;
+          color:#0f172a;
+          cursor:pointer;
+        "
+      >
+
+    </div>
+
+
+    <!-- =================================================
+         EXTERNAL LINK
+    ================================================== -->
+
+    <div
+      id="adminResourceLinkBox"
+      style="
+        display:none;
+        margin-top:12px;
+      "
+    >
+
+      <label
+        style="
+          display:block;
+          margin-bottom:6px;
+          font-size:12px;
+          font-weight:800;
+          color:#fff;
+        "
+      >
+        Resource Link *
+      </label>
+
+      <input
+        id="adminResourceLink"
+        type="url"
+        placeholder="https://..."
+        style="
+          width:100%;
+          box-sizing:border-box;
+          padding:11px;
+          border-radius:10px;
+          border:1px solid #cbd5e1;
+          background:#ffffff;
+          color:#0f172a;
+          caret-color:#0f172a;
+          outline:none;
+        "
+      >
+
+    </div>
+
+
+    <!-- =================================================
+         DESCRIPTION
+    ================================================== -->
+
+    <div style="margin-top:12px;">
+
+      <label
+        style="
+          display:block;
+          margin-bottom:6px;
+          font-size:12px;
+          font-weight:800;
+          color:#fff;
+        "
+      >
+        Short Description
+      </label>
+
+      <textarea
+        id="adminResourceDescription"
+        rows="3"
+        placeholder="Brief description of the resource"
+        style="
+          width:100%;
+          box-sizing:border-box;
+          padding:11px;
+          border-radius:10px;
+          border:1px solid #cbd5e1;
+          background:#ffffff;
+          color:#0f172a;
+          caret-color:#0f172a;
+          outline:none;
+          resize:vertical;
+        "
+      ></textarea>
+
+    </div>
+
+
+    <!-- =================================================
+         PUBLISH
+    ================================================== -->
+
+    <button
+      id="adminPublishResourceBtn"
+      type="submit"
+      style="
+        margin-top:12px;
+        width:100%;
+        min-height:47px;
+        border:0;
+        border-radius:11px;
+        background:#16a34a;
+        color:#fff;
+        font-weight:900;
+        cursor:pointer;
+      "
+    >
+      📢 Publish Resource
+    </button>
+
+  </form>
+
+</div>
   <!-- =====================================================
        🔙 BACK TO SECTIONS
   ====================================================== -->
