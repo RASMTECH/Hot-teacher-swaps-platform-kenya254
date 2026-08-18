@@ -22198,34 +22198,19 @@ function isTeachersHubPaymentPaid(data) {
 
 /* =========================================================
    🎯 MAIN PAYMENT MONITOR
-   RASM 360 / TEACHERS HUB
-
-   PAYMENT FLOW:
-
-   Visitor
-      ↓
-   STK Push
-      ↓
-   Safaricom Callback
-      ↓
-   Backend marks payment PAID
-      ↓
-   Browser confirms PAID
-      ↓
-   Browser asks BACKEND to authorize contact reveal
-      ↓
-   Backend verifies payment + item
-      ↓
-   Backend returns contact
 ========================================================= */
 
 window.waitForResourcePayment =
 async function(
 
     accountReference,
+
     resourceId,
+
     userId,
+
     checkoutRequestId = null,
+
     options = {}
 
 ) {
@@ -22253,6 +22238,7 @@ async function(
             "⚠️ Existing payment monitor found. Stopping it."
         );
 
+
         stopTeachersHubPaymentMonitor();
 
     }
@@ -22262,29 +22248,43 @@ async function(
         new AbortController();
 
 
-    state.active = true;
-    state.reference = accountReference;
-    state.resourceId = resourceId;
-    state.userId = userId;
-    state.controller = controller;
-    state.completed = false;
+    state.active =
+        true;
+
+    state.reference =
+        accountReference;
+
+    state.resourceId =
+        resourceId;
+
+    state.userId =
+        userId;
+
+    state.controller =
+        controller;
+
+    state.completed =
+        false;
 
 
     const pollInterval =
         Number(
-            options.pollInterval || 3000
+            options.pollInterval ||
+            3000
         );
 
 
     const maxDuration =
         Number(
-            options.timeout || 180000
+            options.timeout ||
+            180000
         );
 
 
     const maxNetworkErrors =
         Number(
-            options.maxNetworkErrors || 10
+            options.maxNetworkErrors ||
+            10
         );
 
 
@@ -22292,8 +22292,12 @@ async function(
         Date.now();
 
 
-    let attempt = 0;
-    let networkErrors = 0;
+    let attempt =
+        0;
+
+
+    let networkErrors =
+        0;
 
 
     console.log("");
@@ -22304,12 +22308,12 @@ async function(
     console.log("Resource:", resourceId);
     console.log("User:", userId);
     console.log("CheckoutRequestID:", checkoutRequestId);
-    console.log("Flow:", options?.flow || "unknown");
     console.log("==============================================");
 
 
     function updateWaitingUI(
-        message = "Waiting for payment confirmation..."
+        message =
+            "Waiting for payment confirmation..."
     ) {
 
         const status =
@@ -22318,7 +22322,11 @@ async function(
             );
 
 
-        if (!status) return;
+        if (!status) {
+
+            return;
+
+        }
 
 
         status.innerHTML = `
@@ -22368,181 +22376,7 @@ async function(
 
 
     /* =====================================================
-       🔐 BACKEND CONTACT AUTHORIZATION
-    ===================================================== */
-
-    async function authorizePaidContact(paymentData) {
-
-        const flow =
-            String(
-                options?.flow || ""
-            )
-            .trim()
-            .toLowerCase();
-
-
-        /*
-         * Only Jobs and Swaps use contact authorization.
-         *
-         * Resources continue using the existing resource
-         * download mechanism.
-         */
-
-        if (
-            flow !== "job" &&
-            flow !== "swap"
-        ) {
-
-            return null;
-
-        }
-
-
-        const backend =
-            String(
-                window.TEACHERS_HUB_MPESA_BACKEND || ""
-            )
-            .trim()
-            .replace(/\/+$/g, "");
-
-
-        if (!backend) {
-
-            throw new Error(
-                "M-PESA backend URL is not configured."
-            );
-
-        }
-
-
-        if (!resourceId) {
-
-            throw new Error(
-                "Contact resource ID is missing."
-            );
-
-        }
-
-
-        console.log("");
-        console.log(
-            "🔐 REQUESTING BACKEND CONTACT AUTHORIZATION"
-        );
-
-        console.log(
-            "Flow:",
-            flow
-        );
-
-        console.log(
-            "Resource ID:",
-            resourceId
-        );
-
-        console.log(
-            "Payment Reference:",
-            accountReference
-        );
-
-
-        const response =
-            await fetch(
-                `${backend}/reveal-paid-contact`,
-                {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json",
-
-                        "Accept":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            accountReference,
-
-                            resourceId,
-
-                            flow,
-
-                            userId:
-                                userId ||
-                                "anonymous",
-
-                            checkoutRequestId:
-                                paymentData?.CheckoutRequestID ||
-                                checkoutRequestId ||
-                                null
-
-                        })
-
-                }
-            );
-
-
-        const raw =
-            await response.text();
-
-
-        let data;
-
-        try {
-
-            data =
-                JSON.parse(raw);
-
-        }
-        catch (_) {
-
-            throw new Error(
-                `Contact authorization server returned invalid data. HTTP ${response.status}.`
-            );
-
-        }
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data?.message ||
-                data?.error ||
-                `Contact authorization failed. HTTP ${response.status}.`
-            );
-
-        }
-
-
-        if (
-            data?.success !== true ||
-            data?.authorized !== true
-        ) {
-
-            throw new Error(
-                data?.message ||
-                "Payment was confirmed, but the contact could not be authorized."
-            );
-
-        }
-
-
-        console.log(
-            "✅ BACKEND AUTHORIZED CONTACT REVEAL"
-        );
-
-
-        return data;
-
-    }
-
-
-    /* =====================================================
-       🔄 POLLING LOOP
+       POLLING LOOP
     ===================================================== */
 
     while (
@@ -22564,8 +22398,11 @@ async function(
 
             return {
 
-                success: false,
-                status: "ABORTED"
+                success:
+                    false,
+
+                status:
+                    "ABORTED"
 
             };
 
@@ -22633,7 +22470,8 @@ async function(
             }
 
 
-            networkErrors = 0;
+            networkErrors =
+                0;
 
 
             const status =
@@ -22670,9 +22508,14 @@ async function(
                 );
 
 
-                state.completed = true;
-                state.active = false;
-                state.controller = null;
+                state.completed =
+                    true;
+
+                state.active =
+                    false;
+
+                state.controller =
+                    null;
 
 
                 /* =================================================
@@ -22683,7 +22526,8 @@ async function(
 
                     const purchase = {
 
-                        status: "PAID",
+                        status:
+                            "PAID",
 
                         resourceId:
                             resourceId,
@@ -22753,147 +22597,7 @@ async function(
 
 
                 /* =================================================
-                   🔐 JOB / SWAP CONTACT AUTHORIZATION
-                ================================================= */
-
-                const paymentFlow =
-                    String(
-                        options?.flow || ""
-                    )
-                    .trim()
-                    .toLowerCase();
-
-
-                let authorizedContact = null;
-
-
-                if (
-                    paymentFlow === "job" ||
-                    paymentFlow === "swap"
-                ) {
-
-                    try {
-
-                        Swal.fire({
-
-                            title:
-                                "🔐 Authorizing Contact...",
-
-                            html:
-                                "Payment confirmed.<br><br>Securely retrieving the contact information...",
-
-                            allowOutsideClick:
-                                false,
-
-                            allowEscapeKey:
-                                false,
-
-                            showConfirmButton:
-                                false,
-
-                            didOpen:
-                                () => Swal.showLoading()
-
-                        });
-
-
-                        authorizedContact =
-                            await authorizePaidContact(
-                                data
-                            );
-
-
-                        console.log(
-                            "🔓 CONTACT AUTHORIZED:",
-                            authorizedContact
-                        );
-
-                    }
-                    catch(contactError) {
-
-                        console.error(
-                            "❌ CONTACT AUTHORIZATION FAILED:",
-                            contactError
-                        );
-
-
-                        try {
-                            Swal.close();
-                        }
-                        catch (_) {}
-
-
-                        await Swal.fire({
-
-                            icon:
-                                "warning",
-
-                            title:
-                                "Payment Confirmed",
-
-                            html: `
-
-                                <div style="
-                                    line-height:1.7;
-                                ">
-
-                                    Your M-PESA payment was
-                                    <strong>successfully confirmed</strong>.
-
-                                    <br><br>
-
-                                    However, the contact could
-                                    not be retrieved automatically.
-
-                                    <br><br>
-
-                                    <strong>
-                                        Do not pay again.
-                                    </strong>
-
-                                </div>
-
-                            `,
-
-                            confirmButtonText:
-                                "OK",
-
-                            confirmButtonColor:
-                                "#f59e0b"
-
-                        });
-
-
-                        return {
-
-                            ...data,
-
-                            success:
-                                true,
-
-                            status:
-                                "PAID",
-
-                            contactAuthorized:
-                                false,
-
-                            contactAuthorizationError:
-                                contactError?.message ||
-                                "Contact authorization failed.",
-
-                            accountReference:
-                                data?.accountReference ||
-                                accountReference
-
-                        };
-
-                    }
-
-                }
-
-
-                /* =================================================
-                   CLOSE PAYMENT UI
+                   CLOSE WAITING UI
                 ================================================= */
 
                 try {
@@ -22901,7 +22605,7 @@ async function(
                     Swal.close();
 
                 }
-                catch (_) {}
+                catch(_) {}
 
 
                 /* =================================================
@@ -22947,8 +22651,19 @@ async function(
 
 
                 /* =================================================
-                   📚 NORMAL RESOURCES
+                   AUTO-UNLOCK RESOURCE
+                   Jobs and Teacher Swaps use this same payment monitor,
+                   but they reveal their own contacts after PAID.
                 ================================================= */
+
+                /*
+                 * IMPORTANT:
+                 * This monitor is shared by Resources, Jobs and Swaps.
+                 * Never infer the section from resourceId.
+                 * The caller MUST explicitly identify its flow.
+                 */
+                const paymentFlow =
+                    String(options?.flow || "").toLowerCase();
 
                 if (
                     paymentFlow === "resource" &&
@@ -22965,10 +22680,6 @@ async function(
                 }
 
 
-                /* =================================================
-                   RETURN PAYMENT + AUTHORIZED CONTACT
-                ================================================= */
-
                 return {
 
                     ...data,
@@ -22978,18 +22689,6 @@ async function(
 
                     status:
                         "PAID",
-
-                    contactAuthorized:
-                        paymentFlow === "job" ||
-                        paymentFlow === "swap",
-
-                    contact:
-                        authorizedContact?.contact ||
-                        null,
-
-                    contactData:
-                        authorizedContact ||
-                        null,
 
                     accountReference:
                         data?.accountReference ||
@@ -23007,19 +22706,26 @@ async function(
             if (
 
                 status === "FAILED" ||
+
                 status === "CANCELLED" ||
+
                 status === "CANCELED"
 
             ) {
 
-                state.active = false;
-                state.controller = null;
+                state.active =
+                    false;
+
+                state.controller =
+                    null;
 
 
                 try {
+
                     Swal.close();
+
                 }
-                catch (_) {}
+                catch(_) {}
 
 
                 console.error(
@@ -23079,7 +22785,7 @@ async function(
 
 
             /* =================================================
-               NOT FOUND
+               NOT FOUND = KEEP WAITING
             ================================================= */
 
             if (
@@ -23089,7 +22795,6 @@ async function(
                 console.warn(
                     "⚠️ PAYMENT RECORD NOT FOUND YET."
                 );
-
 
                 updateWaitingUI(
                     "Waiting for payment record..."
@@ -23117,6 +22822,12 @@ async function(
             networkErrors++;
 
 
+            /*
+             * IMPORTANT:
+             *
+             * Network errors do NOT mean payment failed.
+             */
+
             updateWaitingUI(
                 "Reconnecting to payment server..."
             );
@@ -23127,14 +22838,19 @@ async function(
                 maxNetworkErrors
             ) {
 
-                state.active = false;
-                state.controller = null;
+                state.active =
+                    false;
+
+                state.controller =
+                    null;
 
 
                 try {
+
                     Swal.close();
+
                 }
-                catch (_) {}
+                catch(_) {}
 
 
                 await Swal.fire({
@@ -23194,14 +22910,19 @@ async function(
        ⏰ TIMEOUT
     ========================================================= */
 
-    state.active = false;
-    state.controller = null;
+    state.active =
+        false;
+
+    state.controller =
+        null;
 
 
     try {
+
         Swal.close();
+
     }
-    catch (_) {}
+    catch(_) {}
 
 
     console.warn(
@@ -23237,6 +22958,11 @@ async function(
 
                 Your payment may still be processing.
 
+                <br><br>
+
+                Check your M-PESA message for the
+                transaction receipt.
+
             </div>
 
         `,
@@ -23264,7 +22990,6 @@ async function(
     };
 
 };
-
 /* =========================================================
    🔓 REVEAL PAID TEACHER SWAP CONTACT
    RASM 360 — SECURE BACKEND REVEAL
@@ -26075,7 +25800,6 @@ async function revealPaidJobContact(jobId, accountReference){
       throw new Error("Payment reference is missing.");
     }
 
-
     /* =====================================================
        🌐 M-PESA BACKEND
        ===================================================== */
@@ -26087,70 +25811,45 @@ async function revealPaidJobContact(jobId, accountReference){
       .trim()
       .replace(/\/+$/, "");
 
-
     if(!backend){
-
       throw new Error(
         "M-PESA backend URL is not configured."
       );
-
     }
 
 
-    /* =====================================================
-       🔎 EXACT ENDPOINT
-       ===================================================== */
-
-    const endpoint =
-      `${backend}/reveal-paid-contact`;
-
-
     console.log(
-      "=================================================="
-    );
-
-    console.log(
-      "🔐 JOB CONTACT UNLOCK REQUEST"
-    );
-
-    console.log(
-      "🌐 BACKEND:",
-      backend
-    );
-
-    console.log(
-      "🔗 ENDPOINT:",
-      endpoint
-    );
-
-    console.log(
-      "📡 METHOD:",
-      "POST"
-    );
-
-    console.log(
-      "🆔 JOB ID:",
-      jobId
-    );
-
-    console.log(
-      "🧾 PAYMENT REFERENCE:",
-      accountReference
-    );
-
-    console.log(
-      "=================================================="
+      "🔐 Requesting SERVER-SIDE job contact reveal:",
+      {
+        jobId,
+        accountReference,
+        flow: "job",
+        paymentType: "job_contact"
+      }
     );
 
 
     /* =====================================================
        🔐 SERVER-SIDE CONTACT REVEAL
+       
+       IMPORTANT:
+       DO NOT READ jobContacts FROM FIREBASE HERE.
+
+       The browser is NOT Firebase-authenticated.
+
+       The SERVER will:
+       1. Check payment
+       2. Check PAID status
+       3. Check exact jobId
+       4. Check flow = job
+       5. Check paymentType = job_contact
+       6. Read jobContacts/{jobId} using Firebase Admin
        ===================================================== */
 
     const response =
       await teachersHubRequest(
 
-        endpoint,
+        `${backend}/reveal-paid-contact`,
 
         {
 
@@ -26189,135 +25888,40 @@ async function revealPaidJobContact(jobId, accountReference){
 
 
     /* =====================================================
-       📊 HTTP STATUS
-       ===================================================== */
-
-    console.log(
-      "📡 CONTACT SERVER HTTP STATUS:",
-      response.status
-    );
-
-    console.log(
-      "📡 CONTACT SERVER OK:",
-      response.ok
-    );
-
-    console.log(
-      "📡 CONTACT SERVER URL:",
-      response.url
-    );
-
-
-    /* =====================================================
-       📥 READ RESPONSE
+       📥 READ SERVER RESPONSE
        ===================================================== */
 
     const raw =
       await response.text();
 
-
-    console.log(
-      "📥 RAW CONTACT SERVER RESPONSE:",
-      raw
-    );
-
-
-    let data = null;
-
+    let data;
 
     try{
 
       data =
-        raw
-          ? JSON.parse(raw)
-          : null;
+        JSON.parse(raw);
 
-    }
-    catch(error){
-
-      console.error(
-        "❌ CONTACT SERVER RETURNED NON-JSON:",
-        raw
-      );
-
+    }catch(e){
 
       throw new Error(
-
         `Contact server returned invalid data. HTTP ${response.status}.`
-
       );
 
     }
 
 
     console.log(
-      "📦 PARSED CONTACT RESPONSE:",
+      "📥 SERVER JOB CONTACT RESPONSE:",
       data
     );
 
 
     /* =====================================================
-       🚨 VERY IMPORTANT 404 DIAGNOSTIC
+       ❌ SERVER DENIED ACCESS
        ===================================================== */
 
     if(
-      response.status === 404
-    ){
-
-      console.error(
-        "🚨 REVEAL ENDPOINT RETURNED 404"
-      );
-
-      console.error(
-        "🌐 Requested URL:",
-        endpoint
-      );
-
-      console.error(
-        "📥 Server response:",
-        data
-      );
-
-
-      throw new Error(
-
-        `Contact unlock endpoint was not found on the backend.\n\n` +
-        `URL: ${endpoint}\n\n` +
-        `Server path: ${data?.path || "unknown"}`
-
-      );
-
-    }
-
-
-    /* =====================================================
-       ❌ SERVER ERROR
-       ===================================================== */
-
-    if(
-      !response.ok
-    ){
-
-      throw new Error(
-
-        data?.message ||
-
-        data?.errorMessage ||
-
-        data?.ResultDesc ||
-
-        `Contact server returned HTTP ${response.status}.`
-
-      );
-
-    }
-
-
-    /* =====================================================
-       ❌ AUTHORIZATION FAILED
-       ===================================================== */
-
-    if(
+      !response.ok ||
       data?.success !== true ||
       data?.contactAuthorized !== true
     ){
@@ -26338,7 +25942,7 @@ async function revealPaidJobContact(jobId, accountReference){
 
 
     /* =====================================================
-       📋 CONTACT
+       📋 CONTACT RETURNED BY SERVER
        ===================================================== */
 
     const contact =
@@ -26346,44 +25950,24 @@ async function revealPaidJobContact(jobId, accountReference){
 
 
     console.log(
-      "=================================================="
-    );
-
-    console.log(
-      "✅ JOB CONTACT AUTHORIZED"
-    );
-
-    console.log(
-      "🆔 JOB:",
-      jobId
-    );
-
-    console.log(
-      "👤 NAME:",
-      contact.contactName
-    );
-
-    console.log(
-      "📞 PHONE:",
-      contact.phone
-    );
-
-    console.log(
-      "📧 EMAIL:",
-      contact.email
-    );
-
-    console.log(
-      "=================================================="
+      "✅ AUTHORIZED JOB CONTACT RECEIVED:",
+      {
+        jobId,
+        hasName:
+          !!contact.contactName,
+        hasPhone:
+          !!contact.phone,
+        hasEmail:
+          !!contact.email
+      }
     );
 
 
     /* =====================================================
-       💾 USER ID
+       💾 SAVE LOCAL PURCHASE
        ===================================================== */
 
     let localUserId = "";
-
 
     try{
 
@@ -26426,7 +26010,6 @@ async function revealPaidJobContact(jobId, accountReference){
           .toString(36)
           .substring(2,10);
 
-
       try{
 
         localStorage.setItem(
@@ -26438,10 +26021,6 @@ async function revealPaidJobContact(jobId, accountReference){
 
     }
 
-
-    /* =====================================================
-       💾 SAVE PURCHASE
-       ===================================================== */
 
     try{
 
@@ -26470,19 +26049,18 @@ async function revealPaidJobContact(jobId, accountReference){
 
       );
 
-    }
-    catch(error){
+    }catch(storageError){
 
       console.warn(
         "⚠️ Could not save local job purchase:",
-        error
+        storageError
       );
 
     }
 
 
     /* =====================================================
-       🔓 SHOW CONTACT
+       🔓 SHOW EMPLOYER CONTACT
        ===================================================== */
 
     await Swal.fire({
@@ -26539,7 +26117,9 @@ async function revealPaidJobContact(jobId, accountReference){
               contact.phone
               ? `
 
-                <div style="margin-top:7px;">
+                <div style="
+                  margin-top:7px;
+                ">
 
                   📞
                   <strong>
@@ -26560,7 +26140,9 @@ async function revealPaidJobContact(jobId, accountReference){
               contact.email
               ? `
 
-                <div style="margin-top:7px;">
+                <div style="
+                  margin-top:7px;
+                ">
 
                   📧
                   <strong>
@@ -26631,7 +26213,7 @@ async function revealPaidJobContact(jobId, accountReference){
 
 
     /* =====================================================
-       🔄 REFRESH
+       🔄 REFRESH JOBS
        ===================================================== */
 
     if(
@@ -26664,11 +26246,10 @@ async function revealPaidJobContact(jobId, accountReference){
     };
 
 
-  }
-  catch(error){
+  }catch(error){
 
     console.error(
-      "❌ SECURE JOB CONTACT REVEAL ERROR:",
+      "❌ Secure job contact reveal error:",
       error
     );
 
@@ -26677,6 +26258,7 @@ async function revealPaidJobContact(jobId, accountReference){
   }
 
 }
+
 window.unlockJobContact = async function(jobId){
 
   try{
