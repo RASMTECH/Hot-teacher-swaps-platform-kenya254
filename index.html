@@ -23145,81 +23145,92 @@ async function revealPaidJobContact(jobId, accountReference){
     throw error;
   }
 }
-async function revealPaidJobContact(jobId, accountReference){
+
+window.unlockJobContact = async function(jobId){
 
   try{
 
-    // =====================================================
-    // 💼 JOBS MODULE ONLY
-    // NEVER USE LEARNING RESOURCES DATA HERE
-    // =====================================================
+    /* =====================================================
+       💼 JOB CONTACT PAYMENT / UNLOCK
+       ===================================================== */
 
     if(!jobId){
       throw new Error("Job ID is missing.");
     }
+
+
+    /* =====================================================
+       🔥 FIREBASE DATABASE CHECK
+       ===================================================== */
 
     if(
       !window.__firebaseDB ||
       typeof get !== "function" ||
       typeof ref !== "function"
     ){
+
       throw new Error(
-        "Jobs database is not ready. Please refresh the page and try again."
+        "Firebase is not ready. Please reload the page and try again."
       );
+
     }
 
 
-    // =====================================================
-    // 🔐 CHECK FIREBASE AUTH SESSION
-    // =====================================================
+    /* =====================================================
+       🔐 GET REAL FIREBASE AUTH USER
+       ===================================================== */
 
     let firebaseUser = null;
 
+
     try{
 
-      // Modular Firebase Auth if available
+      /* -----------------------------------------------
+         Firebase v8 / compat
+         ----------------------------------------------- */
+
       if(
-        typeof window.__firebaseAuth !== "undefined" &&
-        window.__firebaseAuth?.currentUser
+        window.firebase &&
+        typeof window.firebase.auth === "function"
       ){
 
         firebaseUser =
-          window.__firebaseAuth.currentUser;
+          window.firebase.auth().currentUser;
 
       }
 
-    }catch(e){
+    }catch(authError){
 
       console.warn(
-        "Jobs Firebase auth lookup warning:",
-        e
+        "⚠️ Firebase Auth lookup warning:",
+        authError
       );
 
     }
 
 
-    // -----------------------------------------------------
-    // Compatibility with Firebase compat SDK
-    // -----------------------------------------------------
+    /* -----------------------------------------------
+       Modular Firebase Auth fallback
+       ----------------------------------------------- */
 
     if(!firebaseUser){
 
       try{
 
         if(
-          window.firebase &&
-          typeof window.firebase.auth === "function"
+          typeof window.getFirebaseCurrentUser ===
+          "function"
         ){
 
           firebaseUser =
-            window.firebase.auth().currentUser;
+            window.getFirebaseCurrentUser();
 
         }
 
       }catch(e){
 
         console.warn(
-          "Jobs compat auth lookup warning:",
+          "⚠️ Modular Firebase Auth lookup failed:",
           e
         );
 
@@ -23228,199 +23239,50 @@ async function revealPaidJobContact(jobId, accountReference){
     }
 
 
-    // -----------------------------------------------------
-    // DO NOT BLOCK THE JOB CONTACT READ merely because
-    // a separate helper does not expose the user.
-    //
-    // Your Firebase rule is:
-    //
-    // jobContacts/$jobId
-    // .read = auth != null
-    //
-    // Firebase itself performs the real authorization check.
-    // -----------------------------------------------------
+    /* =====================================================
+       🔐 AUTHENTICATION IS REQUIRED FOR JOB CONTACTS
+       ===================================================== */
 
-
-    // =====================================================
-    // 📌 NORMALIZE JOB ID
-    // =====================================================
-
-    const cleanJobId =
-      String(jobId)
-        .trim();
-
-
-    if(!cleanJobId){
-
-      throw new Error(
-        "Invalid job ID."
-      );
-
-    }
-
-
-    // =====================================================
-    // 🔎 JOBS CONTACT PATH
-    //
-    // IMPORTANT:
-    // This MUST remain:
-    //
-    // jobContacts/{jobId}
-    //
-    // NOT:
-    // learningResources
-    // resources
-    // resourceId
-    // =====================================================
-
-    const contactPath =
-      `jobContacts/${cleanJobId}`;
-
-
-    console.log(
-      "💼 JOB CONTACT READ"
-    );
-
-    console.log(
-      "Job ID:",
-      cleanJobId
-    );
-
-    console.log(
-      "Firebase path:",
-      contactPath
-    );
-
-    console.log(
-      "Payment reference:",
-      accountReference || "NONE"
-    );
-
-
-    const contactRef =
-      ref(
-        window.__firebaseDB,
-        contactPath
-      );
-
-
-    // =====================================================
-    // 🔎 READ ONLY JOB CONTACT
-    // =====================================================
-
-    let contactSnap;
-
-    try{
-
-      contactSnap =
-        await get(contactRef);
-
-    }catch(firebaseError){
+    if(!firebaseUser){
 
       console.error(
-        "❌ JOB CONTACT FIREBASE ERROR:",
-        firebaseError
+        "❌ JOB PAYMENT BLOCKED: No Firebase authenticated user."
       );
-
-      const firebaseCode =
-        String(
-          firebaseError?.code ||
-          ""
-        ).toLowerCase();
-
-
-      // ---------------------------------------------------
-      // Permission denied
-      // ---------------------------------------------------
-
-      if(
-        firebaseCode.includes("permission") ||
-        firebaseCode.includes("denied")
-      ){
-
-        throw new Error(
-          "Firebase denied access to this job contact. Please make sure you are logged in and try again."
-        );
-
-      }
-
-
-      // ---------------------------------------------------
-      // Network problem
-      // ---------------------------------------------------
-
-      if(
-        firebaseCode.includes("network") ||
-        firebaseCode.includes("offline")
-      ){
-
-        throw new Error(
-          "The Jobs database could not be reached. Please check your internet connection and try again."
-        );
-
-      }
 
 
       throw new Error(
-        firebaseError?.message ||
-        "Unable to load the job contact."
+        "Your account is not currently signed in to Firebase. Please log out, log in again, and then try to reveal the job contact."
       );
 
     }
-
-
-    // =====================================================
-    // ❌ CONTACT NOT FOUND
-    // =====================================================
-
-    if(!contactSnap.exists()){
-
-      console.warn(
-        "⚠️ JOB CONTACT NOT FOUND:",
-        contactPath
-      );
-
-      throw new Error(
-        "Payment was confirmed, but this job does not currently have a contact record. Please contact the administrator."
-      );
-
-    }
-
-
-    // =====================================================
-    // 📞 GET CONTACT DATA
-    // =====================================================
-
-    const contact =
-      contactSnap.val() || {};
 
 
     console.log(
-      "✅ JOB CONTACT FOUND:",
-      {
-        jobId:
-          cleanJobId,
-
-        hasPhone:
-          !!contact.phone,
-
-        hasEmail:
-          !!contact.email,
-
-        hasName:
-          !!contact.contactName
-      }
+      "✅ Firebase user authenticated:",
+      firebaseUser.uid
     );
 
 
-    // =====================================================
-    // 💾 SAVE JOB PURCHASE LOCALLY
-    //
-    // JOBS ONLY
-    // =====================================================
+    /* =====================================================
+       🛑 STOP ANY OLD PAYMENT MONITOR
+       ===================================================== */
 
-    let currentUserId =
-      firebaseUser?.uid ||
+    if(
+      typeof stopTeachersHubPaymentMonitor ===
+      "function"
+    ){
+
+      stopTeachersHubPaymentMonitor();
+
+    }
+
+
+    /* =====================================================
+       👤 USER ID
+       ===================================================== */
+
+    const userId =
+      firebaseUser.uid ||
       (
         typeof getTeachersHubUserId === "function"
           ? getTeachersHubUserId()
@@ -23428,233 +23290,848 @@ async function revealPaidJobContact(jobId, accountReference){
       );
 
 
-    if(!currentUserId){
+    if(!userId){
 
-      currentUserId =
-        "guest";
+      throw new Error(
+        "Your account ID could not be identified. Please log in again."
+      );
 
     }
 
 
+    /* =====================================================
+       🔑 LOCAL PURCHASE KEY
+       ===================================================== */
+
     const purchaseKey =
       jobPurchaseKey(
-        cleanJobId,
-        currentUserId
+        jobId,
+        userId
       );
 
 
+    const previous =
+      localStorage.getItem(
+        purchaseKey
+      );
+
+
+    /* =====================================================
+       ♻️ ALREADY PAID LOCALLY
+       ===================================================== */
+
+    if(previous){
+
+      try{
+
+        const purchase =
+          JSON.parse(
+            previous
+          );
+
+
+        if(
+          purchase?.status === "PAID"
+        ){
+
+          console.log(
+            "🔓 Existing paid Job purchase found."
+          );
+
+
+          await revealPaidJobContact(
+            jobId,
+            purchase.accountReference
+          );
+
+
+          return;
+
+        }
+
+      }catch(e){
+
+        console.warn(
+          "⚠️ Invalid saved Job purchase removed."
+        );
+
+
+        localStorage.removeItem(
+          purchaseKey
+        );
+
+      }
+
+    }
+
+
+    /* =====================================================
+       🔎 LOAD ONLY THIS JOB
+       ===================================================== */
+
+    const job =
+      await getJobById(
+        jobId
+      );
+
+
+    if(!job){
+
+      throw new Error(
+        "This job is no longer available."
+      );
+
+    }
+
+
+    /* =====================================================
+       💰 JOB CONTACT PRICE
+       ===================================================== */
+
+    const price =
+      Math.max(
+        1,
+        Number(
+          job.unlockFee || 0
+        )
+      );
+
+
+    /* =====================================================
+       📱 SAVED MPESA PHONE
+       ===================================================== */
+
+    const savedPhone =
+      localStorage.getItem(
+        "myPhone"
+      ) || "";
+
+
+    /* =====================================================
+       💳 PAYMENT CONFIRMATION DIALOG
+       ===================================================== */
+
+    const result =
+      await Swal.fire({
+
+        title:
+          "🔐 Reveal Job Contact",
+
+        width:
+          520,
+
+        html:`
+
+          <div style="
+            text-align:left;
+          ">
+
+            <div style="
+              background:#fff7ed;
+              border:1px solid #fed7aa;
+              padding:14px;
+              border-radius:12px;
+              margin-bottom:14px;
+            ">
+
+              <strong style="
+                font-size:17px;
+              ">
+
+                ${
+                  jobEscape(
+                    job.title ||
+                    "Job Opportunity"
+                  )
+                }
+
+              </strong>
+
+
+              <div style="
+                color:#9a3412;
+                margin-top:4px;
+              ">
+
+                ${
+                  jobEscape(
+                    job.employer ||
+                    ""
+                  )
+                }
+
+              </div>
+
+            </div>
+
+
+            <div style="
+              background:#ecfdf5;
+              padding:14px;
+              border-radius:12px;
+              text-align:center;
+              margin-bottom:17px;
+            ">
+
+              <div style="
+                font-size:12px;
+                color:#64748b;
+              ">
+
+                Contact Unlock Fee
+
+              </div>
+
+
+              <strong style="
+                font-size:28px;
+                color:#16a34a;
+              ">
+
+                KES ${
+                  price.toLocaleString()
+                }
+
+              </strong>
+
+            </div>
+
+
+            <label style="
+              display:block;
+              font-weight:800;
+              margin-bottom:7px;
+            ">
+
+              M-PESA Phone Number
+
+            </label>
+
+
+            <input
+              id="jobMpesaPhone"
+              type="tel"
+              value="${jobEscape(savedPhone)}"
+              placeholder="07XXXXXXXX"
+              autocomplete="tel"
+              style="
+                width:100%;
+                box-sizing:border-box;
+                padding:14px;
+                border:2px solid #e2e8f0;
+                border-radius:10px;
+                font-size:16px;
+              "
+            >
+
+
+            <div style="
+              margin-top:9px;
+              color:#64748b;
+              font-size:12px;
+            ">
+
+              An M-PESA STK Push will be sent to this
+              number.
+
+              <br><br>
+
+              The employer's contact details will only
+              be revealed after the payment is confirmed.
+
+            </div>
+
+          </div>
+
+        `,
+
+        showCancelButton:
+          true,
+
+        confirmButtonText:
+          "📲 Pay & Reveal",
+
+        cancelButtonText:
+          "Cancel",
+
+        confirmButtonColor:
+          "#ea580c",
+
+        preConfirm:()=>{
+
+          const phone =
+            normalizeKenyanPhone(
+              document.getElementById(
+                "jobMpesaPhone"
+              )?.value
+            );
+
+
+          if(!phone){
+
+            Swal.showValidationMessage(
+              "Enter a valid Kenyan M-PESA number."
+            );
+
+
+            return false;
+
+          }
+
+
+          return phone;
+
+        }
+
+      });
+
+
+    /* =====================================================
+       ❌ USER CANCELLED
+       ===================================================== */
+
+    if(!result.isConfirmed){
+
+      return;
+
+    }
+
+
+    /* =====================================================
+       📱 BUYER PHONE
+       ===================================================== */
+
+    const buyerPhone =
+      result.value;
+
+
     localStorage.setItem(
-      purchaseKey,
-      JSON.stringify({
-
-        status:
-          "PAID",
-
-        accountReference:
-          accountReference || null,
-
-        jobId:
-          cleanJobId,
-
-        firebaseUid:
-          firebaseUser?.uid || null,
-
-        revealedAt:
-          Date.now()
-
-      })
+      "myPhone",
+      buyerPhone
     );
 
 
-    // =====================================================
-    // 🔓 DISPLAY JOB CONTACT
-    // =====================================================
+    /* =====================================================
+       🔐 SAFE JOB ID
+       ===================================================== */
 
-    const contactName =
-      contact.contactName ||
-      contact.name ||
-      "Contact Person";
-
-
-    const phone =
-      contact.phone ||
-      contact.mobile ||
-      contact.phoneNumber ||
-      "";
-
-
-    const email =
-      contact.email ||
-      "";
+    const safeJobId =
+      String(jobId)
+        .replace(
+          /[^a-zA-Z0-9_-]/g,
+          ""
+        )
+        .substring(
+          0,
+          30
+        );
 
 
-    const instructions =
-      contact.instructions ||
-      contact.applicationInstructions ||
-      contact.application ||
-      "";
+    /* =====================================================
+       🧾 UNIQUE PAYMENT REFERENCE
+       ===================================================== */
 
+    const accountReference =
+      `JOB_${safeJobId}_${Date.now()}`;
+
+
+    /* =====================================================
+       💳 STK PAYLOAD
+       ===================================================== */
+
+    const stkPayload = {
+
+      phone:
+        buyerPhone,
+
+      amount:
+        price,
+
+      accountReference:
+        accountReference,
+
+      itemId:
+        jobId,
+
+      itemName:
+        job.title ||
+        "Job Contact",
+
+      userId:
+        userId,
+
+      /* -----------------------------------------------
+         Explicitly identify this as a JOB transaction.
+         ----------------------------------------------- */
+
+      flow:
+        "job",
+
+      paymentType:
+        "job_contact"
+
+    };
+
+
+    console.log(
+      "📲 JOB STK REQUEST:",
+      {
+        jobId,
+        userId,
+        amount:price,
+        accountReference,
+        flow:"job"
+      }
+    );
+
+
+    /* =====================================================
+       📲 STK PUSH WAITING UI
+       ===================================================== */
 
     Swal.fire({
 
-      icon:
-        "success",
-
       title:
-        "🔓 Contact Revealed",
-
-      width:
-        520,
+        "📲 Sending STK Push...",
 
       html:`
 
         <div style="
-          text-align:left;
-          line-height:1.75;
+          line-height:1.7;
         ">
 
-          <div style="
-            background:#ecfdf5;
-            border:1px solid #86efac;
-            border-radius:12px;
-            padding:16px;
-          ">
+          Sending payment request to
 
-            <div style="
-              font-size:12px;
-              color:#15803d;
-              font-weight:800;
-              text-transform:uppercase;
-              margin-bottom:5px;
-            ">
-              JOB CONTACT
-            </div>
+          <br>
 
+          <strong>
+            ${jobEscape(buyerPhone)}
+          </strong>
 
-            <strong style="
-              display:block;
-              color:#166534;
-              font-size:18px;
-              margin-bottom:8px;
-            ">
-              ${jobEscape(contactName)}
-            </strong>
+          <br><br>
 
+          Amount:
 
-            ${
-              phone
-                ? `
-                  <div style="
-                    margin-top:7px;
-                  ">
-                    📞
-                    <strong>Phone:</strong>
-                    ${jobEscape(phone)}
-                  </div>
-                `
-                : `
-                  <div style="
-                    color:#64748b;
-                    margin-top:7px;
-                  ">
-                    📞 Phone number not provided
-                  </div>
-                `
-            }
+          <strong>
+            KES ${price.toLocaleString()}
+          </strong>
 
+          <br><br>
 
-            ${
-              email
-                ? `
-                  <div style="
-                    margin-top:7px;
-                  ">
-                    📧
-                    <strong>Email:</strong>
-                    ${jobEscape(email)}
-                  </div>
-                `
-                : ""
-            }
-
-
-            ${
-              instructions
-                ? `
-                  <div style="
-                    margin-top:12px;
-                    padding-top:10px;
-                    border-top:1px solid #bbf7d0;
-                  ">
-                    📝
-                    <strong>Application Instructions:</strong>
-                    <br>
-                    ${jobEscape(instructions)}
-                  </div>
-                `
-                : ""
-            }
-
-          </div>
-
-
-          <div style="
-            margin-top:12px;
-            padding:10px;
-            background:#f8fafc;
-            border-radius:9px;
-            color:#64748b;
-            font-size:12px;
-          ">
-            🔐 Payment confirmed successfully.
-            <br>
-            This contact has been unlocked for this job.
-          </div>
+          Please check your phone and complete
+          the M-PESA prompt.
 
         </div>
 
       `,
 
-      confirmButtonText:
-        "Done",
-
-      confirmButtonColor:
-        "#16a34a",
-
       allowOutsideClick:
-        false
+        false,
+
+      allowEscapeKey:
+        false,
+
+      showConfirmButton:
+        false,
+
+      didOpen:()=>{
+        Swal.showLoading();
+      }
 
     });
 
 
-    // =====================================================
-    // 🔄 REFRESH JOBS SECTION ONLY
-    //
-    // IMPORTANT:
-    // DO NOT CALL ANY RESOURCE FUNCTIONS HERE.
-    // =====================================================
+    /* =====================================================
+       🌐 BACKEND
+       ===================================================== */
 
-    if(
-      typeof renderJobs === "function"
-    ){
+    const backend =
+      String(
+        window.TEACHERS_HUB_MPESA_BACKEND ||
+        ""
+      )
+      .trim()
+      .replace(
+        /\/+$/,
+        ""
+      );
 
-      renderJobs();
+
+    if(!backend){
+
+      throw new Error(
+        "M-PESA backend URL is not configured."
+      );
 
     }
+
+
+    /* =====================================================
+       🚀 SEND STK REQUEST
+       ===================================================== */
+
+    const response =
+      await teachersHubRequest(
+
+        `${backend}/stkpush`,
+
+        {
+
+          method:
+            "POST",
+
+          headers:{
+
+            "Content-Type":
+              "application/json",
+
+            "Accept":
+              "application/json"
+
+          },
+
+          body:
+            JSON.stringify(
+              stkPayload
+            )
+
+        },
+
+        30000
+
+      );
+
+
+    /* =====================================================
+       📥 READ RESPONSE
+       ===================================================== */
+
+    const raw =
+      await response.text();
+
+
+    let data;
+
+
+    try{
+
+      data =
+        JSON.parse(
+          raw
+        );
+
+    }catch(e){
+
+      throw new Error(
+        `Payment server returned invalid data. HTTP ${response.status}.`
+      );
+
+    }
+
+
+    console.log(
+      "📥 JOB STK RESPONSE:",
+      data
+    );
+
+
+    /* =====================================================
+       ❌ BACKEND ERROR
+       ===================================================== */
+
+    if(!response.ok){
+
+      throw new Error(
+
+        data?.errorMessage ||
+
+        data?.message ||
+
+        data?.ResultDesc ||
+
+        data?.ResponseDescription ||
+
+        `Payment server returned HTTP ${response.status}.`
+
+      );
+
+    }
+
+
+    /* =====================================================
+       ✅ STK ACCEPTED
+       ===================================================== */
+
+    const accepted =
+      data?.success === true &&
+      (
+        String(
+          data?.ResponseCode
+        ) === "0" ||
+
+        data?.ResponseCode === 0 ||
+
+        !!data?.CheckoutRequestID
+
+      );
+
+
+    if(!accepted){
+
+      throw new Error(
+
+        data?.errorMessage ||
+
+        data?.ResponseDescription ||
+
+        data?.ResultDesc ||
+
+        "M-PESA did not accept the payment request."
+
+      );
+
+    }
+
+
+    const checkoutRequestId =
+      data?.CheckoutRequestID ||
+      null;
+
+
+    /* =====================================================
+       ⏳ WAIT FOR PAYMENT
+       ===================================================== */
+
+    Swal.fire({
+
+      title:
+        "⏳ Confirming Payment...",
+
+      html:`
+
+        <div style="
+          line-height:1.7;
+        ">
+
+          We are waiting for M-PESA confirmation.
+
+          <br><br>
+
+          <strong>
+            Do not close this window.
+          </strong>
+
+          <br><br>
+
+          Once payment is confirmed,
+          the employer contact will be revealed.
+
+        </div>
+
+      `,
+
+      allowOutsideClick:
+        false,
+
+      allowEscapeKey:
+        false,
+
+      showConfirmButton:
+        false,
+
+      didOpen:()=>{
+        Swal.showLoading();
+      }
+
+    });
+
+
+    /* =====================================================
+       🔎 SHARED PAYMENT MONITOR
+       ===================================================== */
+
+    if(
+      typeof window.waitForResourcePayment !==
+      "function"
+    ){
+
+      throw new Error(
+        "The payment confirmation engine is not available."
+      );
+
+    }
+
+
+    const payment =
+      await window.waitForResourcePayment(
+
+        accountReference,
+
+        jobId,
+
+        userId,
+
+        checkoutRequestId,
+
+        {
+
+          pollInterval:
+            3000,
+
+          timeout:
+            180000,
+
+          maxNetworkErrors:
+            10,
+
+          /* -----------------------------------------------
+             NEVER auto-open this as a Resource.
+             ----------------------------------------------- */
+
+          autoUnlockResource:
+            false,
+
+          /* -----------------------------------------------
+             CRITICAL:
+             This is a JOB payment.
+             ----------------------------------------------- */
+
+          flow:
+            "job",
+
+          /* -----------------------------------------------
+             Explicit metadata for the payment monitor.
+             ----------------------------------------------- */
+
+          jobId:
+            jobId,
+
+          paymentType:
+            "job_contact"
+
+        }
+
+      );
+
+
+    /* =====================================================
+       💰 PAYMENT MUST BE PAID
+       ===================================================== */
+
+    if(
+      !payment ||
+      String(
+        payment.status ||
+        ""
+      ).toUpperCase() !==
+      "PAID"
+    ){
+
+      throw new Error(
+
+        payment?.message ||
+
+        payment?.ResultDesc ||
+
+        "Payment was not confirmed."
+
+      );
+
+    }
+
+
+    console.log(
+      "🎉 JOB PAYMENT CONFIRMED:",
+      {
+        jobId,
+        userId,
+        accountReference
+      }
+    );
+
+
+    /* =====================================================
+       🔓 REVEAL ONLY THIS JOB'S CONTACT
+       ===================================================== */
+
+    await revealPaidJobContact(
+
+      jobId,
+
+      accountReference
+
+    );
 
 
   }catch(error){
 
     console.error(
-      "❌ JOB CONTACT REVEAL ERROR:",
+      "❌ JOB CONTACT PAYMENT ERROR:",
       error
     );
 
-    throw error;
+
+    /* =====================================================
+       ⚠️ IMPORTANT PAYMENT ERROR HANDLING
+       ===================================================== */
+
+    let message =
+      error?.message ||
+      "The contact could not be unlocked. Please try again.";
+
+
+    /* -----------------------------------------------
+       Firebase Permission error
+       ----------------------------------------------- */
+
+    if(
+      String(
+        error?.code ||
+        ""
+      )
+      .toLowerCase()
+      .includes(
+        "permission"
+      ) ||
+
+      String(
+        message
+      )
+      .toLowerCase()
+      .includes(
+        "permission denied"
+      )
+    ){
+
+      message =
+        "Your M-PESA payment was confirmed, but Firebase could not open this employer contact. Your payment has NOT been marked as lost. Please sign out, sign in again, and try the contact again.";
+
+    }
+
+
+    /* =====================================================
+       SHOW ERROR
+       ===================================================== */
+
+    Swal.fire({
+
+      icon:
+        "error",
+
+      title:
+        "Payment / Unlock Failed",
+
+      text:
+        message,
+
+      confirmButtonColor:
+        "#dc2626"
+
+    });
 
   }
 
-}
+};
 window.publishJob = async function(event){
   if(event) event.preventDefault();
 
