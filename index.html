@@ -9,7 +9,7 @@
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <!-- SEO -->
-<meta name="description" content="Find teacher transfer swap partners across Kenya. Connect with teachers seeking mutual transfers quickly, safely and easily.">
+<meta name="description" content="Find teacher transfer swap partners, browse learning resources and discover jobs across Kenya. Connect quickly, safely and easily.">
 <!-- ======================================================
      OPEN GRAPH (Facebook, WhatsApp, LinkedIn, Telegram)
 ====================================================== -->
@@ -3312,6 +3312,45 @@ input[type="file"]::file-selector-button{
 }
 </style>
 
+<style>
+.admin-content-manager{
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:0 0 14px;
+  padding:12px 14px;
+  border:1px solid #fecaca;
+  border-radius:12px;
+  background:#fff1f2;
+  color:#991b1b;
+}
+.admin-content-manager > div{display:flex;flex-direction:column;gap:3px;}
+.admin-content-manager span{font-size:11px;color:#64748b;font-weight:700;}
+.admin-content-manager button{
+  min-height:40px;padding:9px 13px;border:0;border-radius:9px;
+  background:#dc2626;color:#fff;font-weight:900;cursor:pointer;
+}
+.admin-content-select{
+  display:flex !important;
+  align-items:center;
+  justify-content:flex-end;
+  gap:7px;
+  margin-bottom:9px;
+  padding:7px 9px;
+  border-radius:9px;
+  background:#fff1f2;
+  border:1px solid #fecaca;
+  color:#991b1b;
+  font-size:11px;
+  font-weight:900;
+  cursor:pointer;
+}
+.admin-content-select input{width:17px;height:17px;accent-color:#dc2626;cursor:pointer;}
+@media(max-width:650px){
+  .admin-content-manager{align-items:stretch;flex-direction:column;}
+  .admin-content-manager button{width:100%;}
+}
+</style>
 </head>
 <body>
 
@@ -3339,7 +3378,7 @@ input[type="file"]::file-selector-button{
   color:#ffffff;
   text-shadow:0 2px 4px rgba(0,0,0,0.2);
 ">
-TeacherHub Kenya – Swaps & Resources
+MwalimuHub Kenya – Swaps & Learning Resources
 </h1>
 
 <p style="
@@ -3349,7 +3388,8 @@ TeacherHub Kenya – Swaps & Resources
   line-height:1.5;
   font-weight:500;
 ">
-  Find transfer swap partners across Kenya.
+ Discover. Connect. Make Your Next Move.
+Join teachers across Kenya using Mwalimu Hub for trusted transfer swaps and learning resources.
 </p>
   </div>
 </header>
@@ -3647,6 +3687,36 @@ TeacherHub Kenya – Swaps & Resources
 
   </div>
 
+
+</button>
+
+<!-- =====================================================
+     JOBS & VACANCIES
+====================================================== -->
+
+<button
+  type="button"
+  class="action-card action-card-jobs"
+  onclick="openJobsSection()"
+>
+  <div class="action-card-color">
+    <span class="action-icon">💼</span>
+    <span class="action-number">04</span>
+  </div>
+
+  <div class="action-card-content">
+    <strong>Browse Jobs & Vacancies</strong>
+
+    <small>
+      Discover teaching, education and other job opportunities
+      posted by the administrator.
+    </small>
+
+    <span class="action-open">
+      Explore Jobs
+      <b>→</b>
+    </span>
+  </div>
 </button>
 
 
@@ -4329,6 +4399,14 @@ TeacherHub Kenya – Swaps & Resources
        📋 TOP CONTROL ROW
   ====================================================== -->
 
+  <div id="adminSwapManager" class="admin-content-manager" style="display:none;">
+    <div>
+      <strong>🗑️ Manage Swap Posts</strong>
+      <span>Select swap posts and delete them in one action.</span>
+    </div>
+    <button type="button" onclick="deleteSelectedContent('swaps')">🗑️ Delete Selected Swaps</button>
+  </div>
+
   <div
     class="swap-requests-controls"
     style="
@@ -4882,383 +4960,852 @@ TeacherHub Kenya – Swaps & Resources
      Hidden until the user opens it from the action hub.
 ========================================================= -->
 
-<section id="learningResourcesSection"
-         class="learning-resources-section independent-section-wrapper"
-         style="display:none;">
+<section
+  id="learningResourcesSection"
+  class="learning-resources-section independent-section-wrapper"
+  style="display:none;"
+>
 
-  <div class="section-back-row">
-    <button type="button" class="section-back-btn" onclick="closeIndependentSections()">
-      ← Back to Sections
-    </button>
-  </div>
 
-  <div class="resource-hero">
+  <!-- =====================================================
+       👑 ADMIN-ONLY RESOURCE PUBLISHER
+  ====================================================== -->
+  <div id="adminResourceManager" class="admin-content-manager" style="display:none;">
     <div>
-      <span class="resource-kicker">📚 LEARNING RESOURCE MARKETPLACE</span>
-      <h2>Browse & Buy Learning Resources</h2>
-      <p>
-        Find teaching and learning materials quickly by Grade / Level,
-        Resource Type and Subject. Select your filters and choose the resource you need.
-        Administrators can also publish resources using files or secure links.
-      </p>
+      <strong>🗑️ Manage Learning Resources</strong>
+      <span>Select resources and delete them in one action.</span>
     </div>
+    <button type="button" onclick="deleteSelectedContent('resources')">🗑️ Delete Selected Resources</button>
   </div>
-
-
-  <!-- =====================================================
-       👑 ADMIN RESOURCE PUBLISHING
-       Hidden from normal users. Admins can publish:
-       PDF, Word, PowerPoint, Excel, images, TXT or links.
-  ====================================================== -->
-
-  <!-- =====================================================
-       👑 ADMIN RESOURCE FORM TOGGLE
-       The form is visible to the administrator only.
-  ====================================================== -->
-  <div
-    id="adminResourceAdminAccess"
-    style="display:none;margin-bottom:12px;"
-  >
+  <div id="adminResourceAdminAccess" style="display:none; margin-bottom:20px;">
     <button
       type="button"
       id="adminResourceToggleBtn"
       onclick="toggleAdminResourceForm()"
-      style="
-        width:100%;
-        min-height:48px;
-        border:0;
-        border-radius:12px;
-        padding:12px 16px;
-        background:linear-gradient(135deg,#0f766e,#14b8a6);
-        color:#fff;
-        font-size:15px;
-        font-weight:900;
-        cursor:pointer;
-        box-shadow:0 8px 20px rgba(15,118,110,.20);
-      "
-    >
-      📤 Publish / Manage Learning Resources
-    </button>
+      style="width:100%;min-height:46px;border:0;border-radius:12px;background:#991b1b;color:#fff;font-weight:900;cursor:pointer;"
+    >📤 Publish / Manage Learning Resources</button>
   </div>
 
-<div
-  id="adminResourcePublisher"
-  style="
-    display:none;
-    background:
-      url('https://i.imgur.com/tllGwj6.png')
-      center/cover no-repeat;
-    border-radius:18px;
-    padding:24px;
-    color:#ffffff;
-  "
-  class="admin-resource-publisher"
->
-
-    <div class="admin-resource-publisher-head">
-      <div>
-        <span class="admin-resource-kicker">👑 ADMIN ONLY</span>
-        <h3>📤 Publish Learning Resource</h3>
-        <p>
-          Add a resource for users to browse and buy.
-          You can upload a file or publish a web/download link.
-        </p>
-      </div>
-
-      <span class="admin-resource-lock">🔐 Admin Publishing</span>
-      <button
-        type="button"
-        onclick="adminLogout()"
-        style="
-          border:0;
-          border-radius:9px;
-          padding:8px 11px;
-          background:rgba(239,68,68,.18);
-          color:#fecaca;
-          font-size:11px;
-          font-weight:900;
-          cursor:pointer;
-        "
-      >
-        🚪 Logout
-      </button>
+  <div
+    id="adminResourcePublisher"
+    style="display:none;margin-bottom:22px;padding:20px;border-radius:18px;background:linear-gradient(135deg,#7f1d1d,#991b1b);color:#fff;box-shadow:0 12px 28px rgba(127,29,29,.16);"
+  >
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:900;color:#fecaca;letter-spacing:.08em;">👑 ADMIN ONLY</div>
+      <h3 style="margin:5px 0;color:#fff;font-size:21px;">Publish Learning Resource</h3>
+      <p style="margin:0;color:#fee2e2;font-size:13px;line-height:1.55;">
+        Add a resource for users to browse and purchase. This form is hidden from normal users.
+      </p>
     </div>
 
     <form id="adminResourceForm" onsubmit="publishLearningResource(event)">
-
-      <div class="admin-resource-grid">
-
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;">
         <div>
-          <label>Resource Title *</label>
-          <input
-            id="adminResourceTitle"
-            type="text"
-            placeholder="e.g. Grade 6 Mathematics Revision Questions"
-            required
-          >
+          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Title *</label>
+          <input id="adminResourceTitle" required placeholder="Resource title" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
         </div>
-
         <div>
-          <label>Level / Grade *</label>
-          <select id="adminResourceLevel" required>
+          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Grade / Level *</label>
+          <select id="adminResourceLevel" required style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
             <option value="">Select level</option>
-            <option>Grade 1</option>
-            <option>Grade 2</option>
-            <option>Grade 3</option>
-            <option>Grade 4</option>
-            <option>Grade 5</option>
-            <option>Grade 6</option>
-            <option>Grade 7</option>
-            <option>Grade 8</option>
-            <option>Grade 9</option>
-            <option>Grade 10</option>
-            <option>Grade 11</option>
-            <option>Grade 12</option>
-            <option>Primary School</option>
-            <option>Junior School</option>
-            <option>Senior School</option>
-            <option>Teacher Resource</option>
+            <option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option>
+            <option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
+            <option>Grade 9</option><option>Grade 10</option><option>Grade 11</option><option>Grade 12</option>
+            <option>Primary School</option><option>Junior School</option><option>Senior School</option><option>Teacher Resource</option>
           </select>
         </div>
-
         <div>
-          <label>Resource Type *</label>
-          <select id="adminResourceType" required>
+          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Type *</label>
+          <select id="adminResourceType" required style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
             <option value="">Select type</option>
-            <option>Notes</option>
-            <option>Revision Questions</option>
-            <option>Exams / Assessments</option>
-            <option>Schemes of Work</option>
-            <option>Lesson Plans</option>
-            <option>Teaching Aids</option>
-            <option>Marking Schemes</option>
-            <option>Revision Booklet</option>
-            <option>Other</option>
+            <option>Notes</option><option>Revision</option><option>Past Paper</option><option>Assessment</option><option>Scheme of Work</option><option>Other</option>
           </select>
         </div>
-
         <div>
-          <label>Subject *</label>
-          <input
-            id="adminResourceSubject"
-            type="text"
-            list="resourceSubjectsList"
-            placeholder="e.g. Mathematics"
-            required
-          >
-          <datalist id="resourceSubjectsList">
-            <option value="Mathematics">
-            <option value="English">
-            <option value="Kiswahili">
-            <option value="Science">
-            <option value="Integrated Science">
-            <option value="Biology">
-            <option value="Chemistry">
-            <option value="Physics">
-            <option value="Agriculture">
-            <option value="Geography">
-            <option value="History">
-            <option value="CRE">
-            <option value="IRE">
-            <option value="Business Studies">
-            <option value="Computer Studies">
-            <option value="ICT">
-            <option value="Home Science">
-            <option value="Music">
-            <option value="Fine Art">
-            <option value="Physical Education">
-            <option value="Other">
-          </datalist>
+          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Subject *</label>
+          <input id="adminResourceSubject" required placeholder="e.g. Mathematics" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
         </div>
+      </div>
 
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
         <div>
-          <label>Selling Price (KES) *</label>
-          <input
-            id="adminResourcePrice"
-            type="number"
-            min="0"
-            step="1"
-            placeholder="e.g. 100"
-            required
-          >
+          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Price (KES)</label>
+          <input id="adminResourcePrice" type="number" min="0" step="1" value="0" oninput="updateAdminResourcePricePreview()" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
+          <div id="adminResourcePricePreview" style="margin-top:5px;font-size:11px;color:#fecaca;"></div>
+          <div id="adminResourceEarningPreview" style="font-size:11px;color:#fecaca;"></div>
         </div>
-
         <div>
-          <label>Resource Source *</label>
-          <select id="adminResourceSource" onchange="toggleAdminResourceSource()">
+          <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Source</label>
+          <select id="adminResourceSource" onchange="toggleAdminResourceSource()" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
             <option value="file">Upload File</option>
-            <option value="link">Use Link</option>
+            <option value="link">External Link</option>
           </select>
         </div>
-
       </div>
 
-      <div
-        id="adminResourceFileBox"
-        class="admin-resource-source-box"
-      >
-        <label>Choose Resource File *</label>
-        <input
-          id="adminResourceFile"
-          type="file"
-          accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.webp"
-        >
-        <small>
-          Supported: PDF, Word, PowerPoint, Excel, TXT and images.
-        </small>
+      <div id="adminResourceFileBox" style="margin-top:12px;">
+        <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Resource File *</label>
+        <input id="adminResourceFile" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.txt" style="width:100%;box-sizing:border-box;padding:10px;border-radius:10px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;">
       </div>
 
-      <div
-        id="adminResourceLinkBox"
-        class="admin-resource-source-box"
-        style="display:none;"
-      >
-        <label>Resource Link *</label>
-        <input
-          id="adminResourceLink"
-          type="url"
-          placeholder="https://example.com/resource.pdf"
-        >
-        <small>
-          Use a direct HTTPS/HTTP resource URL or a trusted resource page.
-        </small>
+      <div id="adminResourceLinkBox" style="display:none;margin-top:12px;">
+        <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Resource Link *</label>
+        <input id="adminResourceLink" type="url" placeholder="https://..." style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;">
       </div>
 
-      <div>
-        <label>Description</label>
-        <textarea
-          id="adminResourceDescription"
-          rows="3"
-          placeholder="Briefly describe what the resource contains..."
-        ></textarea>
+      <div style="margin-top:12px;">
+        <label style="display:block;margin-bottom:6px;font-size:12px;font-weight:800;">Short Description</label>
+        <textarea id="adminResourceDescription" rows="3" placeholder="Brief description of the resource" style="width:100%;box-sizing:border-box;padding:11px;border-radius:10px;border:1px solid #cbd5e1;resize:vertical;"></textarea>
       </div>
 
-      <div class="admin-resource-preview-row">
-        <div>
-          <span>Listed Price</span>
-          <strong id="adminResourcePricePreview">KES 0</strong>
-        </div>
-
-        <div>
-          <span>Potential Earning</span>
-          <strong id="adminResourceEarningPreview">KES 0</strong>
-        </div>
-      </div>
-
-      <button
-        type="submit"
-        id="adminPublishResourceBtn"
-        class="admin-publish-resource-btn"
-      >
-        📤 Publish Resource
+      <button id="adminPublishResourceBtn" type="submit" style="margin-top:12px;width:100%;min-height:47px;border:0;border-radius:11px;background:#16a34a;color:#fff;font-weight:900;cursor:pointer;">
+        📢 Publish Resource
       </button>
-
     </form>
   </div>
 
   <!-- =====================================================
-       🔎 RESOURCE FILTERS
+       🔙 BACK TO SECTIONS
   ====================================================== -->
-  <div class="resource-filter-card">
 
-    <div class="resource-filter-title">
-      🔎 Find a Learning Resource Quickly
+  <div class="section-back-row">
+    <button
+      type="button"
+      class="section-back-btn"
+      onclick="closeIndependentSections()"
+    >
+      ← Back to Sections
+    </button>
+  </div>
+
+
+<!-- =========================================================
+     🏪 MARKETPLACE HERO
+     🟢 GREEN CONTAINER
+========================================================= -->
+
+<div
+  class="resource-hero"
+  style="
+    position:relative;
+    width:100%;
+    margin:0 0 22px 0;
+    padding:30px;
+    box-sizing:border-box;
+
+    background:
+      linear-gradient(
+        135deg,
+        #ecfdf5 0%,
+        #d1fae5 48%,
+        #f0fdf4 100%
+      );
+
+    border:1px solid #86efac;
+    border-radius:20px;
+
+    box-shadow:
+      0 10px 30px rgba(22,163,74,.12);
+
+    overflow:hidden;
+  "
+>
+
+  <!-- Decorative Green Accent -->
+
+  <div
+    style="
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:5px;
+      background:
+        linear-gradient(
+          90deg,
+          #047857,
+          #00A651,
+          #22c55e
+        );
+    "
+  ></div>
+
+
+  <div class="resource-hero-content">
+
+    <!-- KICKER -->
+
+    <div
+      class="resource-kicker"
+      style="
+        display:inline-flex;
+        align-items:center;
+        gap:7px;
+
+        padding:7px 12px;
+        margin-bottom:11px;
+
+        border-radius:999px;
+
+        background:#dcfce7;
+        border:1px solid #86efac;
+
+        color:#166534;
+
+        font-size:11px;
+        font-weight:900;
+        letter-spacing:.5px;
+      "
+    >
+      📚 LEARNING RESOURCE MARKETPLACE
     </div>
 
-    <div class="resource-filter-grid">
 
-      <div>
-        <label for="resourceLevelFilter">Level / Grade</label>
-        <select id="resourceLevelFilter">
-          <option value="">All Levels / Grades</option>
-          <option>Grade 1</option>
-          <option>Grade 2</option>
-          <option>Grade 3</option>
-          <option>Grade 4</option>
-          <option>Grade 5</option>
-          <option>Grade 6</option>
-          <option>Grade 7</option>
-          <option>Grade 8</option>
-          <option>Grade 9</option>
-          <option>Grade 10</option>
-          <option>Grade 11</option>
-          <option>Grade 12</option>
-          <option>Primary School</option>
-          <option>Junior School</option>
-          <option>Senior School</option>
-          <option>Teacher Resource</option>
-        </select>
-      </div>
+    <!-- TITLE -->
 
-      <div>
-        <label for="resourceTypeFilter">Resource Type</label>
-        <select id="resourceTypeFilter">
-          <option value="">All Resource Types</option>
-          <option>Notes</option>
-          <option>Revision Questions</option>
-          <option>Exams / Assessments</option>
-          <option>Schemes of Work</option>
-          <option>Lesson Plans</option>
-          <option>Teaching Aids</option>
-          <option>Marking Schemes</option>
-          <option>Revision Booklet</option>
-          <option>Other</option>
-        </select>
-      </div>
+    <h2
+      style="
+        margin:0;
 
-      <div>
-        <label for="resourceSubjectFilter">Subject</label>
-        <select id="resourceSubjectFilter">
-          <option value="">All Subjects</option>
-          <option>Mathematics</option>
-          <option>English</option>
-          <option>Kiswahili</option>
-          <option>Science</option>
-          <option>Integrated Science</option>
-          <option>Biology</option>
-          <option>Chemistry</option>
-          <option>Physics</option>
-          <option>Agriculture</option>
-          <option>Geography</option>
-          <option>History</option>
-          <option>CRE</option>
-          <option>IRE</option>
-          <option>Business Studies</option>
-          <option>Computer Studies</option>
-          <option>ICT</option>
-          <option>Home Science</option>
-          <option>Music</option>
-          <option>Fine Art</option>
-          <option>Physical Education</option>
-          <option>Other</option>
-        </select>
-      </div>
+        color:#14532d;
+
+        font-size:28px;
+        line-height:1.2;
+        font-weight:900;
+      "
+    >
+      Browse & Buy Learning Resources
+    </h2>
+
+
+    <!-- DESCRIPTION -->
+
+    <p
+      style="
+        max-width:850px;
+
+        margin:10px 0 19px;
+
+        color:#166534;
+
+        font-size:14px;
+        line-height:1.65;
+      "
+    >
+
+      Find the right resource, preview it and purchase it when ready.
+    </p>
+
+
+    <!-- =====================================================
+         HERO FEATURES
+    ====================================================== -->
+
+    <div
+      class="resource-hero-features"
+      style="
+        display:flex;
+        flex-wrap:wrap;
+        gap:9px;
+      "
+    >
+
+      <!-- FEATURE 1 -->
+
+      <span
+        style="
+          display:inline-flex;
+          align-items:center;
+          gap:6px;
+
+          padding:8px 12px;
+
+          border-radius:10px;
+
+          background:rgba(255,255,255,.72);
+          border:1px solid #bbf7d0;
+
+          color:#166534;
+
+          font-size:12px;
+          font-weight:800;
+
+          box-shadow:0 2px 5px rgba(22,101,52,.05);
+        "
+      >
+        🎓 Grade-Based Resources
+      </span>
+
+
+      <!-- FEATURE 2 -->
+
+      <span
+        style="
+          display:inline-flex;
+          align-items:center;
+          gap:6px;
+
+          padding:8px 12px;
+
+          border-radius:10px;
+
+          background:rgba(255,255,255,.72);
+          border:1px solid #bbf7d0;
+
+          color:#166534;
+
+          font-size:12px;
+          font-weight:800;
+
+          box-shadow:0 2px 5px rgba(22,101,52,.05);
+        "
+      >
+        📖 Multiple Resource Types
+      </span>
+
+
+      <!-- FEATURE 3 -->
+
+      <span
+        style="
+          display:inline-flex;
+          align-items:center;
+          gap:6px;
+
+          padding:8px 12px;
+
+          border-radius:10px;
+
+          background:rgba(255,255,255,.72);
+          border:1px solid #bbf7d0;
+
+          color:#166534;
+
+          font-size:12px;
+          font-weight:800;
+
+          box-shadow:0 2px 5px rgba(22,101,52,.05);
+        "
+      >
+        🔎 Quick Search
+      </span>
+
+
+      <!-- FEATURE 4 -->
+
+      <span
+        style="
+          display:inline-flex;
+          align-items:center;
+          gap:6px;
+
+          padding:8px 12px;
+
+          border-radius:10px;
+
+          background:rgba(255,255,255,.72);
+          border:1px solid #bbf7d0;
+
+          color:#166534;
+
+          font-size:12px;
+          font-weight:800;
+
+          box-shadow:0 2px 5px rgba(22,101,52,.05);
+        "
+      >
+        🔐 Secure Resource Access
+      </span>
 
     </div>
 
-    <div class="resource-search-row">
-      <input
-        id="resourceSearchInput"
-        type="search"
-        placeholder="🔍 Search resource title, subject or description..."
-        autocomplete="off"
-      >
+  </div>
 
-      <button
-        type="button"
-        class="resource-clear-filter-btn"
-        onclick="clearLearningResourceFilters()"
+</div>
+
+
+
+<!-- =========================================================
+     🔎 RESOURCE SEARCH & FILTERS
+     🔴 RED CONTAINER
+========================================================= -->
+
+<div
+  class="resource-filter-card"
+  style="
+    width:100%;
+
+    margin:0 0 22px 0;
+    padding:25px;
+
+    box-sizing:border-box;
+
+    background:
+      linear-gradient(
+        135deg,
+        #fff1f2 0%,
+        #fef2f2 48%,
+        #fff7f7 100%
+      );
+
+    border:1px solid #fecaca;
+    border-radius:20px;
+
+    box-shadow:
+      0 10px 30px rgba(220,38,38,.10);
+  "
+>
+
+  <!-- =====================================================
+       FILTER HEADER
+  ====================================================== -->
+
+  <div
+    class="resource-filter-header"
+    style="
+      margin-bottom:20px;
+      padding-bottom:16px;
+
+      border-bottom:1px solid #fecaca;
+    "
+  >
+
+    <div
+      class="resource-filter-heading"
+      style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+      "
+    >
+
+      <!-- SEARCH ICON -->
+
+      <div
+        class="resource-filter-icon"
+        style="
+          width:44px;
+          height:44px;
+
+          flex:0 0 44px;
+
+          display:flex;
+          align-items:center;
+          justify-content:center;
+
+          border-radius:12px;
+
+          background:#fee2e2;
+          border:1px solid #fecaca;
+
+          font-size:20px;
+
+          box-shadow:
+            0 3px 8px rgba(220,38,38,.08);
+        "
       >
-        ↺ Clear Filters
-      </button>
+        🔎
+      </div>
+
+
+      <!-- HEADER TEXT -->
+
+      <div>
+
+        <h3
+          style="
+            margin:0;
+
+            color:#991b1b;
+
+            font-size:20px;
+            line-height:1.25;
+
+            font-weight:900;
+          "
+        >
+          Find a Learning Resource
+        </h3>
+
+
+        <p
+          style="
+            margin:4px 0 0;
+
+            color:#b45353;
+
+            font-size:13px;
+            line-height:1.5;
+          "
+        >
+          Filter resources by Grade / Level, Type or Subject.
+        </p>
+
+      </div>
+
     </div>
 
   </div>
 
 
+
+  <!-- =====================================================
+       FILTER GRID
+  ====================================================== -->
+
+  <div
+    class="resource-filter-grid"
+    style="
+      display:grid;
+
+      grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+      gap:16px;
+    "
+  >
+
+    <!-- =================================================
+         LEVEL / GRADE
+    ================================================== -->
+
+    <div class="resource-filter-field">
+
+      <label
+        for="resourceLevelFilter"
+        style="
+          display:block;
+
+          margin-bottom:7px;
+
+          color:#7f1d1d;
+
+          font-size:12px;
+          font-weight:900;
+        "
+      >
+        🎓 Level / Grade
+      </label>
+
+
+      <select
+        id="resourceLevelFilter"
+        style="
+          width:100%;
+          min-height:44px;
+
+          padding:0 12px;
+
+          border:1px solid #fca5a5;
+          border-radius:10px;
+
+          background:#ffffff;
+
+          color:#7f1d1d;
+
+          font-size:13px;
+
+          outline:none;
+
+          box-sizing:border-box;
+
+          cursor:pointer;
+        "
+      >
+
+        <option value="">
+          All Levels / Grades
+        </option>
+
+        <option>Grade 1</option>
+        <option>Grade 2</option>
+        <option>Grade 3</option>
+        <option>Grade 4</option>
+        <option>Grade 5</option>
+        <option>Grade 6</option>
+        <option>Grade 7</option>
+        <option>Grade 8</option>
+        <option>Grade 9</option>
+        <option>Grade 10</option>
+        <option>Grade 11</option>
+        <option>Grade 12</option>
+
+        <option>Primary School</option>
+        <option>Junior School</option>
+        <option>Senior School</option>
+        <option>Teacher Resource</option>
+
+      </select>
+
+    </div>
+
+
+
+    <!-- =================================================
+         RESOURCE TYPE
+    ================================================== -->
+
+    <div class="resource-filter-field">
+
+      <label
+        for="resourceTypeFilter"
+        style="
+          display:block;
+
+          margin-bottom:7px;
+
+          color:#7f1d1d;
+
+          font-size:12px;
+          font-weight:900;
+        "
+      >
+        📚 Resource Type
+      </label>
+
+
+      <select
+        id="resourceTypeFilter"
+        style="
+          width:100%;
+          min-height:44px;
+
+          padding:0 12px;
+
+          border:1px solid #fca5a5;
+          border-radius:10px;
+
+          background:#ffffff;
+
+          color:#7f1d1d;
+
+          font-size:13px;
+
+          outline:none;
+
+          box-sizing:border-box;
+
+          cursor:pointer;
+        "
+      >
+
+        <option value="">
+          All Resource Types
+        </option>
+
+        <option>Notes</option>
+        <option>Revision Questions</option>
+        <option>Exams / Assessments</option>
+        <option>Schemes of Work</option>
+        <option>Lesson Plans</option>
+        <option>Teaching Aids</option>
+        <option>Marking Schemes</option>
+        <option>Revision Booklet</option>
+        <option>Other</option>
+
+      </select>
+
+    </div>
+
+
+
+    <!-- =================================================
+         SUBJECT
+    ================================================== -->
+
+    <div class="resource-filter-field">
+
+      <label
+        for="resourceSubjectFilter"
+        style="
+          display:block;
+
+          margin-bottom:7px;
+
+          color:#7f1d1d;
+
+          font-size:12px;
+          font-weight:900;
+        "
+      >
+        📖 Subject
+      </label>
+
+
+      <select
+        id="resourceSubjectFilter"
+        style="
+          width:100%;
+          min-height:44px;
+
+          padding:0 12px;
+
+          border:1px solid #fca5a5;
+          border-radius:10px;
+
+          background:#ffffff;
+
+          color:#7f1d1d;
+
+          font-size:13px;
+
+          outline:none;
+
+          box-sizing:border-box;
+
+          cursor:pointer;
+        "
+      >
+
+        <option value="">
+          All Subjects
+        </option>
+
+        <option>Mathematics</option>
+        <option>English</option>
+        <option>Kiswahili</option>
+        <option>Science</option>
+        <option>Integrated Science</option>
+        <option>Biology</option>
+        <option>Chemistry</option>
+        <option>Physics</option>
+        <option>Agriculture</option>
+        <option>Geography</option>
+        <option>History</option>
+        <option>CRE</option>
+        <option>IRE</option>
+        <option>Business Studies</option>
+        <option>Computer Studies</option>
+        <option>ICT</option>
+        <option>Home Science</option>
+        <option>Music</option>
+        <option>Fine Art</option>
+        <option>Physical Education</option>
+        <option>Other</option>
+
+      </select>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =====================================================
+       SEARCH ROW
+  ====================================================== -->
+
+  <div
+    class="resource-search-row"
+    style="
+      display:flex;
+      align-items:center;
+
+      gap:10px;
+
+      margin-top:18px;
+    "
+  >
+
+    <!-- SEARCH INPUT -->
+
+    <div
+      class="resource-search-box"
+      style="
+        flex:1;
+        position:relative;
+      "
+    >
+
+      <span
+        style="
+          position:absolute;
+
+          left:13px;
+          top:50%;
+
+          transform:translateY(-50%);
+
+          font-size:16px;
+
+          pointer-events:none;
+        "
+      >
+        🔍
+      </span>
+
+
+      <input
+        id="resourceSearchInput"
+        type="search"
+        placeholder="Search resource title, subject or description..."
+        autocomplete="off"
+        style="
+          width:100%;
+          min-height:44px;
+
+          padding:0 14px 0 40px;
+
+          box-sizing:border-box;
+
+          border:1px solid #fca5a5;
+          border-radius:10px;
+
+          background:#ffffff;
+
+          color:#7f1d1d;
+
+          font-size:13px;
+
+          outline:none;
+        "
+      >
+
+    </div>
+
+
+
+    <!-- CLEAR FILTERS -->
+
+    <button
+      type="button"
+      class="resource-clear-filter-btn"
+      onclick="clearLearningResourceFilters()"
+      style="
+        min-height:44px;
+
+        padding:0 16px;
+
+        border:1px solid #fca5a5;
+        border-radius:10px;
+
+        background:#ffffff;
+
+        color:#991b1b;
+
+        font-size:12px;
+        font-weight:900;
+
+        cursor:pointer;
+
+        white-space:nowrap;
+
+        transition:
+          background .2s ease,
+          transform .2s ease;
+      "
+    >
+      ↺ Clear Filters
+    </button>
+
+  </div>
+
+</div>
+
   <!-- =====================================================
        📊 RESULTS SUMMARY
   ====================================================== -->
+
   <div
     id="learningResourceResultsSummary"
     class="resource-results-summary"
@@ -5268,84 +5815,50 @@ TeacherHub Kenya – Swaps & Resources
 
 
   <!-- =====================================================
-     📚 AVAILABLE RESOURCES
-====================================================== -->
+       📚 AVAILABLE LEARNING RESOURCES
+  ====================================================== -->
 
-<div style="
-  width:100%;
-  margin-top:20px;
-">
+  <div class="available-resources-section">
 
-  <!-- SECTION TITLE -->
+    <!-- SECTION HEADER -->
 
-  <div style="
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:16px;
-    padding:0 4px;
-  ">
+    <div class="available-resources-header">
 
-    <div style="
-      width:42px;
-      height:42px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      <div class="available-resources-icon">
+        📚
+      </div>
 
-      background:#fef2f2;
-      border:1px solid #fecaca;
-      border-radius:10px;
+      <div class="available-resources-title">
 
-      font-size:21px;
-    ">
-      📚
+        <h3>
+          Available Learning Resources
+        </h3>
+
+    
+
+      </div>
+
     </div>
 
-    <div>
 
-      <h3 style="
-        margin:0;
-        font-size:21px;
-        line-height:1.2;
-        font-weight:900;
-        color:#991b1b;
-      ">
-        Available Learning Resources
-      </h3>
+    <!-- RESOURCE LIST -->
 
-      <p style="
-        margin:4px 0 0;
-        font-size:13px;
-        color:#64748b;
-      ">
-        Browse resources by Grade / Level, Type and Subject.
-      </p>
+    <div
+      id="learningResourcesList"
+      class="learning-resources-list"
+    >
+
+      <div class="resource-empty">
+        📚 Loading resources...
+      </div>
 
     </div>
 
   </div>
 
-
-  <!-- RESOURCE LIST -->
-
-  <div
-    id="learningResourcesList"
-    class="learning-resources-list"
-    style="
-      width:100%;
-    "
-  >
-
-    <div class="resource-empty">
-      📚 Loading resources...
-    </div>
-
-  </div>
-
-</div>
 </section>
 
+ 
 <style>
 
 /* =========================================================
@@ -6040,6 +6553,606 @@ TeacherHub Kenya – Swaps & Resources
   </div>
 </div>
 
+
+<!-- =========================================================
+     💼 JOBS & VACANCIES MARKETPLACE
+     Public browsing + ADMIN-ONLY publishing.
+     Contact details are stored separately under jobContacts.
+========================================================= -->
+<section
+  id="jobsSection"
+  class="jobs-section independent-section-wrapper"
+  style="display:none;"
+>
+  <div class="section-back-row">
+    <button
+      type="button"
+      class="section-back-btn"
+      onclick="closeIndependentSections()"
+    >
+      ← Back to Sections
+    </button>
+  </div>
+
+  <!-- ADMIN ONLY -->
+  <div id="adminJobManager" class="admin-content-manager" style="display:none;">
+    <div>
+      <strong>🗑️ Manage Job Posts</strong>
+      <span>Select jobs and delete them in one action.</span>
+    </div>
+    <button type="button" onclick="deleteSelectedContent('jobs')">🗑️ Delete Selected Jobs</button>
+  </div>
+
+  <div
+    id="adminJobPublisher"
+    class="admin-job-publisher"
+    style="display:none;"
+  >
+    <div class="admin-job-head">
+      <div>
+        <span class="admin-job-kicker">👑 ADMIN ONLY</span>
+        <h3>Post a Job / Vacancy</h3>
+        <p>
+          Only the authenticated administrator can publish job listings.
+          Users can browse the public job information, then pay to reveal
+          the employer's contact details.
+        </p>
+      </div>
+      <span class="admin-job-lock">🔐 Protected</span>
+    </div>
+
+    <form id="adminJobForm" onsubmit="publishJob(event)">
+      <div class="admin-job-grid">
+        <div>
+          <label for="jobTitle">Job Title *</label>
+          <input id="jobTitle" required placeholder="e.g. Mathematics Teacher">
+        </div>
+        <div>
+          <label for="jobEmployer">School / Employer *</label>
+          <input id="jobEmployer" required placeholder="e.g. ABC School">
+        </div>
+        <div>
+          <label for="jobCounty">County *</label>
+          <input id="jobCounty" required placeholder="e.g. Kiambu">
+        </div>
+        <div>
+          <label for="jobUnlockFee">Contact Fee (KES) *</label>
+          <input id="jobUnlockFee" type="number" min="1" step="1" value="100" required>
+        </div>
+      </div>
+
+      <label for="jobDescription">Brief Job Details *</label>
+      <textarea id="jobDescription" required placeholder="e.g. Seeking a qualified Mathematics teacher for Junior School. Apply through the contact below."></textarea>
+
+      <div class="admin-job-private-box">
+        <div class="admin-job-private-title">🔒 PRIVATE CONTACT</div>
+        <div class="admin-job-grid">
+          <div>
+            <label for="jobContactPhone">Phone / WhatsApp *</label>
+            <input id="jobContactPhone" required type="tel" placeholder="07XXXXXXXX">
+          </div>
+        </div>
+      </div>
+
+      <button id="publishJobBtn" type="submit" class="admin-job-publish-btn">📢 Publish Job</button>
+    </form>
+  </div>
+
+  <!-- PUBLIC HERO -->
+  <div class="jobs-hero">
+    <div>
+      <span class="jobs-kicker">💼 JOBS & VACANCIES</span>
+      <h2>Find Your Next Opportunity</h2>
+      <p>
+        Browse available jobs across Kenya. Public job details are visible
+        to everyone, while employer contact details are revealed only after
+        successful M-PESA payment.
+      </p>
+
+      <div class="jobs-feature-row">
+        <span>🔎 Search</span>
+        <span>📍 County Filters</span>
+        <span>🎓 Education Jobs</span>
+        <span>🔐 Paid Contact Reveal</span>
+      </div>
+    </div>
+
+    <div class="jobs-price-badge">
+      <strong>🔐 Pay to Reveal</strong>
+      <span>Contact details stay protected until payment is confirmed.</span>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="jobs-filter-card">
+    <div class="jobs-filter-grid">
+      <div>
+        <label for="jobCategoryFilter">Category</label>
+        <select id="jobCategoryFilter">
+          <option value="">All Categories</option>
+          <option>Teaching</option>
+          <option>School Administration</option>
+          <option>Education Support</option>
+          <option>ICT / Technology</option>
+          <option>Non-Teaching</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="jobCountyFilter">County</label>
+        <input id="jobCountyFilter" placeholder="e.g. Nairobi">
+      </div>
+
+      <div>
+        <label for="jobSearchInput">Search</label>
+        <input id="jobSearchInput" placeholder="Search job title, school, subject...">
+      </div>
+
+      <button
+        type="button"
+        class="jobs-clear-btn"
+        onclick="clearJobFilters()"
+      >
+        ↺ Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <div id="jobsResultsSummary" class="jobs-results-summary">
+    💼 Loading jobs...
+  </div>
+
+  <div id="jobsList" class="jobs-list">
+    <div class="jobs-empty">
+      💼 Loading jobs...
+    </div>
+  </div>
+</section>
+
+<style>
+/* =========================================================
+   💼 JOBS MARKETPLACE
+========================================================= */
+.jobs-section{
+  width:100%;
+  max-width:1200px;
+  margin:30px auto 0;
+  padding:0 10px 35px;
+  box-sizing:border-box;
+}
+
+.action-card-jobs{
+  border-top:4px solid #f97316 !important;
+}
+
+.action-card-jobs .action-open{
+  color:#ea580c !important;
+}
+
+.jobs-hero{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:22px;
+  padding:28px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#fff7ed 0%,#ffedd5 50%,#fef3c7 100%);
+  border:1px solid #fdba74;
+  box-shadow:0 12px 30px rgba(234,88,12,.12);
+}
+
+.jobs-kicker{
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  background:#ffedd5;
+  border:1px solid #fdba74;
+  color:#9a3412;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.5px;
+}
+
+.jobs-hero h2{
+  margin:9px 0 7px;
+  color:#7c2d12;
+  font-size:28px;
+  font-weight:900;
+}
+
+.jobs-hero p{
+  max-width:800px;
+  margin:0;
+  color:#9a3412;
+  font-size:14px;
+  line-height:1.65;
+}
+
+.jobs-feature-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:16px;
+}
+
+.jobs-feature-row span{
+  padding:8px 11px;
+  border-radius:10px;
+  background:rgba(255,255,255,.75);
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  font-size:11px;
+  font-weight:800;
+}
+
+.jobs-price-badge{
+  min-width:190px;
+  padding:17px;
+  border-radius:15px;
+  background:rgba(255,255,255,.72);
+  border:1px solid #fdba74;
+  text-align:center;
+}
+
+.jobs-price-badge strong,
+.jobs-price-badge span{
+  display:block;
+}
+
+.jobs-price-badge strong{
+  color:#c2410c;
+  font-size:17px;
+}
+
+.jobs-price-badge span{
+  margin-top:5px;
+  color:#9a3412;
+  font-size:11px;
+  line-height:1.5;
+}
+
+.jobs-filter-card{
+  margin-top:18px;
+  padding:18px;
+  border:1px solid #e2e8f0;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 7px 22px rgba(15,23,42,.06);
+}
+
+.jobs-filter-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1.5fr auto;
+  gap:12px;
+  align-items:end;
+}
+
+.jobs-filter-card label{
+  display:block;
+  margin-bottom:6px;
+  color:#334155;
+  font-size:12px;
+  font-weight:900;
+}
+
+.jobs-filter-card input,
+.jobs-filter-card select{
+  width:100%;
+  min-height:44px;
+  box-sizing:border-box;
+  padding:10px 12px;
+  border:2px solid #e2e8f0;
+  border-radius:10px;
+  background:#fff;
+  color:#0f172a;
+}
+
+.jobs-clear-btn{
+  width:auto;
+  min-height:44px;
+  padding:10px 16px;
+  border:1px solid #fdba74 !important;
+  border-radius:10px;
+  background:#fff7ed !important;
+  color:#c2410c !important;
+  box-shadow:none !important;
+}
+
+.jobs-results-summary{
+  margin:18px 0 12px;
+  color:#7c2d12;
+  font-size:15px;
+  font-weight:900;
+}
+
+.jobs-list{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+}
+
+.job-card{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  padding:20px;
+  border:1px solid #e2e8f0;
+  border-left:5px solid #f97316;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 6px 18px rgba(15,23,42,.07);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+
+.job-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 28px rgba(15,23,42,.12);
+  border-left-color:#ea580c;
+}
+
+.job-card h3{
+  margin:0 0 7px;
+  color:#0f172a;
+  font-size:18px;
+  font-weight:900;
+}
+
+.job-employer{
+  color:#ea580c;
+  font-weight:900;
+  font-size:13px;
+}
+
+.job-meta-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin:12px 0;
+}
+
+.job-badge{
+  padding:5px 9px;
+  border-radius:999px;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  font-size:10px;
+  font-weight:900;
+}
+
+.job-description{
+  color:#475569;
+  font-size:13px;
+  line-height:1.6;
+  white-space:pre-line;
+}
+
+.job-requirements{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:10px;
+  background:#f8fafc;
+  color:#475569;
+  font-size:12px;
+  line-height:1.55;
+  white-space:pre-line;
+}
+
+.job-bottom{
+  margin-top:auto;
+  padding-top:15px;
+}
+
+.job-pay-line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.job-salary{
+  color:#166534;
+  font-size:13px;
+  font-weight:900;
+}
+
+.job-unlock-fee{
+  color:#c2410c;
+  font-size:11px;
+  font-weight:900;
+}
+
+.job-unlock-btn{
+  width:100%;
+  min-height:45px;
+  border:0;
+  border-radius:10px;
+  background:linear-gradient(135deg,#ea580c,#f97316);
+  color:#fff;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.job-contact-box{
+  margin-top:11px;
+  padding:13px;
+  border-radius:12px;
+  background:#ecfdf5;
+  border:1px solid #86efac;
+  color:#166534;
+  font-size:12px;
+  line-height:1.65;
+}
+
+.job-contact-box strong{
+  display:block;
+  margin-bottom:3px;
+}
+
+.jobs-empty{
+  grid-column:1/-1;
+  padding:48px 20px;
+  text-align:center;
+  border:2px dashed #cbd5e1;
+  border-radius:16px;
+  background:#fff;
+  color:#64748b;
+}
+
+.admin-job-publisher{
+  margin-bottom:20px;
+  padding:20px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#0f172a,#7c2d12);
+  border:1px solid rgba(249,115,22,.45);
+  box-shadow:0 12px 30px rgba(15,23,42,.16);
+  color:#fff;
+}
+
+.admin-job-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:15px;
+  margin-bottom:18px;
+}
+
+.admin-job-kicker{
+  display:inline-block;
+  margin-bottom:5px;
+  color:#fdba74;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.admin-job-publisher h3{
+  margin:0 0 5px;
+  font-size:20px;
+  font-weight:900;
+}
+
+.admin-job-publisher p{
+  margin:0;
+  max-width:850px;
+  color:#cbd5e1;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.admin-job-lock{
+  flex:none;
+  padding:8px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+}
+
+.admin-job-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:13px;
+}
+
+.admin-job-publisher label{
+  display:block;
+  margin-bottom:6px;
+  color:#e2e8f0;
+  font-size:12px;
+  font-weight:800;
+}
+
+.admin-job-publisher input,
+.admin-job-publisher select,
+.admin-job-publisher textarea{
+  width:100%;
+  box-sizing:border-box;
+  min-height:44px;
+  padding:10px 12px;
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  background:#fff;
+  color:#0f172a;
+  outline:none;
+  font-size:13px;
+}
+
+.admin-job-publisher textarea{
+  min-height:95px;
+  resize:vertical;
+  margin-bottom:13px;
+}
+
+.admin-job-private-box{
+  margin:15px 0;
+  padding:15px;
+  border:1px dashed rgba(253,186,116,.55);
+  border-radius:13px;
+  background:rgba(255,255,255,.08);
+}
+
+.admin-job-private-title{
+  margin-bottom:13px;
+  color:#fdba74;
+  font-size:12px;
+  font-weight:900;
+}
+
+.admin-job-publish-btn{
+  min-height:48px;
+  background:linear-gradient(135deg,#16a34a,#22c55e) !important;
+}
+
+@media(max-width:1000px){
+  #adminResourcePublisher > form > div:first-child{
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  }
+
+  .jobs-list{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .jobs-filter-grid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:700px){
+  .jobs-hero{
+    flex-direction:column;
+    align-items:stretch;
+    padding:21px;
+  }
+  .jobs-price-badge{
+    min-width:0;
+  }
+  .jobs-list{
+    grid-template-columns:1fr;
+  }
+  .admin-job-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:560px){
+  .jobs-section{
+    padding-left:5px;
+    padding-right:5px;
+  }
+  .jobs-filter-grid{
+    grid-template-columns:1fr;
+  }
+  .jobs-hero h2{
+    font-size:23px;
+  }
+}
+</style>
+
 <footer style="background:#0f172a;color:#e5e7eb;margin-top:60px;padding:60px 20px 20px;">
 
 <div style="max-width:1200px;margin:auto;">
@@ -6492,6 +7605,7 @@ window.__getDownloadURL = getDownloadURL;
 
 const swapsRef = ref(db, "teacherSwaps");
 const __learningResourcesRefLocal = ref(db, "learningResources");
+const __jobsRefLocal = ref(db, "jobPostings");
 
 /* =========================================================
    🌍 GLOBAL FIREBASE RESOURCE REFERENCE
@@ -6501,6 +7615,7 @@ const __learningResourcesRefLocal = ref(db, "learningResources");
 ========================================================= */
 
 window.__learningResourcesRef = __learningResourcesRefLocal;
+window.__jobsRef = __jobsRefLocal;
 
 let allSwaps = [];
 function maskPhone(phone){
@@ -7268,7 +8383,16 @@ window.postSwap = async function(){
                 charge,
 
             paid:
-                false,
+                true,
+
+            paymentStatus:
+                "PAID",
+
+            paymentReference:
+                swapAccountReference,
+
+            paymentPhone:
+                paymentPhone,
 
             createdAt:
                 createdAt,
@@ -7307,6 +8431,137 @@ window.postSwap = async function(){
 
         };
 
+
+        /* =================================================
+           💳 M-PESA STK PUSH — SWAP POSTING FEE
+           The swap is NOT published until payment is confirmed.
+        ================================================= */
+
+        const mpesaBackend = String(
+            window.TEACHERS_HUB_MPESA_BACKEND || ""
+        ).trim().replace(/\/+$/," ").trim();
+
+        if(!mpesaBackend){
+            throw new Error("M-PESA backend URL is not configured.");
+        }
+
+        const swapUserId =
+            typeof window.getTeachersHubUserId === "function"
+                ? window.getTeachersHubUserId()
+                : "anonymous";
+
+        const swapAccountReference =
+            `SWAP_POST_${Date.now()}_${Math.random().toString(36).slice(2,8).toUpperCase()}`;
+
+        const savedSwapPhone =
+            localStorage.getItem("myPhone") || phone;
+
+        const paymentForm = await Swal.fire({
+            title:"📲 Pay & Publish Swap",
+            width:520,
+            html:`
+              <div style="text-align:left;line-height:1.6;">
+                <div style="background:#ecfdf5;border:1px solid #bbf7d0;border-radius:12px;padding:14px;margin-bottom:14px;">
+                  <div style="font-size:12px;color:#64748b;">Swap Posting Fee</div>
+                  <strong style="font-size:28px;color:#16a34a;">KES ${charge.toLocaleString()}</strong>
+                </div>
+                <label style="display:block;font-weight:800;margin-bottom:7px;">M-PESA Phone Number</label>
+                <input id="swapMpesaPhone" type="tel" value="${escapeHTML(savedSwapPhone)}" placeholder="07XXXXXXXX"
+                  style="width:100%;box-sizing:border-box;padding:13px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;">
+                <div style="margin-top:8px;color:#64748b;font-size:12px;">
+                  Your swap will be published only after M-PESA confirms this payment.
+                </div>
+              </div>`,
+            showCancelButton:true,
+            confirmButtonText:"📲 Pay KES " + charge.toLocaleString() + " & Publish",
+            cancelButtonText:"Cancel",
+            confirmButtonColor:"#16a34a",
+            preConfirm:()=>{
+                let p = String(document.getElementById("swapMpesaPhone")?.value || "")
+                    .replace(/[\s\-()]/g,"");
+                if(p.startsWith("+254")) p = "0" + p.substring(4);
+                else if(p.startsWith("254")) p = "0" + p.substring(3);
+                if(!/^(07\d{8}|01\d{8})$/.test(p)){
+                    Swal.showValidationMessage("Enter a valid Kenyan M-PESA number.");
+                    return false;
+                }
+                return p;
+            }
+        });
+
+        if(!paymentForm.isConfirmed){
+            return;
+        }
+
+        const paymentPhone = paymentForm.value;
+        localStorage.setItem("myPhone", paymentPhone);
+
+        Swal.fire({
+            title:"📲 Sending STK Push...",
+            html:`Sending M-PESA payment request to <strong>${escapeHTML(paymentPhone)}</strong><br><br>Please check your phone.`,
+            allowOutsideClick:false,
+            allowEscapeKey:false,
+            showConfirmButton:false,
+            didOpen:()=>Swal.showLoading()
+        });
+
+        const stkResponse = await fetch(
+            `${mpesaBackend}/stkpush`,
+            {
+                method:"POST",
+                headers:{"Content-Type":"application/json","Accept":"application/json"},
+                body:JSON.stringify({
+                    phone:paymentPhone,
+                    amount:charge,
+                    accountReference:swapAccountReference,
+                    itemId:"SWAP_POST",
+                    itemName:"Teacher Swap Posting",
+                    userId:swapUserId
+                })
+            }
+        );
+
+        const stkRaw = await stkResponse.text();
+        let stkData;
+        try{ stkData = JSON.parse(stkRaw); }
+        catch(_){ throw new Error(`Payment server returned invalid data. HTTP ${stkResponse.status}.`); }
+
+        if(!stkResponse.ok){
+            throw new Error(stkData?.errorMessage || stkData?.message || stkData?.ResultDesc || `Payment server returned HTTP ${stkResponse.status}.`);
+        }
+
+        const accepted =
+            stkData?.success === true &&
+            (String(stkData?.ResponseCode) === "0" || stkData?.ResponseCode === 0 || !!stkData?.CheckoutRequestID);
+
+        if(!accepted){
+            throw new Error(stkData?.errorMessage || stkData?.ResponseDescription || stkData?.ResultDesc || "M-PESA did not accept the payment request.");
+        }
+
+        if(typeof window.waitForResourcePayment !== "function"){
+            throw new Error("The M-PESA confirmation engine is not available. Please reload and try again.");
+        }
+
+        Swal.fire({
+            title:"⏳ Confirming Payment...",
+            html:"Please complete the M-PESA prompt. Your swap will be published automatically after confirmation.",
+            allowOutsideClick:false,
+            allowEscapeKey:false,
+            showConfirmButton:false,
+            didOpen:()=>Swal.showLoading()
+        });
+
+        const paymentResult = await window.waitForResourcePayment(
+            swapAccountReference,
+            "SWAP_POST",
+            swapUserId,
+            stkData?.CheckoutRequestID || null,
+            {pollInterval:3000,timeout:180000,maxNetworkErrors:10}
+        );
+
+        if(!paymentResult || paymentResult.status !== "PAID"){
+            throw new Error(paymentResult?.message || "M-PESA payment was not confirmed.");
+        }
 
         /* =================================================
            SAVE TO FIREBASE
@@ -9333,6 +10588,7 @@ function render(swaps){
         `;
 
 
+        card.dataset.swapId = String(swapId);
         container.appendChild(
             card
         );
@@ -10787,697 +12043,202 @@ window.showTriangularOptions = function (swapId) {
    RASM 360 — PREMIUM PAYMENT MODAL
 ========================================================= */
 
-window.showPayment = function(
+/* =========================================================
+   🔓 SWAP CONTACT UNLOCK — M-PESA STK PUSH
+   Replaces the old manual "I Have Paid" / WhatsApp flow.
+========================================================= */
+window.showPayment = async function(
     swapId,
     teacherName,
     currentCounty,
     swapCounty,
     charge = 200
 ){
+    try{
+        const safeSwapId = String(swapId || "");
+        const amount = Math.max(1, Number(charge) || 200);
+        const teacher = String(teacherName || "Teacher");
+        const current = String(currentCounty || "-");
+        const destination = String(swapCounty || "-");
+        const refCode = safeSwapId.slice(-6).toUpperCase() || "SWAP";
+        const swap = Array.isArray(allSwaps)
+            ? allSwaps.find(x => String(x.swapId) === safeSwapId)
+            : null;
 
-    /* =====================================================
-       SAFE VALUES
-    ===================================================== */
+        if(!swap){
+            throw new Error("This swap is no longer available.");
+        }
 
-    const safeSwapId =
-        String(swapId || "");
-
-    const safeTeacher =
-        String(
-            teacherName || "Teacher"
-        );
-
-    const safeCurrent =
-        String(
-            currentCounty || "-"
-        );
-
-    const safeSwap =
-        String(
-            swapCounty || "-"
-        );
-
-    const amount =
-        Number(charge) || 200;
-
-
-    /* =====================================================
-       REFERENCE
-    ===================================================== */
-
-    const refCode =
-        safeSwapId
-            .slice(-6)
-            .toUpperCase();
-
-
-    /* =====================================================
-       CATEGORY
-    ===================================================== */
-
-    let category =
-        "Normal Swap";
-
-    let badgeHTML = "";
-
-    let badgeColor =
-        "#16a34a";
-
-    let badgeBackground =
-        "#dcfce7";
-
-
-    if(amount === 500){
-
-        category =
-            "Hardship Swap";
-
-        badgeColor =
-            "#991b1b";
-
-        badgeBackground =
-            "#fee2e2";
-
-        badgeHTML = `
-            <span style="
-                display:inline-flex;
-                align-items:center;
-                gap:5px;
-
-                padding:6px 11px;
-
-                background:${badgeBackground};
-                color:${badgeColor};
-
-                border-radius:999px;
-
-                font-size:11px;
-                font-weight:800;
-            ">
-                🚧 HARDSHIP
-            </span>
-        `;
-
-    }
-
-    else if(amount === 400){
-
-        category =
-            "Hot County Swap";
-
-        badgeColor =
-            "#9a3412";
-
-        badgeBackground =
-            "#ffedd5";
-
-        badgeHTML = `
-            <span style="
-                display:inline-flex;
-                align-items:center;
-                gap:5px;
-
-                padding:6px 11px;
-
-                background:${badgeBackground};
-                color:${badgeColor};
-
-                border-radius:999px;
-
-                font-size:11px;
-                font-weight:800;
-            ">
-                🔥 HOT COUNTY
-            </span>
-        `;
-
-    }
-
-    else{
-
-        category =
-            "Normal Swap";
-
-        badgeHTML = `
-            <span style="
-                display:inline-flex;
-                align-items:center;
-                gap:5px;
-
-                padding:6px 11px;
-
-                background:#dcfce7;
-                color:#166534;
-
-                border-radius:999px;
-
-                font-size:11px;
-                font-weight:800;
-            ">
-                📍 NORMAL
-            </span>
-        `;
-
-    }
-
-
-    /* =====================================================
-       SAFE HTML
-    ===================================================== */
-
-    const escapeHTML =
-        value => {
-
-            const div =
-                document.createElement("div");
-
-            div.textContent =
-                value ?? "";
-
+        const escapeHTML = value => {
+            const div=document.createElement("div");
+            div.textContent=value ?? "";
             return div.innerHTML;
-
         };
 
+        const category = amount === 500
+            ? "🚧 Hardship Swap"
+            : amount === 400
+                ? "🔥 Hot County Swap"
+                : "📍 Normal Swap";
 
-    /* =====================================================
-       DISPLAY VALUES
-    ===================================================== */
+        const savedPhone = localStorage.getItem("myPhone") || "";
 
-    const displayTeacher =
-        escapeHTML(
-            safeTeacher
-        );
-
-    const displayCurrent =
-        escapeHTML(
-            safeCurrent
-        );
-
-    const displaySwap =
-        escapeHTML(
-            safeSwap
-        );
-
-    const displayRef =
-        escapeHTML(
-            refCode
-        );
-
-
-    /* =====================================================
-       PAYMENT MODAL
-    ===================================================== */
-
-    Swal.fire({
-
-        title: "🔓 Unlock Teacher Contact",
-
-        width:
-            window.innerWidth < 600
-                ? "94%"
-                : 560,
-
-        padding:
-            window.innerWidth < 600
-                ? "14px"
-                : "22px",
-
-        background:
-            "#ffffff",
-
-        color:
-            "#0f172a",
-
-        html: `
-
-            <div
-                style="
-                    text-align:left;
-                    width:100%;
-                "
-            >
-
-                <!-- =========================================
-                     TEACHER INFORMATION
-                ========================================== -->
-
-                <div
-                    style="
-                        background:
-                            #f8fafc;
-
-                        border:
-                            1px solid
-                            #e2e8f0;
-
-                        border-left:
-                            5px solid
-                            #0f766e;
-
-                        border-radius:
-                            12px;
-
-                        padding:
-                            14px;
-
-                        margin-bottom:
-                            12px;
-                    "
-                >
-
-                    <div
-                        style="
-                            display:flex;
-                            align-items:center;
-                            justify-content:space-between;
-
-                            gap:10px;
-
-                            flex-wrap:wrap;
-
-                            margin-bottom:10px;
-                        "
-                    >
-
-                        <strong
-                            style="
-                                font-size:16px;
-                                color:#0f172a;
-                            "
-                        >
-                            👤 ${displayTeacher}
-                        </strong>
-
-                        ${badgeHTML}
-
-                    </div>
-
-
-                    <div
-                        style="
-                            display:grid;
-
-                            grid-template-columns:
-                                repeat(
-                                    2,
-                                    1fr
-                                );
-
-                            gap:8px;
-
-                            font-size:12px;
-
-                            color:#475569;
-                        "
-                    >
-
-                        <div
-                            style="
-                                background:#fff;
-                                padding:9px;
-                                border-radius:8px;
-                                border:1px solid #e2e8f0;
-                            "
-                        >
-                            <strong
-                                style="
-                                    display:block;
-                                    color:#64748b;
-                                    font-size:18px;
-                                    margin-bottom:3px;
-                                "
-                            >
-                                📍 CURRENT
-                            </strong>
-
-                            ${displayCurrent}
-                        </div>
-
-
-                        <div
-                            style="
-                                background:#fff;
-                                padding:9px;
-                                border-radius:8px;
-                                border:1px solid #e2e8f0;
-                            "
-                        >
-                            <strong
-                                style="
-                                    display:block;
-                                    color:#64748b;
-                                    font-size:10px;
-                                    margin-bottom:3px;
-                                "
-                            >
-                                🎯 WANTS
-                            </strong>
-
-                            ${displaySwap}
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        style="
-                            margin-top:9px;
-
-                            font-size:11px;
-
-                            color:#64748b;
-                        "
-                    >
-                        Reference:
-                        <strong
-                            style="
-                                color:#2563eb;
-                            "
-                        >
-                            ${displayRef}
-                        </strong>
-                    </div>
-
+        const result = await Swal.fire({
+            title:"🔓 Unlock Teacher Contact",
+            width:520,
+            html:`
+              <div style="text-align:left;line-height:1.6;">
+                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;border-radius:12px;padding:14px;margin-bottom:13px;">
+                  <div style="color:#1d4ed8;font-size:11px;font-weight:900;">TEACHER SWAP CONTACT</div>
+                  <strong style="display:block;color:#0f172a;font-size:18px;margin-top:4px;">${escapeHTML(teacher)}</strong>
+                  <div style="color:#64748b;font-size:12px;margin-top:4px;">${escapeHTML(current)} ➜ ${escapeHTML(destination)}</div>
+                  <div style="margin-top:8px;display:inline-block;background:#fff7ed;color:#9a3412;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:900;">${escapeHTML(category)}</div>
                 </div>
 
-
-                <!-- =========================================
-                     FEE
-                ========================================== -->
-
-                <div
-                    style="
-                        background:
-                            #ecfeff;
-
-                        border:
-                            1px solid
-                            #a5f3fc;
-
-                        border-radius:
-                            12px;
-
-                        padding:
-                            15px;
-
-                        text-align:center;
-
-                        margin-bottom:
-                            12px;
-                    "
-                >
-
-                    <div
-                        style="
-                            color:#0f766e;
-
-                            font-size:11px;
-
-                            font-weight:800;
-
-                            text-transform:uppercase;
-
-                            letter-spacing:.5px;
-                        "
-                    >
-                        Contact Unlock Fee
-                    </div>
-
-
-                    <div
-                        style="
-                            margin:
-                                4px 0;
-
-                            color:#0f766e;
-
-                            font-size:
-                                clamp(
-                                    28px,
-                                    7vw,
-                                    38px
-                                );
-
-                            font-weight:900;
-                        "
-                    >
-                        KES
-                        ${amount.toLocaleString()}
-                    </div>
-
-
-                    <div
-                        style="
-                            color:#475569;
-
-                            font-size:11px;
-                        "
-                    >
-                        ${escapeHTML(category)}
-                    </div>
-
+                <div style="background:#ecfdf5;border:1px solid #bbf7d0;border-radius:13px;padding:17px;text-align:center;margin-bottom:13px;">
+                  <div style="color:#166534;font-size:11px;font-weight:900;text-transform:uppercase;">Contact Unlock Fee</div>
+                  <div style="color:#16a34a;font-size:36px;font-weight:900;margin:3px 0;">KES ${amount.toLocaleString()}</div>
+                  <div style="color:#64748b;font-size:11px;">Reference: ${escapeHTML(refCode)}</div>
                 </div>
 
-
-                <!-- =========================================
-                     MPESA
-                ========================================== -->
-
-                <div
-                    style="
-                        background:
-                            #f0fdf4;
-
-                        border:
-                            1px solid
-                            #bbf7d0;
-
-                        border-radius:
-                            12px;
-
-                        padding:
-                            15px;
-
-                        text-align:center;
-
-                        margin-bottom:
-                            12px;
-                    "
-                >
-
-                    <div
-                        style="
-                            font-size:12px;
-
-                            font-weight:800;
-
-                            color:#166534;
-
-                            margin-bottom:7px;
-                        "
-                    >
-                        📲 M-PESA PAYMENT
-                    </div>
-
-
-                    <div
-                        style="
-                            color:#16a34a;
-
-                            font-size:
-                                clamp(
-                                    22px,
-                                    6vw,
-                                    30px
-                                );
-
-                            font-weight:900;
-
-                            letter-spacing:1px;
-                        "
-                    >
-                        0792755676
-                    </div>
-
-
-                    <div
-                        style="
-                            margin-top:7px;
-
-                            color:#475569;
-
-                            font-size:11px;
-
-                            line-height:1.6;
-                        "
-                    >
-
-                        Send
-
-                        <strong>
-                            KES
-                            ${amount.toLocaleString()}
-                        </strong>
-
-                        to the number above.
-
-                        <br>
-
-                        Then tap
-
-                        <strong
-                            style="
-                                color:#16a34a;
-                            "
-                        >
-                            "I Have Paid"
-                        </strong>
-
-                    </div>
-
+                <label style="display:block;font-weight:900;font-size:12px;margin-bottom:7px;">M-PESA Phone Number</label>
+                <input id="swapUnlockMpesaPhone" type="tel" value="${escapeHTML(savedPhone)}" placeholder="07XXXXXXXX" autocomplete="tel"
+                  style="width:100%;box-sizing:border-box;padding:14px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;">
+                <div style="margin-top:8px;color:#64748b;font-size:11px;">
+                  An STK Push will be sent to this number. The teacher contact is revealed only after payment is confirmed.
                 </div>
-
-
-                <!-- =========================================
-                     WARNING
-                ========================================== -->
-
-                <div
-                    style="
-                        display:flex;
-
-                        align-items:flex-start;
-
-                        gap:8px;
-
-                        padding:
-                            10px 12px;
-
-                        background:
-                            #fff7ed;
-
-                        border:
-                            1px solid
-                            #fed7aa;
-
-                        border-left:
-                            4px solid
-                            #f59e0b;
-
-                        border-radius:
-                            9px;
-
-                        color:#9a3412;
-
-                        font-size:11px;
-
-                        line-height:1.5;
-                    "
-                >
-
-                    <span>
-                        ⚠️
-                    </span>
-
-                    <span>
-                        Your contact is released only after
-                        payment verification by the administrator.
-                    </span>
-
-                </div>
-
-            </div>
-
-        `,
-
-        showCancelButton:
-            true,
-
-        confirmButtonText:
-            "✅ I Have Paid",
-
-        cancelButtonText:
-            "Close",
-
-        confirmButtonColor:
-            "#16a34a",
-
-        cancelButtonColor:
-            "#64748b",
-
-        reverseButtons:
-            true
-
-    })
-
-    .then(
-        result => {
-
-            if(
-                !result.isConfirmed
-            ){
-                return;
+              </div>`,
+            showCancelButton:true,
+            confirmButtonText:`📲 Pay KES ${amount.toLocaleString()} & Reveal`,
+            cancelButtonText:"Cancel",
+            confirmButtonColor:"#16a34a",
+            cancelButtonColor:"#64748b",
+            preConfirm:()=>{
+                let phone=String(document.getElementById("swapUnlockMpesaPhone")?.value||"").replace(/[\s\-()]/g,"");
+                if(phone.startsWith("+254")) phone="0"+phone.substring(4);
+                else if(phone.startsWith("254")) phone="0"+phone.substring(3);
+                if(!/^(07\d{8}|01\d{8})$/.test(phone)){
+                    Swal.showValidationMessage("Enter a valid Kenyan M-PESA number.");
+                    return false;
+                }
+                return phone;
             }
+        });
 
+        if(!result.isConfirmed) return;
 
-            /* =============================================
-               WHATSAPP MESSAGE
-            ============================================== */
+        const paymentPhone=result.value;
+        localStorage.setItem("myPhone",paymentPhone);
 
-            const message =
+        const backend=String(window.TEACHERS_HUB_MPESA_BACKEND||"").trim().replace(/\/+$/g,"");
+        if(!backend) throw new Error("M-PESA backend URL is not configured.");
 
-`🔓 UNLOCK CONTACT REQUEST
+        const userId=typeof window.getTeachersHubUserId === "function"
+            ? window.getTeachersHubUserId()
+            : "anonymous";
 
-REF: ${refCode}
+        const accountReference=`SWAP_UNLOCK_${safeSwapId}_${Date.now()}`;
 
-Teacher:
-${safeTeacher}
+        Swal.fire({
+            title:"📲 Sending STK Push...",
+            html:`Sending payment request to <strong>${escapeHTML(paymentPhone)}</strong><br><br>Please check your phone and complete the M-PESA prompt.`,
+            allowOutsideClick:false,
+            allowEscapeKey:false,
+            showConfirmButton:false,
+            didOpen:()=>Swal.showLoading()
+        });
 
-From:
-${safeCurrent}
+        const response=await fetch(`${backend}/stkpush`,{
+            method:"POST",
+            headers:{"Content-Type":"application/json","Accept":"application/json"},
+            body:JSON.stringify({
+                phone:paymentPhone,
+                amount,
+                accountReference,
+                itemId:safeSwapId,
+                itemName:"Teacher Swap Contact Unlock",
+                userId
+            })
+        });
 
-To:
-${safeSwap}
+        const raw=await response.text();
+        let data;
+        try{ data=JSON.parse(raw); }
+        catch(_){ throw new Error(`Payment server returned invalid data. HTTP ${response.status}.`); }
 
-Category:
-${category}
-
-Unlock Fee:
-KES ${amount.toLocaleString()}
-
-Swap ID:
-${safeSwapId}
-
-I have completed the payment.
-
-Kindly verify my payment and unlock the teacher contact.
-
-Thank you.`;
-
-
-            /* =============================================
-               OPEN WHATSAPP
-            ============================================== */
-
-            const whatsappURL =
-                `https://wa.me/254792755676?text=${
-                    encodeURIComponent(
-                        message
-                    )
-                }`;
-
-
-            window.open(
-                whatsappURL,
-                "_blank",
-                "noopener,noreferrer"
-            );
-
+        if(!response.ok){
+            throw new Error(data?.errorMessage||data?.message||data?.ResultDesc||`Payment server returned HTTP ${response.status}.`);
         }
-    );
 
+        const accepted=data?.success===true && (
+            String(data?.ResponseCode)==="0" ||
+            data?.ResponseCode===0 ||
+            !!data?.CheckoutRequestID
+        );
+
+        if(!accepted){
+            throw new Error(data?.errorMessage||data?.ResponseDescription||data?.ResultDesc||"M-PESA did not accept the payment request.");
+        }
+
+        if(typeof window.waitForResourcePayment !== "function"){
+            throw new Error("The M-PESA confirmation engine is not available. Please reload and try again.");
+        }
+
+        Swal.fire({
+            title:"⏳ Confirming Payment...",
+            html:"Please complete the M-PESA prompt. Your teacher contact will appear automatically after confirmation.",
+            allowOutsideClick:false,
+            allowEscapeKey:false,
+            showConfirmButton:false,
+            didOpen:()=>Swal.showLoading()
+        });
+
+        const payment=await window.waitForResourcePayment(
+            accountReference,
+            safeSwapId,
+            userId,
+            data?.CheckoutRequestID||null,
+            {pollInterval:3000,timeout:180000,maxNetworkErrors:10}
+        );
+
+        if(!payment || payment.status!=="PAID"){
+            throw new Error(payment?.message||"M-PESA payment was not confirmed.");
+        }
+
+        localStorage.setItem(
+            `paid_swap_unlock_${safeSwapId}_${userId}`,
+            JSON.stringify({status:"PAID",reference:accountReference,paidAt:Date.now()})
+        );
+
+        const contact=String(swap.phone||"");
+
+        await Swal.fire({
+            icon:"success",
+            title:"🔓 Contact Revealed",
+            width:500,
+            html:`
+              <div style="text-align:left;line-height:1.75;">
+                <div style="background:#ecfdf5;border:1px solid #86efac;border-radius:12px;padding:15px;">
+                  <strong style="display:block;color:#166534;font-size:18px;">${escapeHTML(teacher)}</strong>
+                  <div>📍 ${escapeHTML(current)} ➜ ${escapeHTML(destination)}</div>
+                  <div style="margin-top:8px;font-size:20px;font-weight:900;color:#166534;">📞 ${escapeHTML(contact||"Contact unavailable")}</div>
+                  <div style="margin-top:6px;color:#64748b;font-size:11px;">Payment confirmed • Ref: ${escapeHTML(refCode)}</div>
+                </div>
+              </div>`,
+            confirmButtonText:"Done",
+            confirmButtonColor:"#16a34a"
+        });
+
+    }catch(error){
+        console.error("❌ SWAP CONTACT PAYMENT ERROR:",error);
+        Swal.fire({
+            icon:"error",
+            title:"Payment / Unlock Failed",
+            text:error?.message||"The teacher contact could not be unlocked. Please try again.",
+            confirmButtonColor:"#dc2626"
+        });
+    }
 };
-
 
 /* =========================================================
    🤖 AI MATCH REPORT — POWERED + FAST
@@ -14858,546 +15619,80 @@ window.findTriangularSwap = function(){
    PREMIUM 3-WAY CONTACT UNLOCK
 ========================================================= */
 
-window.unlockTriangularContacts = function(
-    id1,
-    id2,
-    id3
-){
+window.unlockTriangularContacts = async function(id1,id2,id3){
+    try{
+        const ids=[String(id1||""),String(id2||""),String(id3||"")];
+        const teachers=ids.map(id=>allSwaps.find(x=>String(x.swapId)===id));
+        if(teachers.some(t=>!t)) throw new Error("One or more teachers in this triangular match are no longer available.");
 
-    /* =====================================================
-       FIND TEACHERS
-    ===================================================== */
+        const escapeHTML=value=>{const div=document.createElement("div");div.textContent=value??"";return div.innerHTML;};
+        const savedPhone=localStorage.getItem("myPhone")||"";
 
-    const t1 =
-        allSwaps.find(
-            x => String(x.swapId) === String(id1)
-        );
-
-    const t2 =
-        allSwaps.find(
-            x => String(x.swapId) === String(id2)
-        );
-
-    const t3 =
-        allSwaps.find(
-            x => String(x.swapId) === String(id3)
-        );
-
-
-    /* =====================================================
-       VALIDATION
-    ===================================================== */
-
-    if(
-        !t1 ||
-        !t2 ||
-        !t3
-    ){
-
-        Swal.fire({
-            icon:"error",
-            title:"Triangle Not Found",
-            text:
-                "One or more teachers in this triangular match are no longer available."
-        });
-
-        return;
-
-    }
-
-
-    /* =====================================================
-       SAFE HELPERS
-    ===================================================== */
-
-    const escapeHTML =
-        value => {
-
-            const div =
-                document.createElement("div");
-
-            div.textContent =
-                value ?? "-";
-
-            return div.innerHTML;
-
-        };
-
-
-    const refCode =
-        teacher => {
-
-            const id =
-                String(
-                    teacher?.swapId || ""
-                );
-
-            return id
-                ? id.slice(-6).toUpperCase()
-                : "NO-REF";
-
-        };
-
-
-    const safeName =
-        teacher =>
-            String(
-                teacher?.name ||
-                "Teacher"
-            );
-
-
-    const safePhone =
-        teacher =>
-            String(
-                teacher?.phone ||
-                "-"
-            );
-
-
-    const safeCounty =
-        teacher =>
-            String(
-                teacher?.currentCounty ||
-                "-"
-            );
-
-
-    const safeSwapCounty =
-        teacher =>
-            String(
-                teacher?.swapCounty ||
-                "-"
-            );
-
-
-    /* =====================================================
-       OPEN PAYMENT MODAL
-    ===================================================== */
-
-    Swal.fire({
-
-        title:
-            "🔺 Unlock Triangular Swap",
-
-        width:
-            window.innerWidth < 600
-                ? "94%"
-                : 560,
-
-        padding:
-            window.innerWidth < 600
-                ? "14px"
-                : "22px",
-
-        html: `
-
-            <div style="
-                text-align:left;
-            ">
-
-                <!-- HEADER -->
-
-                <div style="
-                    background:#eff6ff;
-                    border:1px solid #bfdbfe;
-                    border-left:5px solid #2563eb;
-
-                    padding:14px;
-
-                    border-radius:12px;
-
-                    margin-bottom:13px;
-                ">
-
-                    <div style="
-                        color:#1d4ed8;
-                        font-size:11px;
-                        font-weight:800;
-                        margin-bottom:5px;
-                    ">
-                        🔺 3-WAY CONTACT UNLOCK
-                    </div>
-
-                    <div style="
-                        color:#0f172a;
-                        font-size:13px;
-                        line-height:1.6;
-                    ">
-                        Unlock the contact numbers of all
-                        three teachers participating in
-                        this triangular swap.
-                    </div>
-
+        const result=await Swal.fire({
+            title:"🔺 Unlock 3 Teacher Contacts",
+            width:560,
+            html:`
+              <div style="text-align:left;line-height:1.6;">
+                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;border-radius:12px;padding:14px;margin-bottom:13px;">
+                  <strong style="color:#1d4ed8;">3-WAY SWAP CONTACT UNLOCK</strong>
+                  <div style="color:#64748b;font-size:12px;margin-top:5px;">One secure M-PESA payment reveals all three participating teacher contacts.</div>
                 </div>
-
-
-                <!-- PRICE -->
-
-                <div style="
-                    background:#ecfdf5;
-
-                    border:1px solid #bbf7d0;
-
-                    border-radius:13px;
-
-                    padding:17px;
-
-                    text-align:center;
-
-                    margin-bottom:13px;
-                ">
-
-                    <div style="
-                        color:#166534;
-                        font-size:11px;
-                        font-weight:800;
-                        text-transform:uppercase;
-                    ">
-                        Triangle Unlock Fee
-                    </div>
-
-                    <div style="
-                        margin:4px 0;
-
-                        color:#16a34a;
-
-                        font-size:
-                            clamp(
-                                30px,
-                                8vw,
-                                40px
-                            );
-
-                        font-weight:900;
-                    ">
-                        KES 1,000
-                    </div>
-
-                    <div style="
-                        color:#64748b;
-                        font-size:11px;
-                    ">
-                        One payment unlocks all 3 contacts.
-                    </div>
-
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px;">
+                  ${teachers.map((t,i)=>`<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px;"><strong style="font-size:10px;color:${["#2563eb","#7c3aed","#d97706"][i]};">TEACHER ${i+1}</strong><div style="font-size:11px;font-weight:800;margin-top:4px;">👤 ${escapeHTML(t.name||"Teacher")}</div><div style="font-size:10px;color:#64748b;margin-top:3px;">${escapeHTML(t.currentCounty||"-")} ➜ ${escapeHTML(t.swapCounty||"-")}</div></div>`).join("")}
                 </div>
-
-
-                <!-- TEACHERS -->
-
-                <div style="
-                    display:grid;
-
-                    grid-template-columns:
-                        repeat(3,1fr);
-
-                    gap:8px;
-
-                    margin-bottom:13px;
-                ">
-
-                    <div style="
-                        background:#f8fafc;
-                        border:1px solid #e2e8f0;
-                        border-radius:10px;
-                        padding:10px;
-                    ">
-
-                        <strong style="
-                            color:#2563eb;
-                            font-size:10px;
-                        ">
-                            TEACHER 1
-                        </strong>
-
-                        <div style="
-                            margin-top:5px;
-                            color:#0f172a;
-                            font-size:11px;
-                            font-weight:800;
-                        ">
-                            👤 ${escapeHTML(
-                                safeName(t1)
-                            )}
-                        </div>
-
-                        <div style="
-                            margin-top:4px;
-                            color:#64748b;
-                            font-size:10px;
-                            line-height:1.5;
-                        ">
-                            ${escapeHTML(
-                                safeCounty(t1)
-                            )}
-
-                            ➜
-
-                            ${escapeHTML(
-                                safeSwapCounty(t1)
-                            )}
-                        </div>
-
-                    </div>
-
-
-                    <div style="
-                        background:#f8fafc;
-                        border:1px solid #e2e8f0;
-                        border-radius:10px;
-                        padding:10px;
-                    ">
-
-                        <strong style="
-                            color:#7c3aed;
-                            font-size:10px;
-                        ">
-                            TEACHER 2
-                        </strong>
-
-                        <div style="
-                            margin-top:5px;
-                            color:#0f172a;
-                            font-size:11px;
-                            font-weight:800;
-                        ">
-                            👤 ${escapeHTML(
-                                safeName(t2)
-                            )}
-                        </div>
-
-                        <div style="
-                            margin-top:4px;
-                            color:#64748b;
-                            font-size:10px;
-                            line-height:1.5;
-                        ">
-                            ${escapeHTML(
-                                safeCounty(t2)
-                            )}
-
-                            ➜
-
-                            ${escapeHTML(
-                                safeSwapCounty(t2)
-                            )}
-                        </div>
-
-                    </div>
-
-
-                    <div style="
-                        background:#f8fafc;
-                        border:1px solid #e2e8f0;
-                        border-radius:10px;
-                        padding:10px;
-                    ">
-
-                        <strong style="
-                            color:#d97706;
-                            font-size:10px;
-                        ">
-                            TEACHER 3
-                        </strong>
-
-                        <div style="
-                            margin-top:5px;
-                            color:#0f172a;
-                            font-size:11px;
-                            font-weight:800;
-                        ">
-                            👤 ${escapeHTML(
-                                safeName(t3)
-                            )}
-                        </div>
-
-                        <div style="
-                            margin-top:4px;
-                            color:#64748b;
-                            font-size:10px;
-                            line-height:1.5;
-                        ">
-                            ${escapeHTML(
-                                safeCounty(t3)
-                            )}
-
-                            ➜
-
-                            ${escapeHTML(
-                                safeSwapCounty(t3)
-                            )}
-                        </div>
-
-                    </div>
-
+                <div style="background:#ecfdf5;border:1px solid #bbf7d0;border-radius:13px;padding:17px;text-align:center;margin-bottom:13px;">
+                  <div style="color:#166534;font-size:11px;font-weight:900;text-transform:uppercase;">Triangle Contact Unlock Fee</div>
+                  <div style="color:#16a34a;font-size:36px;font-weight:900;">KES 1,000</div>
+                  <div style="color:#64748b;font-size:11px;">One payment • 3 contacts</div>
                 </div>
-
-
-                <!-- MPESA -->
-
-                <div style="
-                    background:#f0fdf4;
-
-                    border:1px solid #bbf7d0;
-
-                    border-radius:12px;
-
-                    padding:14px;
-
-                    text-align:center;
-
-                    margin-bottom:12px;
-                ">
-
-                    <div style="
-                        color:#166534;
-                        font-size:12px;
-                        font-weight:800;
-                        margin-bottom:5px;
-                    ">
-                        📲 M-PESA PAYMENT
-                    </div>
-
-                    <div style="
-                        color:#16a34a;
-                        font-size:27px;
-                        font-weight:900;
-                        letter-spacing:1px;
-                    ">
-                        0792755676
-                    </div>
-
-                    <div style="
-                        margin-top:6px;
-                        color:#475569;
-                        font-size:11px;
-                        line-height:1.6;
-                    ">
-                        Send
-                        <strong>KES 1,000</strong>
-                        then click
-                        <strong style="color:#16a34a;">
-                            I Have Paid
-                        </strong>.
-                    </div>
-
-                </div>
-
-
-                <!-- WARNING -->
-
-                <div style="
-                    background:#fff7ed;
-
-                    border:1px solid #fed7aa;
-
-                    border-left:4px solid #f59e0b;
-
-                    border-radius:9px;
-
-                    padding:9px 11px;
-
-                    color:#9a3412;
-
-                    font-size:11px;
-
-                    line-height:1.5;
-                ">
-                    ⚠️ Contact details remain protected until
-                    the administrator verifies the payment.
-                </div>
-
-            </div>
-
-        `,
-
-        showCancelButton:true,
-
-        confirmButtonText:
-            "✅ I Have Paid",
-
-        cancelButtonText:
-            "Close",
-
-        confirmButtonColor:
-            "#16a34a",
-
-        cancelButtonColor:
-            "#64748b",
-
-        reverseButtons:true
-
-    })
-
-    .then(
-        result => {
-
-            if(
-                !result.isConfirmed
-            ){
-                return;
+                <label style="display:block;font-weight:900;font-size:12px;margin-bottom:7px;">M-PESA Phone Number</label>
+                <input id="triangleMpesaPhone" type="tel" value="${escapeHTML(savedPhone)}" placeholder="07XXXXXXXX" autocomplete="tel" style="width:100%;box-sizing:border-box;padding:14px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;">
+                <div style="margin-top:8px;color:#64748b;font-size:11px;">An STK Push will be sent. Contacts are revealed only after confirmed payment.</div>
+              </div>`,
+            showCancelButton:true,
+            confirmButtonText:"📲 Pay KES 1,000 & Reveal All",
+            cancelButtonText:"Cancel",
+            confirmButtonColor:"#16a34a",
+            preConfirm:()=>{
+                let p=String(document.getElementById("triangleMpesaPhone")?.value||"").replace(/[\s\-()]/g,"");
+                if(p.startsWith("+254")) p="0"+p.substring(4);
+                else if(p.startsWith("254")) p="0"+p.substring(3);
+                if(!/^(07\d{8}|01\d{8})$/.test(p)){Swal.showValidationMessage("Enter a valid Kenyan M-PESA number.");return false;}
+                return p;
             }
+        });
+        if(!result.isConfirmed)return;
 
+        const paymentPhone=result.value;
+        localStorage.setItem("myPhone",paymentPhone);
+        const backend=String(window.TEACHERS_HUB_MPESA_BACKEND||"").trim().replace(/\/+$/g,"");
+        if(!backend)throw new Error("M-PESA backend URL is not configured.");
+        const userId=typeof window.getTeachersHubUserId==="function"?window.getTeachersHubUserId():"anonymous";
+        const accountReference=`TRIANGLE_UNLOCK_${ids.map(x=>x.slice(-5)).join("")}_${Date.now()}`;
 
-            /* =============================================
-               WHATSAPP PAYMENT REQUEST
-            ============================================== */
+        Swal.fire({title:"📲 Sending STK Push...",html:`Sending KES 1,000 payment request to <strong>${escapeHTML(paymentPhone)}</strong><br><br>Please check your phone.`,allowOutsideClick:false,allowEscapeKey:false,showConfirmButton:false,didOpen:()=>Swal.showLoading()});
 
-            const message =
+        const response=await fetch(`${backend}/stkpush`,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({phone:paymentPhone,amount:1000,accountReference,itemId:ids.join("_"),itemName:"Triangular Teacher Swap Contact Unlock",userId})});
+        const raw=await response.text();
+        let data;try{data=JSON.parse(raw);}catch(_){throw new Error(`Payment server returned invalid data. HTTP ${response.status}.`);}
+        if(!response.ok)throw new Error(data?.errorMessage||data?.message||data?.ResultDesc||`Payment server returned HTTP ${response.status}.`);
+        const accepted=data?.success===true&&(String(data?.ResponseCode)==="0"||data?.ResponseCode===0||!!data?.CheckoutRequestID);
+        if(!accepted)throw new Error(data?.errorMessage||data?.ResponseDescription||data?.ResultDesc||"M-PESA did not accept the payment request.");
+        if(typeof window.waitForResourcePayment!=="function")throw new Error("The M-PESA confirmation engine is not available. Please reload and try again.");
 
-`🔺 TRIANGULAR SWAP UNLOCK REQUEST
+        Swal.fire({title:"⏳ Confirming Payment...",html:"Complete the M-PESA prompt. All three contacts will appear automatically after confirmation.",allowOutsideClick:false,allowEscapeKey:false,showConfirmButton:false,didOpen:()=>Swal.showLoading()});
+        const payment=await window.waitForResourcePayment(accountReference,ids.join("_"),userId,data?.CheckoutRequestID||null,{pollInterval:3000,timeout:180000,maxNetworkErrors:10});
+        if(!payment||payment.status!=="PAID")throw new Error(payment?.message||"M-PESA payment was not confirmed.");
 
-💰 PAYMENT: KES 1,000
+        localStorage.setItem(`paid_triangle_${ids.sort().join("_")}_${userId}`,JSON.stringify({status:"PAID",reference:accountReference,paidAt:Date.now()}));
 
-👨‍🏫 TEACHER 1
-Name: ${safeName(t1)}
-REF: ${refCode(t1)}
-From: ${safeCounty(t1)}
-To: ${safeSwapCounty(t1)}
-Phone: ${safePhone(t1)}
-
-👨‍🏫 TEACHER 2
-Name: ${safeName(t2)}
-REF: ${refCode(t2)}
-From: ${safeCounty(t2)}
-To: ${safeSwapCounty(t2)}
-Phone: ${safePhone(t2)}
-
-👨‍🏫 TEACHER 3
-Name: ${safeName(t3)}
-REF: ${refCode(t3)}
-From: ${safeCounty(t3)}
-To: ${safeSwapCounty(t3)}
-Phone: ${safePhone(t3)}
-
-🔐 ACTION REQUIRED:
-I have completed the KES 1,000 payment.
-
-Kindly verify the payment and unlock all three teacher contacts.
-
-System: Teacher Swap Kenya`;
-
-
-            const url =
-                `https://wa.me/254792755676?text=${
-                    encodeURIComponent(
-                        message
-                    )
-                }`;
-
-
-            window.open(
-                url,
-                "_blank",
-                "noopener,noreferrer"
-            );
-
-        }
-    );
-
+        const contacts=teachers.map((t,i)=>`<div style="padding:10px;border:1px solid #bbf7d0;background:#f0fdf4;border-radius:10px;margin-top:8px;"><strong style="color:#166534;">TEACHER ${i+1} — ${escapeHTML(t.name||"Teacher")}</strong><br>📍 ${escapeHTML(t.currentCounty||"-")} ➜ ${escapeHTML(t.swapCounty||"-")}<br><span style="font-size:18px;font-weight:900;color:#166534;">📞 ${escapeHTML(t.phone||"Contact unavailable")}</span></div>`).join("");
+        await Swal.fire({icon:"success",title:"🔓 3 Contacts Revealed",width:560,html:`<div style="text-align:left;line-height:1.65;"><div style="background:#ecfdf5;border:1px solid #86efac;border-radius:12px;padding:12px;margin-bottom:10px;color:#166534;font-weight:800;">Payment confirmed • KES 1,000</div>${contacts}</div>`,confirmButtonText:"Done",confirmButtonColor:"#16a34a"});
+    }catch(error){
+        console.error("❌ TRIANGLE CONTACT PAYMENT ERROR:",error);
+        Swal.fire({icon:"error",title:"Payment / Unlock Failed",text:error?.message||"The triangular contacts could not be unlocked. Please try again.",confirmButtonColor:"#dc2626"});
+    }
 };
-
 
 /* =========================================================
    🔺 COUNT ALL UNIQUE TRIANGULAR SWAPS
@@ -16225,7 +16520,8 @@ window.closeIndependentSections = function(){
   const sections = [
     "swapRequestsSection",
     "postSwapSection",
-    "learningResourcesSection"
+    "learningResourcesSection",
+    "jobsSection"
   ];
 
   sections.forEach(id => {
@@ -16271,9 +16567,33 @@ window.closeIndependentSections = function(){
 };
 
 
+
+
+window.__showOnlyIndependentSection = function(sectionId){
+  const ids = [
+    "swapRequestsSection",
+    "postSwapSection",
+    "learningResourcesSection",
+    "jobsSection"
+  ];
+
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = (id === sectionId) ? "block" : "none";
+  });
+
+  const listings = document.getElementById("listings");
+  if(listings){
+    listings.style.display = sectionId === "swapRequestsSection" ? "grid" : "none";
+  }
+
+  const hub = document.getElementById("actionHub");
+  if(hub) hub.style.display = "none";
+};
+
 window.openSwapRequestsSection = function(){
 
-  closeIndependentSectionsNoScroll();
+  window.__showOnlyIndependentSection("swapRequestsSection");
 
   const section =
     document.getElementById("swapRequestsSection");
@@ -16312,7 +16632,7 @@ window.openSwapRequestsSection = function(){
 
 window.openPostSwapSection = function(){
 
-  closeIndependentSectionsNoScroll();
+  window.__showOnlyIndependentSection("postSwapSection");
 
   const section =
     document.getElementById("postSwapSection");
@@ -16340,7 +16660,7 @@ window.openPostSwapSection = function(){
 
 window.openLearningResourcesSection = function(){
 
-  closeIndependentSectionsNoScroll();
+  window.__showOnlyIndependentSection("learningResourcesSection");
 
   const section =
     document.getElementById("learningResourcesSection");
@@ -16369,6 +16689,33 @@ window.openLearningResourcesSection = function(){
 };
 
 
+
+/* =========================================================
+   💼 OPEN JOBS SECTION
+========================================================= */
+window.openJobsSection = function(){
+  window.__showOnlyIndependentSection("jobsSection");
+
+  const section = document.getElementById("jobsSection");
+  const hub = document.getElementById("actionHub");
+
+  if(hub){
+    hub.style.display = "none";
+  }
+
+  if(section){
+    section.style.display = "block";
+    refreshAdminManagementUI();
+    section.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+  }
+
+  showAdminJobPublisher();
+  loadJobsMarketplace();
+};
+
 function closeIndependentSectionsNoScroll(){
 
   const listings = document.getElementById("listings");
@@ -16380,7 +16727,8 @@ function closeIndependentSectionsNoScroll(){
   [
     "swapRequestsSection",
     "postSwapSection",
-    "learningResourcesSection"
+    "learningResourcesSection",
+    "jobsSection"
   ].forEach(id => {
 
     const section =
@@ -18511,38 +18859,38 @@ function renderLearningResources(){
       );
 
 
-    /* =======================================================
-       CARD STYLE
-    ======================================================= */
+   /* =======================================================
+   CARD STYLE
+======================================================= */
 
-    item.style.cssText = `
+item.style.cssText = `
 
-      width:100%;
+  width:100%;
 
-      min-width:0;
+  min-width:0;
 
-      box-sizing:border-box;
+  box-sizing:border-box;
 
-      background:#ffffff;
+  background:#ffffff;
 
-      border:
-        1px solid #fecaca;
+  /* THICK GREEN OUTLINE */
+  border:
+    3px solid #00A651;
 
-      border-radius:16px;
+  border-radius:16px;
 
-      padding:16px;
+  padding:16px;
 
-      box-shadow:
-        0 6px 18px
-        rgba(15,23,42,.07);
+  box-shadow:
+    0 6px 18px
+    rgba(0,166,81,.12);
 
-      transition:
-        transform .18s ease,
-        box-shadow .18s ease,
-        border-color .18s ease;
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease;
 
-    `;
-
+`;
 
     /* =======================================================
        CARD HTML
@@ -18618,38 +18966,32 @@ function renderLearningResources(){
       </h4>
 
 
-      <!-- DESCRIPTION -->
+    <!-- DESCRIPTION -->
 
-      ${
-        description
-
-        ? `
-
-          <div style="
-            color:#64748b;
-            font-size:13px;
-            line-height:1.5;
-            margin-bottom:12px;
-            word-break:break-word;
-          ">
-            ${description}
-          </div>
-
-        `
-
-        : `
-
-          <div style="
-            color:#64748b;
-            font-size:13px;
-            margin-bottom:12px;
-          ">
-            Quality learning material
-            ready for use.
-          </div>
-
-        `
-      }
+${
+  description
+  ? `
+    <div style="
+      color:#00A651;
+      font-size:13px;
+      line-height:1.5;
+      margin-bottom:12px;
+      word-break:break-word;
+    ">
+      ${description}
+    </div>
+  `
+  : `
+    <div style="
+      color:#00A651;
+      font-size:13px;
+      margin-bottom:12px;
+    ">
+      Quality learning material
+      ready for use.
+    </div>
+  `
+}
 
 
       <!-- INFORMATION -->
@@ -18839,6 +19181,7 @@ function renderLearningResources(){
     );
 
 
+    item.dataset.resourceId = String(resource.id || "");
     grid.appendChild(item);
 
   });
@@ -22430,6 +22773,947 @@ document.addEventListener('DOMContentLoaded',function(){
 
 
 
+
+
+
+/* =========================================================
+   💼 JOBS & VACANCIES MARKETPLACE ENGINE
+   - Public browsing
+   - Admin-only publishing
+   - Private contact storage
+   - M-PESA contact unlock
+========================================================= */
+
+let __jobsUnsubscribe = null;
+let __allJobs = [];
+
+function isJobAdmin(){
+  return window.__isResourceAdmin === true;
+}
+
+function showAdminJobPublisher(){
+  const panel = document.getElementById("adminJobPublisher");
+  if(!panel) return;
+
+  panel.style.display = isJobAdmin() ? "block" : "none";
+}
+
+function jobEscape(value){
+  const div = document.createElement("div");
+  div.textContent = value ?? "";
+  return div.innerHTML;
+}
+
+function jobNormalize(value){
+  return String(value || "").trim().toLowerCase();
+}
+
+function applyJobsSnapshot(snapshot){
+  const data = snapshot?.val() || {};
+  __allJobs = Object.entries(data)
+    .map(([id, item]) => ({ id, ...(item || {}) }))
+    .filter(job => job && job.status !== "removed" && job.status !== "closed")
+    .sort((a,b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+
+  renderJobs();
+}
+
+function loadJobsMarketplace(){
+  const list = document.getElementById("jobsList");
+  if(!list) return;
+
+  const jobsRef =
+    window.__jobsRef ||
+    ((window.__firebaseDB && window.__firebaseDBApi?.ref)
+      ? window.__firebaseDBApi.ref(window.__firebaseDB, "jobPostings")
+      : null);
+
+  if(!jobsRef){
+    list.innerHTML =
+      '<div class="jobs-empty">⚠️ Jobs are temporarily unavailable. Please reload the page.</div>';
+    return;
+  }
+
+  if(__jobsUnsubscribe){
+    try{ __jobsUnsubscribe(); }catch(e){}
+    __jobsUnsubscribe = null;
+  }
+
+  list.innerHTML = '<div class="jobs-empty">💼 Loading jobs...</div>';
+
+  __jobsUnsubscribe = onValue(
+    jobsRef,
+    snapshot => applyJobsSnapshot(snapshot),
+    error => {
+      console.error("Jobs listener error:", error);
+      list.innerHTML =
+        '<div class="jobs-empty">⚠️ Unable to load jobs. Please try again.</div>';
+    }
+  );
+}
+
+function clearJobFilters(){
+  ["jobCategoryFilter","jobCountyFilter","jobSearchInput"].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = "";
+  });
+  renderJobs();
+}
+
+function getFilteredJobs(){
+  const category =
+    jobNormalize(document.getElementById("jobCategoryFilter")?.value);
+
+  const county =
+    jobNormalize(document.getElementById("jobCountyFilter")?.value);
+
+  const search =
+    jobNormalize(document.getElementById("jobSearchInput")?.value);
+
+  return __allJobs.filter(job => {
+    const haystack = [
+      job.title,
+      job.employer,
+      job.category,
+      job.county,
+      job.location,
+      job.description,
+      job.requirements,
+      job.jobType
+    ].map(jobNormalize).join(" ");
+
+    return (
+      (!category || jobNormalize(job.category) === category) &&
+      (!county || jobNormalize(job.county).includes(county)) &&
+      (!search || haystack.includes(search))
+    );
+  });
+}
+
+function renderJobs(){
+  const list = document.getElementById("jobsList");
+  const summary = document.getElementById("jobsResultsSummary");
+
+  if(!list) return;
+
+  const jobs = getFilteredJobs();
+
+  if(summary){
+    summary.textContent =
+      jobs.length
+        ? `💼 ${jobs.length} job${jobs.length === 1 ? "" : "s"} found`
+        : "🔎 No jobs match your selected filters.";
+  }
+
+  if(!jobs.length){
+    list.innerHTML = `
+      <div class="jobs-empty">
+        <div style="font-size:42px;margin-bottom:8px;">🔎</div>
+        <strong style="display:block;color:#7c2d12;font-size:18px;margin-bottom:5px;">
+          No matching jobs found
+        </strong>
+        <div>Try another county, category or search term.</div>
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = "";
+
+  jobs.forEach(job => {
+    const item = document.createElement("article");
+    item.className = "job-card";
+
+    const deadline =
+      job.deadline
+        ? new Date(`${job.deadline}T23:59:59`)
+        : null;
+
+    const deadlineText =
+      deadline && !Number.isNaN(deadline.getTime())
+        ? deadline.toLocaleDateString("en-KE", {
+            day:"2-digit",
+            month:"short",
+            year:"numeric"
+          })
+        : "";
+
+    const description =
+      String(job.description || "")
+        .trim();
+
+    const requirements =
+      String(job.requirements || "")
+        .trim();
+
+    const fee = Math.max(
+      1,
+      Number(job.unlockFee || 0)
+    );
+
+    item.innerHTML = `
+      <h3>${jobEscape(job.title || "Job Opportunity")}</h3>
+
+      <div class="job-employer">
+        🏢 ${jobEscape(job.employer || "Employer")}
+      </div>
+
+      <div class="job-meta-row">
+        ${job.category ? `<span class="job-badge">💼 ${jobEscape(job.category)}</span>` : ""}
+        ${job.county ? `<span class="job-badge">📍 ${jobEscape(job.county)}</span>` : ""}
+        ${job.location ? `<span class="job-badge">🏫 ${jobEscape(job.location)}</span>` : ""}
+        ${job.jobType ? `<span class="job-badge">🕒 ${jobEscape(job.jobType)}</span>` : ""}
+        ${deadlineText ? `<span class="job-badge">⏳ ${jobEscape(deadlineText)}</span>` : ""}
+      </div>
+
+      ${job.salary ? `
+        <div class="job-salary" style="margin-bottom:10px;">
+          💰 ${jobEscape(job.salary)}
+        </div>
+      ` : ""}
+
+      <div class="job-description">${jobEscape(description || "No description provided.")}</div>
+
+      ${requirements ? `
+        <div class="job-requirements">
+          <strong>Requirements:</strong><br>
+          ${jobEscape(requirements)}
+        </div>
+      ` : ""}
+
+      <div class="job-bottom">
+        <div class="job-pay-line">
+          <span class="job-unlock-fee">🔐 Contact unlock: KES ${fee.toLocaleString()}</span>
+        </div>
+
+        <button
+          type="button"
+          class="job-unlock-btn"
+          onclick="unlockJobContact('${jobEscape(job.id)}')"
+        >
+          📲 Pay & Reveal Contact
+        </button>
+      </div>
+    `;
+
+    item.dataset.jobId = String(job.id || "");
+    list.appendChild(item);
+  });
+}
+
+async function getJobById(jobId){
+  const jobsRef =
+    window.__jobsRef ||
+    ((window.__firebaseDB && window.__firebaseDBApi?.ref)
+      ? window.__firebaseDBApi.ref(window.__firebaseDB, "jobPostings")
+      : null);
+
+  if(!jobsRef) return null;
+
+  try{
+    const snap = await get(ref(window.__firebaseDB, `jobPostings/${jobId}`));
+    return snap.exists() ? { id:jobId, ...(snap.val() || {}) } : null;
+  }catch(error){
+    console.error("getJobById error:", error);
+    return null;
+  }
+}
+
+function jobPurchaseKey(jobId, userId){
+  return `paid_job_${jobId}_${userId || "guest"}`;
+}
+
+async function revealPaidJobContact(jobId, accountReference){
+  try{
+    const contactSnap =
+      await get(
+        ref(
+          window.__firebaseDB,
+          `jobContacts/${jobId}`
+        )
+      );
+
+    if(!contactSnap.exists()){
+      throw new Error(
+        "Payment was confirmed, but the employer contact record is unavailable. Please contact the administrator."
+      );
+    }
+
+    const contact = contactSnap.val() || {};
+
+    localStorage.setItem(
+      jobPurchaseKey(jobId, getTeachersHubUserId()),
+      JSON.stringify({
+        status:"PAID",
+        accountReference,
+        revealedAt:Date.now()
+      })
+    );
+
+    Swal.fire({
+      icon:"success",
+      title:"🔓 Contact Revealed",
+      width:520,
+      html:`
+        <div style="text-align:left;line-height:1.75;">
+          <div style="
+            background:#ecfdf5;
+            border:1px solid #86efac;
+            border-radius:12px;
+            padding:15px;
+          ">
+            <strong style="display:block;color:#166534;font-size:17px;">
+              ${jobEscape(contact.contactName || "Contact Person")}
+            </strong>
+
+            ${contact.phone ? `
+              <div>📞 <strong>Phone:</strong> ${jobEscape(contact.phone)}</div>
+            ` : ""}
+
+            ${contact.email ? `
+              <div>📧 <strong>Email:</strong> ${jobEscape(contact.email)}</div>
+            ` : ""}
+
+            ${contact.instructions ? `
+              <div style="margin-top:7px;">
+                📝 <strong>Application:</strong><br>
+                ${jobEscape(contact.instructions)}
+              </div>
+            ` : ""}
+          </div>
+        </div>
+      `,
+      confirmButtonText:"Done",
+      confirmButtonColor:"#16a34a"
+    });
+
+    renderJobs();
+  }catch(error){
+    console.error("Reveal job contact error:", error);
+    throw error;
+  }
+}
+
+window.unlockJobContact = async function(jobId){
+  try{
+    if(!jobId){
+      throw new Error("Job ID is missing.");
+    }
+
+    if(
+      !window.__firebaseDB ||
+      typeof get !== "function" ||
+      typeof ref !== "function"
+    ){
+      throw new Error("Firebase is not ready. Please reload the page.");
+    }
+
+    if(typeof stopTeachersHubPaymentMonitor === "function"){
+      stopTeachersHubPaymentMonitor();
+    }
+
+    const userId =
+      typeof getTeachersHubUserId === "function"
+        ? getTeachersHubUserId()
+        : "";
+
+    const purchaseKey = jobPurchaseKey(jobId, userId);
+    const previous = localStorage.getItem(purchaseKey);
+
+    if(previous){
+      try{
+        const purchase = JSON.parse(previous);
+
+        if(purchase?.status === "PAID"){
+          await revealPaidJobContact(
+            jobId,
+            purchase.accountReference
+          );
+          return;
+        }
+      }catch(e){
+        localStorage.removeItem(purchaseKey);
+      }
+    }
+
+    const job = await getJobById(jobId);
+
+    if(!job){
+      throw new Error("This job is no longer available.");
+    }
+
+    const price = Math.max(
+      1,
+      Number(job.unlockFee || 0)
+    );
+
+    const savedPhone =
+      localStorage.getItem("myPhone") || "";
+
+    const result = await Swal.fire({
+      title:"🔐 Reveal Job Contact",
+      width:520,
+      html:`
+        <div style="text-align:left;">
+          <div style="
+            background:#fff7ed;
+            border:1px solid #fed7aa;
+            padding:14px;
+            border-radius:12px;
+            margin-bottom:14px;
+          ">
+            <strong style="font-size:17px;">
+              ${jobEscape(job.title || "Job Opportunity")}
+            </strong>
+            <div style="color:#9a3412;margin-top:4px;">
+              ${jobEscape(job.employer || "")}
+            </div>
+          </div>
+
+          <div style="
+            background:#ecfdf5;
+            padding:14px;
+            border-radius:12px;
+            text-align:center;
+            margin-bottom:17px;
+          ">
+            <div style="font-size:12px;color:#64748b;">
+              Contact Unlock Fee
+            </div>
+            <strong style="font-size:28px;color:#16a34a;">
+              KES ${price.toLocaleString()}
+            </strong>
+          </div>
+
+          <label style="display:block;font-weight:800;margin-bottom:7px;">
+            M-PESA Phone Number
+          </label>
+
+          <input
+            id="jobMpesaPhone"
+            type="tel"
+            value="${jobEscape(savedPhone)}"
+            placeholder="07XXXXXXXX"
+            autocomplete="tel"
+            style="
+              width:100%;
+              box-sizing:border-box;
+              padding:14px;
+              border:2px solid #e2e8f0;
+              border-radius:10px;
+              font-size:16px;
+            "
+          >
+
+          <div style="
+            margin-top:9px;
+            color:#64748b;
+            font-size:12px;
+          ">
+            An M-PESA STK Push will be sent to this number.
+            The contact is revealed only after payment confirmation.
+          </div>
+        </div>
+      `,
+      showCancelButton:true,
+      confirmButtonText:"📲 Pay & Reveal",
+      cancelButtonText:"Cancel",
+      confirmButtonColor:"#ea580c",
+      preConfirm:()=>{
+        const phone =
+          normalizeKenyanPhone(
+            document.getElementById("jobMpesaPhone")?.value
+          );
+
+        if(!phone){
+          Swal.showValidationMessage(
+            "Enter a valid Kenyan M-PESA number."
+          );
+          return false;
+        }
+
+        return phone;
+      }
+    });
+
+    if(!result.isConfirmed) return;
+
+    const buyerPhone = result.value;
+
+    localStorage.setItem("myPhone", buyerPhone);
+
+    const safeJobId =
+      String(jobId)
+        .replace(/[^a-zA-Z0-9_-]/g,"")
+        .substring(0,30);
+
+    const accountReference =
+      `JOB_${safeJobId}_${Date.now()}`;
+
+    const stkPayload = {
+      phone: buyerPhone,
+      amount: price,
+      accountReference,
+      itemId: jobId,
+      itemName: job.title || "Job Contact",
+      userId
+    };
+
+    Swal.fire({
+      title:"📲 Sending STK Push...",
+      html:`
+        <div style="line-height:1.7;">
+          Sending payment request to<br>
+          <strong>${jobEscape(buyerPhone)}</strong>
+          <br><br>
+          Amount:
+          <strong>KES ${price.toLocaleString()}</strong>
+          <br><br>
+          Please check your phone and complete the M-PESA prompt.
+        </div>
+      `,
+      allowOutsideClick:false,
+      allowEscapeKey:false,
+      showConfirmButton:false,
+      didOpen:()=>Swal.showLoading()
+    });
+
+    const backend =
+      String(
+        window.TEACHERS_HUB_MPESA_BACKEND || ""
+      ).trim().replace(/\/+$/,"");
+
+    if(!backend){
+      throw new Error("M-PESA backend URL is not configured.");
+    }
+
+    const response =
+      await teachersHubRequest(
+        `${backend}/stkpush`,
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json",
+            "Accept":"application/json"
+          },
+          body:JSON.stringify(stkPayload)
+        },
+        30000
+      );
+
+    const raw = await response.text();
+
+    let data;
+    try{
+      data = JSON.parse(raw);
+    }catch(e){
+      throw new Error(
+        `Payment server returned invalid data. HTTP ${response.status}.`
+      );
+    }
+
+    if(!response.ok){
+      throw new Error(
+        data?.errorMessage ||
+        data?.message ||
+        data?.ResultDesc ||
+        `Payment server returned HTTP ${response.status}.`
+      );
+    }
+
+    const accepted =
+      data?.success === true &&
+      (
+        String(data?.ResponseCode) === "0" ||
+        data?.ResponseCode === 0 ||
+        !!data?.CheckoutRequestID
+      );
+
+    if(!accepted){
+      throw new Error(
+        data?.errorMessage ||
+        data?.ResponseDescription ||
+        data?.ResultDesc ||
+        "M-PESA did not accept the payment request."
+      );
+    }
+
+    const checkoutRequestId =
+      data?.CheckoutRequestID || null;
+
+    Swal.fire({
+      title:"⏳ Confirming Payment...",
+      html:`
+        <div style="line-height:1.7;">
+          We are waiting for M-PESA confirmation.
+          <br><br>
+          <strong>Do not close this window.</strong>
+        </div>
+      `,
+      allowOutsideClick:false,
+      allowEscapeKey:false,
+      showConfirmButton:false,
+      didOpen:()=>Swal.showLoading()
+    });
+
+    if(typeof window.waitForResourcePayment !== "function"){
+      throw new Error(
+        "The payment confirmation engine is not available."
+      );
+    }
+
+    const payment =
+      await window.waitForResourcePayment(
+        accountReference,
+        jobId,
+        userId,
+        checkoutRequestId,
+        {
+          pollInterval:3000,
+          timeout:180000,
+          maxNetworkErrors:10
+        }
+      );
+
+    if(!payment || payment.status !== "PAID"){
+      throw new Error(
+        payment?.message ||
+        "Payment was not confirmed."
+      );
+    }
+
+    await revealPaidJobContact(
+      jobId,
+      accountReference
+    );
+
+  }catch(error){
+    console.error("❌ JOB CONTACT PAYMENT ERROR:", error);
+
+    Swal.fire({
+      icon:"error",
+      title:"Payment / Unlock Failed",
+      text:
+        error?.message ||
+        "The contact could not be unlocked. Please try again.",
+      confirmButtonColor:"#dc2626"
+    });
+  }
+};
+
+window.publishJob = async function(event){
+  if(event) event.preventDefault();
+
+  if(!isJobAdmin()){
+    Swal.fire({
+      icon:"error",
+      title:"Admin Only",
+      text:"Only the authenticated administrator can publish jobs."
+    });
+    return;
+  }
+
+  const button =
+    document.getElementById("publishJobBtn");
+
+  try{
+    if(
+      !window.__firebaseDB ||
+      typeof push !== "function" ||
+      typeof set !== "function"
+    ){
+      throw new Error(
+        "Firebase is not ready. Please reload the page."
+      );
+    }
+
+    const phone =
+      normalizeKenyanPhone(
+        document.getElementById("jobContactPhone")?.value
+      );
+
+    if(!phone){
+      throw new Error(
+        "Enter a valid Kenyan phone number for the private contact."
+      );
+    }
+
+    const unlockFee = Math.max(
+      1,
+      Number(
+        document.getElementById("jobUnlockFee")?.value
+      ) || 0
+    );
+
+    const jobsRef =
+      ref(
+        window.__firebaseDB,
+        "jobPostings"
+      );
+
+    const jobRef = push(jobsRef);
+    const jobId = jobRef.key;
+
+    const job = {
+      id:jobId,
+      title:document.getElementById("jobTitle")?.value.trim(),
+      employer:document.getElementById("jobEmployer")?.value.trim(),
+      category:"General",
+      county:document.getElementById("jobCounty")?.value.trim(),
+      location:"",
+      jobType:"",
+      salary:"",
+      deadline:"",
+      description:document.getElementById("jobDescription")?.value.trim(),
+      requirements:"",
+      unlockFee,
+      status:"active",
+      createdAt:Date.now(),
+      createdBy:
+        window.__firebaseAuth?.currentUser?.uid || "admin"
+    };
+
+    if(
+      !job.title ||
+      !job.employer ||
+      !job.county ||
+      !job.description
+    ){
+      throw new Error(
+        "Please complete all required public job fields."
+      );
+    }
+
+    if(button){
+      button.disabled = true;
+      button.textContent = "⏳ Publishing Job...";
+    }
+
+    /*
+      PUBLIC DATA: NO PHONE, EMAIL OR PRIVATE CONTACT DETAILS.
+    */
+    await set(
+      jobRef,
+      job
+    );
+
+    /*
+      PRIVATE DATA: stored separately.
+      The Firebase rules should protect jobContacts from public reads.
+    */
+    await set(
+      ref(
+        window.__firebaseDB,
+        `jobContacts/${jobId}`
+      ),
+      {
+        contactName:"Employer / Hiring Contact",
+        phone,
+        email:"",
+        instructions:"Contact the employer using the revealed phone / WhatsApp number.",
+        updatedAt:Date.now()
+      }
+    );
+
+    document.getElementById("adminJobForm")?.reset();
+    const feeInput = document.getElementById("jobUnlockFee");
+    if(feeInput) feeInput.value = "100";
+
+    Swal.fire({
+      icon:"success",
+      title:"Job Published 🎉",
+      text:"The job is now available for users to browse. Contact details remain protected until payment.",
+      confirmButtonColor:"#16a34a"
+    });
+
+  }catch(error){
+    console.error("❌ Publish job error:", error);
+
+    Swal.fire({
+      icon:"error",
+      title:"Job Publishing Failed",
+      text:
+        error?.message ||
+        "The job could not be published. Please try again.",
+      confirmButtonColor:"#dc2626"
+    });
+
+  }finally{
+    if(button){
+      button.disabled = false;
+      button.textContent = "📢 Publish Job";
+    }
+  }
+};
+
+/* Live job filters */
+document.addEventListener("DOMContentLoaded",()=>{
+  ["jobCategoryFilter","jobCountyFilter","jobSearchInput"].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener("input",renderJobs);
+    el.addEventListener("change",renderJobs);
+  });
+
+  showAdminJobPublisher();
+});
+
+/* Admin role watcher — follows the existing secure resource admin state. */
+(function jobAdminRoleWatcher(){
+  let checks = 0;
+
+  const timer = setInterval(()=>{
+    checks++;
+    showAdminJobPublisher();
+
+    if(isJobAdmin() || checks >= 30){
+      clearInterval(timer);
+    }
+  },500);
+})();
+
+
+/* =========================================================
+   👑 ADMIN BULK CONTENT MANAGEMENT
+   Select + delete Jobs, Resources and Swaps.
+========================================================= */
+
+function isContentAdmin(){
+  return window.__isResourceAdmin === true;
+}
+
+function refreshAdminManagementUI(){
+  const admin = isContentAdmin();
+  [
+    "adminSwapManager",
+    "adminResourceManager",
+    "adminJobManager"
+  ].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display = admin ? "flex" : "none";
+  });
+
+  if(!admin){
+    document.querySelectorAll(".admin-content-select").forEach(el=>el.remove());
+  }else{
+    addAdminSelectionControls();
+  }
+}
+
+function addAdminSelectionControls(){
+  if(!isContentAdmin()) return;
+
+  document.querySelectorAll(".swap-card[data-swap-id]").forEach(card=>{
+    if(card.querySelector(".admin-content-select")) return;
+    const wrap=document.createElement("label");
+    wrap.className="admin-content-select";
+    wrap.innerHTML=`<input type="checkbox" data-admin-type="swaps" value="${String(card.dataset.swapId).replace(/"/g,"&quot;")}"><span>☑ Select</span>`;
+    card.insertAdjacentElement("afterbegin",wrap);
+  });
+
+  document.querySelectorAll(".resource-item[data-resource-id]").forEach(card=>{
+    if(card.querySelector(".admin-content-select")) return;
+    const wrap=document.createElement("label");
+    wrap.className="admin-content-select";
+    wrap.innerHTML=`<input type="checkbox" data-admin-type="resources" value="${String(card.dataset.resourceId).replace(/"/g,"&quot;")}"><span>☑ Select</span>`;
+    card.insertAdjacentElement("afterbegin",wrap);
+  });
+
+  document.querySelectorAll(".job-card[data-job-id]").forEach(card=>{
+    if(card.querySelector(".admin-content-select")) return;
+    const wrap=document.createElement("label");
+    wrap.className="admin-content-select";
+    wrap.innerHTML=`<input type="checkbox" data-admin-type="jobs" value="${String(card.dataset.jobId).replace(/"/g,"&quot;")}"><span>☑ Select</span>`;
+    card.insertAdjacentElement("afterbegin",wrap);
+  });
+}
+
+window.deleteSelectedContent = async function(type){
+  if(!isContentAdmin()){
+    Swal.fire({icon:"error",title:"Admin Only",text:"Only the administrator can delete posts."});
+    return;
+  }
+
+  const allowed = ["swaps","resources","jobs"];
+  if(!allowed.includes(type)) return;
+
+  const selected=[...document.querySelectorAll(`.admin-content-select input[data-admin-type="${type}"]:checked`)]
+    .map(x=>String(x.value||"").trim())
+    .filter(Boolean);
+
+  if(!selected.length){
+    Swal.fire({icon:"info",title:"Nothing Selected",text:"Select at least one item to delete."});
+    return;
+  }
+
+  const label = type === "swaps" ? "swap" : type === "resources" ? "resource" : "job";
+
+  const confirm = await Swal.fire({
+    icon:"warning",
+    title:`Delete ${selected.length} ${label}${selected.length===1?"":"s"}?`,
+    text:"This action cannot be undone.",
+    showCancelButton:true,
+    confirmButtonText:"Yes, Delete",
+    cancelButtonText:"Cancel",
+    confirmButtonColor:"#dc2626"
+  });
+
+  if(!confirm.isConfirmed) return;
+
+  try{
+    const base =
+      type === "swaps" ? "teacherSwaps" :
+      type === "resources" ? "learningResources" :
+      "jobPostings";
+
+    await Promise.all(selected.map(id=>
+      set(ref(window.__firebaseDB, `${base}/${id}`), null)
+    ));
+
+    if(type === "jobs"){
+      await Promise.all(selected.map(id=>
+        set(ref(window.__firebaseDB, `jobContacts/${id}`), null)
+      ));
+    }
+
+    document.querySelectorAll(`.admin-content-select input[data-admin-type="${type}"]`).forEach(box=>box.checked=false);
+
+    if(type === "swaps" && typeof window.loadTeacherSwaps === "function"){
+      try{ window.loadTeacherSwaps(); }catch(_){ }
+    }
+    if(type === "resources" && typeof loadLearningResources === "function"){
+      try{ loadLearningResources(); }catch(_){ }
+    }
+    if(type === "jobs" && typeof loadJobsMarketplace === "function"){
+      try{ loadJobsMarketplace(); }catch(_){ }
+    }
+
+    Swal.fire({
+      icon:"success",
+      title:"Deleted Successfully",
+      text:`${selected.length} ${label}${selected.length===1?"":"s"} deleted.`,
+      timer:1600,
+      showConfirmButton:false
+    });
+  }catch(error){
+    console.error("Admin delete error:",error);
+    Swal.fire({
+      icon:"error",
+      title:"Delete Failed",
+      text:error?.message || "Firebase rejected the delete operation.",
+      confirmButtonColor:"#dc2626"
+    });
+  }
+};
+
+/* Re-add checkboxes whenever a live listener redraws cards. */
+(function observeAdminCards(){
+  const observer = new MutationObserver(()=>{
+    if(isContentAdmin()) addAdminSelectionControls();
+  });
+  observer.observe(document.body,{childList:true,subtree:true});
+  setInterval(refreshAdminManagementUI,1200);
+})();
 
 </script>
 </body>
