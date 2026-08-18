@@ -1870,7 +1870,80 @@ input[type="file"]::file-selector-button{
     }
 
 }
+/* =========================================================
+   🏫 RASM SCHOOL MANAGEMENT SYSTEM CARD
+   Background image ONLY on this card
+========================================================= */
 
+.action-card-rasm {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  cursor: pointer;
+
+  background:
+    linear-gradient(
+      rgba(255, 255, 255, 0.78),
+      rgba(255, 255, 255, 0.78)
+    ),
+    url("https://i.imgur.com/16igzqA.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.action-card-rasm:hover {
+  transform: translateY(-5px);
+
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.15);
+}
+
+
+/* =========================================================
+   LEFT COLOUR PANEL
+========================================================= */
+
+.action-card-rasm .action-card-color {
+  background: #dc2626;
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.action-card-rasm .action-icon {
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   NUMBER
+========================================================= */
+
+.action-card-rasm .action-number {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+
+/* =========================================================
+   OPEN LINK
+========================================================= */
+
+.action-card-rasm .action-open {
+  color: #dc2626;
+}
+
+.action-card-rasm .action-open b {
+  color: #dc2626;
+}
 
 /* =========================================================
    📱 MOBILE
@@ -3350,6 +3423,8 @@ input[type="file"]::file-selector-button{
   .admin-content-manager{align-items:stretch;flex-direction:column;}
   .admin-content-manager button{width:100%;}
 }
+
+
 </style>
 </head>
 <body>
@@ -3691,7 +3766,7 @@ Join teachers across Kenya using Mwalimu Hub for trusted transfer swaps and lear
 </button>
 
 <!-- =====================================================
-     JOBS & VACANCIES
+     💼 JOBS & VACANCIES
 ====================================================== -->
 
 <button
@@ -3720,11 +3795,55 @@ Join teachers across Kenya using Mwalimu Hub for trusted transfer swaps and lear
 </button>
 
 
+<!-- =====================================================
+     🏫 RASM SCHOOL MANAGEMENT SYSTEM
+====================================================== -->
+
+<a
+  href="https://rasmtech.github.io/rasm-school-management-system/"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="action-card action-card-rasm"
+  style="text-decoration:none;"
+>
+
+  <div class="action-card-color">
+
+    <span class="action-icon">
+      🏫
+    </span>
+
+    <span class="action-number">
+      05
+    </span>
+
+  </div>
+
+  <div class="action-card-content">
+
+    <strong>
+      RASM School Management System
+    </strong>
+
+    <small>
+      Manage learners, teachers, attendance, exams,
+      fees, reports, library and other school activities
+      in one complete school management system.
+    </small>
+
+    <span class="action-open">
+      Open RASM School System
+      <b>↗</b>
+    </span>
+
+  </div>
+
+</a>
+
 
   </div>
 
 </section>
-
   <!-- MAIN GRID -->
   <div class="grid">
 
