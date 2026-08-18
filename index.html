@@ -8556,7 +8556,13 @@ window.postSwap = async function(){
             "SWAP_POST",
             swapUserId,
             stkData?.CheckoutRequestID || null,
-            {pollInterval:3000,timeout:180000,maxNetworkErrors:10}
+            {
+                pollInterval:3000,
+                timeout:180000,
+                maxNetworkErrors:10,
+                autoUnlockResource:false,
+                flow:"swap-post"
+            }
         );
 
         if(!paymentResult || paymentResult.status !== "PAID"){
@@ -12202,7 +12208,8 @@ window.showPayment = async function(
                 pollInterval:3000,
                 timeout:180000,
                 maxNetworkErrors:10,
-                autoUnlockResource:false
+                autoUnlockResource:false,
+                flow:"swap"
             }
         );
 
@@ -15695,7 +15702,8 @@ window.unlockTriangularContacts = async function(id1,id2,id3){
                 pollInterval:3000,
                 timeout:180000,
                 maxNetworkErrors:10,
-                autoUnlockResource:false
+                autoUnlockResource:false,
+                flow:"swap"
             }
         );
         if(!payment||payment.status!=="PAID")throw new Error(payment?.message||"M-PESA payment was not confirmed.");
@@ -19723,8 +19731,18 @@ function getTeachersHubResourceUrl(resource) {
 window.downloadPaidResource =
 async function(
     accountReference,
-    resourceId
+    resourceId,
+    flow = "resource"
 ) {
+
+    /*
+     * Hard safety boundary:
+     * Jobs and Swaps must never enter the resource opener.
+     */
+    if(String(flow).toLowerCase() !== "resource"){
+        console.warn("⛔ Resource opener blocked for non-resource flow:", flow);
+        return false;
+    }
 
     console.log("");
     console.log("==============================================");
@@ -20692,15 +20710,25 @@ async function(
                    but they reveal their own contacts after PAID.
                 ================================================= */
 
+                /*
+                 * IMPORTANT:
+                 * This monitor is shared by Resources, Jobs and Swaps.
+                 * Never infer the section from resourceId.
+                 * The caller MUST explicitly identify its flow.
+                 */
+                const paymentFlow =
+                    String(options?.flow || "").toLowerCase();
+
                 if (
+                    paymentFlow === "resource" &&
                     resourceId &&
-                    options &&
-                    options.autoUnlockResource === true
+                    options?.autoUnlockResource === true
                 ) {
 
                     await downloadPaidResource(
                         accountReference,
-                        resourceId
+                        resourceId,
+                        "resource"
                     );
 
                 }
@@ -22088,7 +22116,8 @@ async function(resourceId) {
                 checkoutRequestId,
 
                 {
-                    autoUnlockResource:true
+                    autoUnlockResource:true,
+                    flow:"resource"
                 }
 
             );
@@ -23395,7 +23424,8 @@ window.unlockJobContact = async function(jobId){
           pollInterval:3000,
           timeout:180000,
           maxNetworkErrors:10,
-          autoUnlockResource:false
+          autoUnlockResource:false,
+          flow:"job"
         }
       );
 
