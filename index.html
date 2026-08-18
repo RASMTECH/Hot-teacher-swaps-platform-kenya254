@@ -17987,12 +17987,13 @@ window.adminLogin = async function(event){
 
                                 try{
 
-                                    await update(
-                                        ref(db, "admin"),
-                                        {
-                                            uid: uid
-                                        }
-                                    );
+                                 await update(
+    ref(db, `admins/${uid}`),
+    {
+        email: user.email,
+        repaired: true
+    }
+);
 
                                     console.log(
                                         "🔧 Repaired legacy admin UID:",
