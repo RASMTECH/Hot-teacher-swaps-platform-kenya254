@@ -26075,6 +26075,7 @@ async function revealPaidJobContact(jobId, accountReference){
       throw new Error("Payment reference is missing.");
     }
 
+
     /* =====================================================
        🌐 M-PESA BACKEND
        ===================================================== */
@@ -26086,45 +26087,70 @@ async function revealPaidJobContact(jobId, accountReference){
       .trim()
       .replace(/\/+$/, "");
 
+
     if(!backend){
+
       throw new Error(
         "M-PESA backend URL is not configured."
       );
+
     }
 
 
+    /* =====================================================
+       🔎 EXACT ENDPOINT
+       ===================================================== */
+
+    const endpoint =
+      `${backend}/reveal-paid-contact`;
+
+
     console.log(
-      "🔐 Requesting SERVER-SIDE job contact reveal:",
-      {
-        jobId,
-        accountReference,
-        flow: "job",
-        paymentType: "job_contact"
-      }
+      "=================================================="
+    );
+
+    console.log(
+      "🔐 JOB CONTACT UNLOCK REQUEST"
+    );
+
+    console.log(
+      "🌐 BACKEND:",
+      backend
+    );
+
+    console.log(
+      "🔗 ENDPOINT:",
+      endpoint
+    );
+
+    console.log(
+      "📡 METHOD:",
+      "POST"
+    );
+
+    console.log(
+      "🆔 JOB ID:",
+      jobId
+    );
+
+    console.log(
+      "🧾 PAYMENT REFERENCE:",
+      accountReference
+    );
+
+    console.log(
+      "=================================================="
     );
 
 
     /* =====================================================
        🔐 SERVER-SIDE CONTACT REVEAL
-       
-       IMPORTANT:
-       DO NOT READ jobContacts FROM FIREBASE HERE.
-
-       The browser is NOT Firebase-authenticated.
-
-       The SERVER will:
-       1. Check payment
-       2. Check PAID status
-       3. Check exact jobId
-       4. Check flow = job
-       5. Check paymentType = job_contact
-       6. Read jobContacts/{jobId} using Firebase Admin
        ===================================================== */
 
     const response =
       await teachersHubRequest(
 
-        `${backend}/reveal-paid-contact`,
+        endpoint,
 
         {
 
@@ -26163,40 +26189,135 @@ async function revealPaidJobContact(jobId, accountReference){
 
 
     /* =====================================================
-       📥 READ SERVER RESPONSE
+       📊 HTTP STATUS
+       ===================================================== */
+
+    console.log(
+      "📡 CONTACT SERVER HTTP STATUS:",
+      response.status
+    );
+
+    console.log(
+      "📡 CONTACT SERVER OK:",
+      response.ok
+    );
+
+    console.log(
+      "📡 CONTACT SERVER URL:",
+      response.url
+    );
+
+
+    /* =====================================================
+       📥 READ RESPONSE
        ===================================================== */
 
     const raw =
       await response.text();
 
-    let data;
+
+    console.log(
+      "📥 RAW CONTACT SERVER RESPONSE:",
+      raw
+    );
+
+
+    let data = null;
+
 
     try{
 
       data =
-        JSON.parse(raw);
+        raw
+          ? JSON.parse(raw)
+          : null;
 
-    }catch(e){
+    }
+    catch(error){
+
+      console.error(
+        "❌ CONTACT SERVER RETURNED NON-JSON:",
+        raw
+      );
+
 
       throw new Error(
+
         `Contact server returned invalid data. HTTP ${response.status}.`
+
       );
 
     }
 
 
     console.log(
-      "📥 SERVER JOB CONTACT RESPONSE:",
+      "📦 PARSED CONTACT RESPONSE:",
       data
     );
 
 
     /* =====================================================
-       ❌ SERVER DENIED ACCESS
+       🚨 VERY IMPORTANT 404 DIAGNOSTIC
        ===================================================== */
 
     if(
-      !response.ok ||
+      response.status === 404
+    ){
+
+      console.error(
+        "🚨 REVEAL ENDPOINT RETURNED 404"
+      );
+
+      console.error(
+        "🌐 Requested URL:",
+        endpoint
+      );
+
+      console.error(
+        "📥 Server response:",
+        data
+      );
+
+
+      throw new Error(
+
+        `Contact unlock endpoint was not found on the backend.\n\n` +
+        `URL: ${endpoint}\n\n` +
+        `Server path: ${data?.path || "unknown"}`
+
+      );
+
+    }
+
+
+    /* =====================================================
+       ❌ SERVER ERROR
+       ===================================================== */
+
+    if(
+      !response.ok
+    ){
+
+      throw new Error(
+
+        data?.message ||
+
+        data?.errorMessage ||
+
+        data?.ResultDesc ||
+
+        `Contact server returned HTTP ${response.status}.`
+
+      );
+
+    }
+
+
+    /* =====================================================
+       ❌ AUTHORIZATION FAILED
+       ===================================================== */
+
+    if(
       data?.success !== true ||
       data?.contactAuthorized !== true
     ){
@@ -26217,7 +26338,7 @@ async function revealPaidJobContact(jobId, accountReference){
 
 
     /* =====================================================
-       📋 CONTACT RETURNED BY SERVER
+       📋 CONTACT
        ===================================================== */
 
     const contact =
@@ -26225,24 +26346,44 @@ async function revealPaidJobContact(jobId, accountReference){
 
 
     console.log(
-      "✅ AUTHORIZED JOB CONTACT RECEIVED:",
-      {
-        jobId,
-        hasName:
-          !!contact.contactName,
-        hasPhone:
-          !!contact.phone,
-        hasEmail:
-          !!contact.email
-      }
+      "=================================================="
+    );
+
+    console.log(
+      "✅ JOB CONTACT AUTHORIZED"
+    );
+
+    console.log(
+      "🆔 JOB:",
+      jobId
+    );
+
+    console.log(
+      "👤 NAME:",
+      contact.contactName
+    );
+
+    console.log(
+      "📞 PHONE:",
+      contact.phone
+    );
+
+    console.log(
+      "📧 EMAIL:",
+      contact.email
+    );
+
+    console.log(
+      "=================================================="
     );
 
 
     /* =====================================================
-       💾 SAVE LOCAL PURCHASE
+       💾 USER ID
        ===================================================== */
 
     let localUserId = "";
+
 
     try{
 
@@ -26285,6 +26426,7 @@ async function revealPaidJobContact(jobId, accountReference){
           .toString(36)
           .substring(2,10);
 
+
       try{
 
         localStorage.setItem(
@@ -26296,6 +26438,10 @@ async function revealPaidJobContact(jobId, accountReference){
 
     }
 
+
+    /* =====================================================
+       💾 SAVE PURCHASE
+       ===================================================== */
 
     try{
 
@@ -26324,18 +26470,19 @@ async function revealPaidJobContact(jobId, accountReference){
 
       );
 
-    }catch(storageError){
+    }
+    catch(error){
 
       console.warn(
         "⚠️ Could not save local job purchase:",
-        storageError
+        error
       );
 
     }
 
 
     /* =====================================================
-       🔓 SHOW EMPLOYER CONTACT
+       🔓 SHOW CONTACT
        ===================================================== */
 
     await Swal.fire({
@@ -26392,9 +26539,7 @@ async function revealPaidJobContact(jobId, accountReference){
               contact.phone
               ? `
 
-                <div style="
-                  margin-top:7px;
-                ">
+                <div style="margin-top:7px;">
 
                   📞
                   <strong>
@@ -26415,9 +26560,7 @@ async function revealPaidJobContact(jobId, accountReference){
               contact.email
               ? `
 
-                <div style="
-                  margin-top:7px;
-                ">
+                <div style="margin-top:7px;">
 
                   📧
                   <strong>
@@ -26488,7 +26631,7 @@ async function revealPaidJobContact(jobId, accountReference){
 
 
     /* =====================================================
-       🔄 REFRESH JOBS
+       🔄 REFRESH
        ===================================================== */
 
     if(
@@ -26521,10 +26664,11 @@ async function revealPaidJobContact(jobId, accountReference){
     };
 
 
-  }catch(error){
+  }
+  catch(error){
 
     console.error(
-      "❌ Secure job contact reveal error:",
+      "❌ SECURE JOB CONTACT REVEAL ERROR:",
       error
     );
 
@@ -26533,7 +26677,6 @@ async function revealPaidJobContact(jobId, accountReference){
   }
 
 }
-
 window.unlockJobContact = async function(jobId){
 
   try{
