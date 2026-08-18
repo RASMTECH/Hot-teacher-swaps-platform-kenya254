@@ -7432,10 +7432,10 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
   </div>
 
   <!-- ADMIN ONLY -->
-  <div id="adminJobManager" class="admin-content-manager" style="display:none;">
+  <div id="adminJobManager" class="admin-content-manager admin-job-management-panel" style="display:none;">
     <div>
-      <strong>🗑️ Manage Job Posts</strong>
-      <span>Select jobs and delete them in one action.</span>
+      <strong>⚙️ Manage Job Posts</strong>
+      <span>Close a job when the vacancy is filled, or reopen it when applications are needed again.</span>
     </div>
     <button type="button" onclick="deleteSelectedContent('jobs')">🗑️ Delete Selected Jobs</button>
   </div>
@@ -7749,6 +7749,86 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
   transform:translateY(-3px);
   box-shadow:0 12px 28px rgba(15,23,42,.12);
   border-left-color:#ea580c;
+}
+
+/* =========================================================
+   💼 JOB OPEN / CLOSED STATUS
+   ========================================================= */
+.job-status-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin:0 0 12px;
+  flex-wrap:wrap;
+}
+.job-status-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  width:max-content;
+  padding:6px 11px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.2px;
+}
+.job-status-open{
+  background:#dcfce7;
+  color:#166534;
+  border:1px solid #86efac;
+}
+.job-status-closed{
+  background:#fee2e2;
+  color:#991b1b;
+  border:1px solid #fca5a5;
+}
+.job-closed-warning{
+  margin:0 0 12px;
+  padding:11px 12px;
+  border-radius:10px;
+  background:#fef2f2;
+  border:2px solid #fecaca;
+  color:#991b1b;
+  font-size:12px;
+  font-weight:900;
+  line-height:1.5;
+}
+.job-closed-card{
+  border-left-color:#dc2626 !important;
+  background:#fffafa;
+}
+.job-admin-controls{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:0 0 13px;
+  padding:10px;
+  border-radius:11px;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+}
+.job-admin-controls button{
+  width:auto !important;
+  min-height:38px;
+  padding:8px 12px;
+  border:0;
+  border-radius:9px;
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:none !important;
+  transform:none !important;
+}
+.job-admin-close-btn{background:#dc2626 !important;}
+.job-admin-open-btn{background:#16a34a !important;}
+.job-admin-delete-btn{background:#475569 !important;}
+.job-admin-controls button:hover{filter:brightness(1.05);}
+.job-unlock-btn.job-closed-btn{
+  background:#94a3b8 !important;
+  cursor:not-allowed !important;
+  box-shadow:none !important;
 }
 
 .job-card h3{
@@ -17984,7 +18064,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     Swal.fire({
 
-        imageUrl: "https://i.imgur.com/20AqQzS.png",
+        imageUrl: "https://i.imgur.com/o9IJVIm.png",
         imageAlt: "MwalimuHub Kenya",
 
         imageWidth: "100%",
@@ -24912,11 +24992,78 @@ function applyJobsSnapshot(snapshot){
   const data = snapshot?.val() || {};
   __allJobs = Object.entries(data)
     .map(([id, item]) => ({ id, ...(item || {}) }))
-    .filter(job => job && job.status !== "removed" && job.status !== "closed")
+    .filter(job => job && job.status !== "removed")
     .sort((a,b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
 
   renderJobs();
 }
+
+window.toggleJobStatus = async function(jobId){
+  if(!isJobAdmin()){
+    Swal.fire({icon:"error",title:"Admin Only",text:"Only the authenticated administrator can open or close jobs."});
+    return;
+  }
+
+  const id = String(jobId || "").trim();
+  if(!id) return;
+
+  try{
+    const job = await getJobById(id);
+    if(!job){
+      throw new Error("This job could not be found.");
+    }
+
+    const isClosed = String(job.status || "active").toLowerCase() === "closed";
+    const nextStatus = isClosed ? "active" : "closed";
+    const actionWord = isClosed ? "open" : "close";
+
+    const confirm = await Swal.fire({
+      icon: isClosed ? "question" : "warning",
+      title: isClosed ? "Reopen this job?" : "Close this job?",
+      html: isClosed
+        ? `This will make <strong>${jobEscape(job.title || "this job")}</strong> available for users again.`
+        : `Users will still see this job, but it will be clearly marked <strong>CLOSED</strong> and they will not be able to pay to reveal its contact details.`,
+      showCancelButton:true,
+      confirmButtonText:isClosed ? "Yes, Open Job" : "Yes, Close Job",
+      cancelButtonText:"Cancel",
+      confirmButtonColor:isClosed ? "#16a34a" : "#dc2626"
+    });
+
+    if(!confirm.isConfirmed) return;
+
+    const updatedJob = {
+      ...job,
+      id:id,
+      status:nextStatus,
+      ...(nextStatus === "closed"
+        ? {closedAt:Date.now(), closedBy:window.__firebaseAuth?.currentUser?.uid || "admin"}
+        : {reopenedAt:Date.now(), reopenedBy:window.__firebaseAuth?.currentUser?.uid || "admin"})
+    };
+
+    await set(
+      ref(window.__firebaseDB, `jobPostings/${id}`),
+      updatedJob
+    );
+
+    Swal.fire({
+      icon:"success",
+      title:isClosed ? "Job Reopened" : "Job Closed",
+      text:isClosed
+        ? "The job is now OPEN and users can pay to reveal the contact again."
+        : "The job remains visible but users can no longer pay to reveal its contact.",
+      timer:1800,
+      showConfirmButton:false
+    });
+  }catch(error){
+    console.error("❌ Toggle job status error:",error);
+    Swal.fire({
+      icon:"error",
+      title:"Could Not Update Job",
+      text:error?.message || "Firebase rejected the job status update.",
+      confirmButtonColor:"#dc2626"
+    });
+  }
+};
 
 function loadJobsMarketplace(){
   const list = document.getElementById("jobsList");
@@ -25022,7 +25169,7 @@ function renderJobs(){
 
   jobs.forEach(job => {
     const item = document.createElement("article");
-    item.className = "job-card";
+    item.className = `job-card ${String(job.status || "active").toLowerCase() === "closed" ? "job-closed-card" : ""}`;
 
     const deadline =
       job.deadline
@@ -25051,7 +25198,49 @@ function renderJobs(){
       Number(job.unlockFee || 0)
     );
 
+    const isClosed =
+      String(job.status || "active").toLowerCase() === "closed";
+
+    const statusMarkup = isClosed
+      ? `
+        <div class="job-status-row">
+          <span class="job-status-badge job-status-closed">🔴 JOB CLOSED</span>
+        </div>
+        <div class="job-closed-warning">
+          ⚠️ <strong>This vacancy is currently closed.</strong>
+          Applications/contact unlocking are temporarily unavailable.
+        </div>
+      `
+      : `
+        <div class="job-status-row">
+          <span class="job-status-badge job-status-open">🟢 JOB OPEN</span>
+        </div>
+      `;
+
+    const adminControls = isJobAdmin()
+      ? `
+        <div class="job-admin-controls">
+          <button
+            type="button"
+            class="${isClosed ? "job-admin-open-btn" : "job-admin-close-btn"}"
+            onclick="toggleJobStatus('${jobEscape(job.id)}')"
+          >
+            ${isClosed ? "🟢 Open Job" : "🔴 Close Job"}
+          </button>
+          <button
+            type="button"
+            class="job-admin-delete-btn"
+            onclick="deleteSingleJob('${jobEscape(job.id)}')"
+          >
+            🗑️ Delete
+          </button>
+        </div>
+      `
+      : "";
+
     item.innerHTML = `
+      ${statusMarkup}
+      ${adminControls}
       <h3>${jobEscape(job.title || "Job Opportunity")}</h3>
 
       <div class="job-employer">
@@ -25088,10 +25277,11 @@ function renderJobs(){
 
         <button
           type="button"
-          class="job-unlock-btn"
-          onclick="unlockJobContact('${jobEscape(job.id)}')"
+          class="job-unlock-btn ${isClosed ? "job-closed-btn" : ""}"
+          ${isClosed ? "disabled" : ""}
+          ${isClosed ? "" : `onclick="unlockJobContact('${jobEscape(job.id)}')"`}
         >
-          📲 Pay & Reveal Contact
+          ${isClosed ? "🔒 Job Closed — Contact Unavailable" : "📲 Pay & Reveal Contact"}
         </button>
       </div>
     `;
@@ -25841,6 +26031,24 @@ window.unlockJobContact = async function(jobId){
         "This job is no longer available."
       );
 
+    }
+
+
+    /* =====================================================
+       🔴 CLOSED JOB GUARD
+       -----------------------------------------------------
+       Do not allow a new payment/unlock while the admin has
+       marked this vacancy as closed.
+       ===================================================== */
+
+    if(String(job.status || "active").toLowerCase() === "closed"){
+      await Swal.fire({
+        icon:"warning",
+        title:"Job Closed",
+        text:"This vacancy has been closed by the administrator. You cannot pay to reveal the employer contact while the job is closed.",
+        confirmButtonColor:"#dc2626"
+      });
+      return;
     }
 
 
@@ -26697,6 +26905,8 @@ window.publishJob = async function(event){
       requirements:"",
       unlockFee,
       status:"active",
+      closedAt:null,
+      closedBy:null,
       createdAt:Date.now(),
       createdBy:
         window.__firebaseAuth?.currentUser?.uid || "admin"
@@ -26856,6 +27066,51 @@ function addAdminSelectionControls(){
     card.insertAdjacentElement("afterbegin",wrap);
   });
 }
+
+window.deleteSingleJob = async function(jobId){
+  if(!isContentAdmin()) {
+    Swal.fire({icon:"error",title:"Admin Only",text:"Only the administrator can delete jobs."});
+    return;
+  }
+
+  const id = String(jobId || "").trim();
+  if(!id) return;
+
+  const job = __allJobs.find(x => String(x?.id || "") === id);
+  const confirm = await Swal.fire({
+    icon:"warning",
+    title:"Delete this job?",
+    text:`${job?.title || "This job"} will be permanently removed.`,
+    showCancelButton:true,
+    confirmButtonText:"Yes, Delete",
+    cancelButtonText:"Cancel",
+    confirmButtonColor:"#dc2626"
+  });
+
+  if(!confirm.isConfirmed) return;
+
+  try{
+    await Promise.all([
+      set(ref(window.__firebaseDB, `jobPostings/${id}`), null),
+      set(ref(window.__firebaseDB, `jobContacts/${id}`), null)
+    ]);
+
+    Swal.fire({
+      icon:"success",
+      title:"Job Deleted",
+      timer:1400,
+      showConfirmButton:false
+    });
+  }catch(error){
+    console.error("Admin single job delete error:",error);
+    Swal.fire({
+      icon:"error",
+      title:"Delete Failed",
+      text:error?.message || "Firebase rejected the delete operation.",
+      confirmButtonColor:"#dc2626"
+    });
+  }
+};
 
 window.deleteSelectedContent = async function(type){
   if(!isContentAdmin()){
