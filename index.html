@@ -23076,76 +23076,472 @@ function jobPurchaseKey(jobId, userId){
 }
 
 async function revealPaidJobContact(jobId, accountReference){
+
   try{
-    const contactSnap =
-      await get(
-        ref(
-          window.__firebaseDB,
-          `jobContacts/${jobId}`
-        )
+
+    /* =====================================================
+       💼 JOB CONTACT REVEAL
+       ===================================================== */
+
+    if(!jobId){
+
+      throw new Error(
+        "Job ID is missing."
       );
 
+    }
+
+
+    /* =====================================================
+       🔥 FIREBASE DATABASE READY CHECK
+       ===================================================== */
+
+    if(
+      !window.__firebaseDB ||
+      typeof get !== "function" ||
+      typeof ref !== "function"
+    ){
+
+      throw new Error(
+        "Firebase is not ready. Please reload the page and try again."
+      );
+
+    }
+
+
+    console.log(
+      "🔓 Revealing paid job contact:",
+      {
+        jobId,
+        accountReference
+      }
+    );
+
+
+    /* =====================================================
+       🔎 READ ONLY THIS JOB'S CONTACT
+       
+       IMPORTANT:
+       Website visitors do NOT sign in.
+       Therefore DO NOT require Firebase Auth here.
+       ===================================================== */
+
+    const contactRef =
+      ref(
+        window.__firebaseDB,
+        `jobContacts/${jobId}`
+      );
+
+
+    let contactSnap;
+
+
+    try{
+
+      contactSnap =
+        await get(
+          contactRef
+        );
+
+    }catch(firebaseError){
+
+      console.error(
+        "❌ JOB CONTACT FIREBASE READ ERROR:",
+        firebaseError
+      );
+
+
+      const firebaseCode =
+        String(
+          firebaseError?.code ||
+          ""
+        ).toLowerCase();
+
+
+      const firebaseMessage =
+        String(
+          firebaseError?.message ||
+          ""
+        ).toLowerCase();
+
+
+      if(
+        firebaseCode.includes("permission") ||
+        firebaseMessage.includes("permission denied")
+      ){
+
+        throw new Error(
+          "Firebase is blocking access to job contacts. Your current jobContacts Firebase rule requires a signed-in user, but website visitors do not sign in."
+        );
+
+      }
+
+
+      throw firebaseError;
+
+    }
+
+
+    /* =====================================================
+       ❌ CONTACT RECORD DOES NOT EXIST
+       ===================================================== */
+
     if(!contactSnap.exists()){
+
+      console.error(
+        "❌ JOB CONTACT NOT FOUND:",
+        jobId
+      );
+
+
       throw new Error(
         "Payment was confirmed, but the employer contact record is unavailable. Please contact the administrator."
       );
+
     }
 
-    const contact = contactSnap.val() || {};
 
-    localStorage.setItem(
-      jobPurchaseKey(jobId, getTeachersHubUserId()),
-      JSON.stringify({
-        status:"PAID",
-        accountReference,
-        revealedAt:Date.now()
-      })
+    /* =====================================================
+       📋 CONTACT DATA
+       ===================================================== */
+
+    const contact =
+      contactSnap.val() || {};
+
+
+    console.log(
+      "✅ JOB CONTACT LOADED:",
+      {
+        jobId,
+        hasName:!!contact.contactName,
+        hasPhone:!!contact.phone,
+        hasEmail:!!contact.email
+      }
     );
 
-    Swal.fire({
-      icon:"success",
-      title:"🔓 Contact Revealed",
-      width:520,
+
+    /* =====================================================
+       👤 LOCAL USER IDENTIFIER
+       
+       No Firebase authentication required.
+       ===================================================== */
+
+    let localUserId = "";
+
+    try{
+
+      if(
+        typeof getTeachersHubUserId ===
+        "function"
+      ){
+
+        localUserId =
+          getTeachersHubUserId() || "";
+
+      }
+
+    }catch(e){
+
+      console.warn(
+        "⚠️ Could not obtain local Teachers Hub user ID:",
+        e
+      );
+
+    }
+
+
+    /*
+     * Fallback for completely anonymous visitors.
+     */
+
+    if(!localUserId){
+
+      localUserId =
+        localStorage.getItem(
+          "teachersHubGuestId"
+        ) || "";
+
+    }
+
+
+    /*
+     * Create a stable anonymous browser ID if necessary.
+     */
+
+    if(!localUserId){
+
+      localUserId =
+        "guest_" +
+        Date.now() +
+        "_" +
+        Math.random()
+          .toString(36)
+          .substring(2,10);
+
+
+      try{
+
+        localStorage.setItem(
+          "teachersHubGuestId",
+          localUserId
+        );
+
+      }catch(e){}
+
+    }
+
+
+    /* =====================================================
+       💾 SAVE LOCAL PURCHASE
+       ===================================================== */
+
+    try{
+
+      localStorage.setItem(
+
+        jobPurchaseKey(
+          jobId,
+          localUserId
+        ),
+
+        JSON.stringify({
+
+          status:
+            "PAID",
+
+          accountReference:
+            accountReference || "",
+
+          jobId:
+            jobId,
+
+          revealedAt:
+            Date.now()
+
+        })
+
+      );
+
+    }catch(storageError){
+
+      console.warn(
+        "⚠️ Could not save local job purchase:",
+        storageError
+      );
+
+    }
+
+
+    /* =====================================================
+       🔓 SHOW EMPLOYER CONTACT
+       ===================================================== */
+
+    await Swal.fire({
+
+      icon:
+        "success",
+
+      title:
+        "🔓 Contact Revealed",
+
+      width:
+        520,
+
       html:`
-        <div style="text-align:left;line-height:1.75;">
+
+        <div style="
+          text-align:left;
+          line-height:1.75;
+        ">
+
           <div style="
             background:#ecfdf5;
             border:1px solid #86efac;
             border-radius:12px;
             padding:15px;
           ">
-            <strong style="display:block;color:#166534;font-size:17px;">
-              ${jobEscape(contact.contactName || "Contact Person")}
+
+            <div style="
+              color:#166534;
+              font-size:12px;
+              font-weight:800;
+              margin-bottom:4px;
+            ">
+              EMPLOYER CONTACT
+            </div>
+
+
+            <strong style="
+              display:block;
+              color:#166534;
+              font-size:18px;
+              margin-bottom:8px;
+            ">
+
+              ${
+                jobEscape(
+                  contact.contactName ||
+                  "Contact Person"
+                )
+              }
+
             </strong>
 
-            ${contact.phone ? `
-              <div>📞 <strong>Phone:</strong> ${jobEscape(contact.phone)}</div>
-            ` : ""}
 
-            ${contact.email ? `
-              <div>📧 <strong>Email:</strong> ${jobEscape(contact.email)}</div>
-            ` : ""}
+            ${
+              contact.phone
+              ? `
 
-            ${contact.instructions ? `
-              <div style="margin-top:7px;">
-                📝 <strong>Application:</strong><br>
-                ${jobEscape(contact.instructions)}
-              </div>
-            ` : ""}
+                <div style="
+                  margin-top:7px;
+                ">
+
+                  📞
+                  <strong>
+                    Phone:
+                  </strong>
+
+                  ${jobEscape(
+                    contact.phone
+                  )}
+
+                </div>
+
+              `
+              : ""
+            }
+
+
+            ${
+              contact.email
+              ? `
+
+                <div style="
+                  margin-top:7px;
+                ">
+
+                  📧
+                  <strong>
+                    Email:
+                  </strong>
+
+                  ${jobEscape(
+                    contact.email
+                  )}
+
+                </div>
+
+              `
+              : ""
+            }
+
+
+            ${
+              contact.instructions
+              ? `
+
+                <div style="
+                  margin-top:10px;
+                  padding-top:10px;
+                  border-top:1px solid #bbf7d0;
+                ">
+
+                  📝
+                  <strong>
+                    Application:
+                  </strong>
+
+                  <br>
+
+                  ${jobEscape(
+                    contact.instructions
+                  )}
+
+                </div>
+
+              `
+              : ""
+            }
+
+
           </div>
+
+
+          <div style="
+            margin-top:12px;
+            font-size:12px;
+            color:#64748b;
+            text-align:center;
+          ">
+
+            🔐 Payment confirmed successfully.
+
+          </div>
+
         </div>
+
       `,
-      confirmButtonText:"Done",
-      confirmButtonColor:"#16a34a"
+
+      confirmButtonText:
+        "Done",
+
+      confirmButtonColor:
+        "#16a34a"
+
     });
 
-    renderJobs();
-  }catch(error){
-    console.error("Reveal job contact error:", error);
-    throw error;
-  }
-}
 
+    /* =====================================================
+       🔄 REFRESH JOBS
+       ===================================================== */
+
+    if(
+      typeof renderJobs ===
+      "function"
+    ){
+
+      renderJobs();
+
+    }
+
+
+    /* =====================================================
+       ✅ RETURN CONTACT
+       ===================================================== */
+
+    return {
+
+      success:
+        true,
+
+      status:
+        "PAID",
+
+      jobId:
+        jobId,
+
+      accountReference:
+        accountReference,
+
+      contact:
+        contact
+
+    };
+
+
+  }catch(error){
+
+    console.error(
+      "❌ Reveal job contact error:",
+      error
+    );
+
+
+    throw error;
+
+  }
+
+}
 window.unlockJobContact = async function(jobId){
 
   try{
