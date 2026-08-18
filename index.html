@@ -23161,6 +23161,9 @@ window.unlockJobContact = async function(jobId){
 
     /* =====================================================
        🔥 FIREBASE DATABASE CHECK
+       -----------------------------------------------------
+       Firebase is still used to load the PUBLIC job posting.
+       We do NOT require the visitor to be Firebase-authenticated.
        ===================================================== */
 
     if(
@@ -23177,60 +23180,22 @@ window.unlockJobContact = async function(jobId){
 
 
     /* =====================================================
-       🔐 GET REAL FIREBASE AUTH USER
+       🛑 STOP ANY OLD PAYMENT MONITOR
        ===================================================== */
 
-    let firebaseUser = null;
-
-
-    try{
-
-      /* -----------------------------------------------
-         Firebase v8 / compat
-         ----------------------------------------------- */
-
-      if(
-        window.firebase &&
-        typeof window.firebase.auth === "function"
-      ){
-
-        firebaseUser =
-          window.firebase.auth().currentUser;
-
-      }
-
-    }catch(authError){
-
-      console.warn(
-        "⚠️ Firebase Auth lookup warning:",
-        authError
-      );
-
-    }
-
-
-    /* -----------------------------------------------
-       Modular Firebase Auth fallback
-       ----------------------------------------------- */
-
-    if(!firebaseUser){
+    if(
+      typeof stopTeachersHubPaymentMonitor ===
+      "function"
+    ){
 
       try{
 
-        if(
-          typeof window.getFirebaseCurrentUser ===
-          "function"
-        ){
-
-          firebaseUser =
-            window.getFirebaseCurrentUser();
-
-        }
+        stopTeachersHubPaymentMonitor();
 
       }catch(e){
 
         console.warn(
-          "⚠️ Modular Firebase Auth lookup failed:",
+          "⚠️ Could not stop previous payment monitor:",
           e
         );
 
@@ -23240,63 +23205,87 @@ window.unlockJobContact = async function(jobId){
 
 
     /* =====================================================
-       🔐 AUTHENTICATION IS REQUIRED FOR JOB CONTACTS
+       👤 GUEST USER ID
+       -----------------------------------------------------
+       IMPORTANT:
+       WEBSITE VISITORS DO NOT SIGN IN.
+       DO NOT USE Firebase Auth HERE.
        ===================================================== */
 
-    if(!firebaseUser){
+    let userId = "";
 
-      console.error(
-        "❌ JOB PAYMENT BLOCKED: No Firebase authenticated user."
+    try{
+
+      if(
+        typeof getTeachersHubUserId ===
+        "function"
+      ){
+
+        userId =
+          String(
+            getTeachersHubUserId() || ""
+          ).trim();
+
+      }
+
+    }catch(e){
+
+      console.warn(
+        "⚠️ getTeachersHubUserId warning:",
+        e
       );
 
+    }
 
-      throw new Error(
-        "Your account is not currently signed in to Firebase. Please log out, log in again, and then try to reveal the job contact."
-      );
+
+    /*
+     * If the website already has a browser ID, preserve it.
+     * Otherwise create a harmless guest identifier.
+     *
+     * This is NOT Firebase authentication.
+     */
+
+    if(!userId){
+
+      try{
+
+        userId =
+          localStorage.getItem(
+            "teachersHubGuestId"
+          ) || "";
+
+      }catch(e){}
+
+    }
+
+
+    if(!userId){
+
+      userId =
+        "guest_" +
+        Date.now() +
+        "_" +
+        Math.random()
+          .toString(36)
+          .substring(2,10);
+
+
+      try{
+
+        localStorage.setItem(
+          "teachersHubGuestId",
+          userId
+        );
+
+      }catch(e){}
 
     }
 
 
     console.log(
-      "✅ Firebase user authenticated:",
-      firebaseUser.uid
+      "👤 JOB GUEST USER:",
+      userId
     );
-
-
-    /* =====================================================
-       🛑 STOP ANY OLD PAYMENT MONITOR
-       ===================================================== */
-
-    if(
-      typeof stopTeachersHubPaymentMonitor ===
-      "function"
-    ){
-
-      stopTeachersHubPaymentMonitor();
-
-    }
-
-
-    /* =====================================================
-       👤 USER ID
-       ===================================================== */
-
-    const userId =
-      firebaseUser.uid ||
-      (
-        typeof getTeachersHubUserId === "function"
-          ? getTeachersHubUserId()
-          : ""
-      );
-
-
-    if(!userId){
-
-      throw new Error(
-        "Your account ID could not be identified. Please log in again."
-      );
-
-    }
 
 
     /* =====================================================
@@ -23310,10 +23299,23 @@ window.unlockJobContact = async function(jobId){
       );
 
 
-    const previous =
-      localStorage.getItem(
-        purchaseKey
+    let previous = null;
+
+    try{
+
+      previous =
+        localStorage.getItem(
+          purchaseKey
+        );
+
+    }catch(e){
+
+      console.warn(
+        "⚠️ Could not read local job purchase:",
+        e
       );
+
+    }
 
 
     /* =====================================================
@@ -23331,13 +23333,23 @@ window.unlockJobContact = async function(jobId){
 
 
         if(
-          purchase?.status === "PAID"
+          purchase &&
+          String(
+            purchase.status || ""
+          ).toUpperCase() ===
+          "PAID"
         ){
 
           console.log(
-            "🔓 Existing paid Job purchase found."
+            "🔓 Existing paid JOB purchase found."
           );
 
+
+          /*
+           * IMPORTANT:
+           * revealPaidJobContact() must NOT directly read
+           * protected jobContacts from an unauthenticated browser.
+           */
 
           await revealPaidJobContact(
             jobId,
@@ -23352,13 +23364,17 @@ window.unlockJobContact = async function(jobId){
       }catch(e){
 
         console.warn(
-          "⚠️ Invalid saved Job purchase removed."
+          "⚠️ Invalid saved JOB purchase removed."
         );
 
 
-        localStorage.removeItem(
-          purchaseKey
-        );
+        try{
+
+          localStorage.removeItem(
+            purchaseKey
+          );
+
+        }catch(_){}
 
       }
 
@@ -23398,13 +23414,19 @@ window.unlockJobContact = async function(jobId){
 
 
     /* =====================================================
-       📱 SAVED MPESA PHONE
+       📱 SAVED M-PESA PHONE
        ===================================================== */
 
-    const savedPhone =
-      localStorage.getItem(
-        "myPhone"
-      ) || "";
+    let savedPhone = "";
+
+    try{
+
+      savedPhone =
+        localStorage.getItem(
+          "myPhone"
+        ) || "";
+
+    }catch(e){}
 
 
     /* =====================================================
@@ -23559,11 +23581,15 @@ window.unlockJobContact = async function(jobId){
 
         preConfirm:()=>{
 
+          const input =
+            document.getElementById(
+              "jobMpesaPhone"
+            );
+
+
           const phone =
             normalizeKenyanPhone(
-              document.getElementById(
-                "jobMpesaPhone"
-              )?.value
+              input?.value
             );
 
 
@@ -23605,10 +23631,14 @@ window.unlockJobContact = async function(jobId){
       result.value;
 
 
-    localStorage.setItem(
-      "myPhone",
-      buyerPhone
-    );
+    try{
+
+      localStorage.setItem(
+        "myPhone",
+        buyerPhone
+      );
+
+    }catch(e){}
 
 
     /* =====================================================
@@ -23637,6 +23667,8 @@ window.unlockJobContact = async function(jobId){
 
     /* =====================================================
        💳 STK PAYLOAD
+       -----------------------------------------------------
+       Explicitly identifies this as a JOB transaction.
        ===================================================== */
 
     const stkPayload = {
@@ -23660,10 +23692,6 @@ window.unlockJobContact = async function(jobId){
       userId:
         userId,
 
-      /* -----------------------------------------------
-         Explicitly identify this as a JOB transaction.
-         ----------------------------------------------- */
-
       flow:
         "job",
 
@@ -23676,11 +23704,23 @@ window.unlockJobContact = async function(jobId){
     console.log(
       "📲 JOB STK REQUEST:",
       {
-        jobId,
-        userId,
-        amount:price,
-        accountReference,
-        flow:"job"
+        jobId:
+          jobId,
+
+        userId:
+          userId,
+
+        amount:
+          price,
+
+        accountReference:
+          accountReference,
+
+        flow:
+          "job",
+
+        paymentType:
+          "job_contact"
       }
     );
 
@@ -23735,14 +23775,16 @@ window.unlockJobContact = async function(jobId){
         false,
 
       didOpen:()=>{
+
         Swal.showLoading();
+
       }
 
     });
 
 
     /* =====================================================
-       🌐 BACKEND
+       🌐 PAYMENT BACKEND
        ===================================================== */
 
     const backend =
@@ -23899,7 +23941,7 @@ window.unlockJobContact = async function(jobId){
 
 
     /* =====================================================
-       ⏳ WAIT FOR PAYMENT
+       ⏳ CONFIRM PAYMENT
        ===================================================== */
 
     Swal.fire({
@@ -23940,7 +23982,9 @@ window.unlockJobContact = async function(jobId){
         false,
 
       didOpen:()=>{
+
         Swal.showLoading();
+
       }
 
     });
@@ -23984,24 +24028,21 @@ window.unlockJobContact = async function(jobId){
           maxNetworkErrors:
             10,
 
-          /* -----------------------------------------------
-             NEVER auto-open this as a Resource.
-             ----------------------------------------------- */
+          /*
+           * IMPORTANT:
+           * This is NOT a Resource.
+           */
 
           autoUnlockResource:
             false,
 
-          /* -----------------------------------------------
-             CRITICAL:
-             This is a JOB payment.
-             ----------------------------------------------- */
+          /*
+           * IMPORTANT:
+           * Explicitly identify the payment flow.
+           */
 
           flow:
             "job",
-
-          /* -----------------------------------------------
-             Explicit metadata for the payment monitor.
-             ----------------------------------------------- */
 
           jobId:
             jobId,
@@ -24043,15 +24084,20 @@ window.unlockJobContact = async function(jobId){
     console.log(
       "🎉 JOB PAYMENT CONFIRMED:",
       {
-        jobId,
-        userId,
-        accountReference
+        jobId:
+          jobId,
+
+        userId:
+          userId,
+
+        accountReference:
+          accountReference
       }
     );
 
 
     /* =====================================================
-       🔓 REVEAL ONLY THIS JOB'S CONTACT
+       🔓 REVEAL ONLY THIS JOB
        ===================================================== */
 
     await revealPaidJobContact(
@@ -24071,18 +24117,16 @@ window.unlockJobContact = async function(jobId){
     );
 
 
-    /* =====================================================
-       ⚠️ IMPORTANT PAYMENT ERROR HANDLING
-       ===================================================== */
-
     let message =
       error?.message ||
       "The contact could not be unlocked. Please try again.";
 
 
-    /* -----------------------------------------------
-       Firebase Permission error
-       ----------------------------------------------- */
+    /*
+     * Do NOT tell a guest to sign in.
+     *
+     * Visitors intentionally do not use Firebase Auth.
+     */
 
     if(
       String(
@@ -24104,16 +24148,23 @@ window.unlockJobContact = async function(jobId){
     ){
 
       message =
-        "Your M-PESA payment was confirmed, but Firebase could not open this employer contact. Your payment has NOT been marked as lost. Please sign out, sign in again, and try the contact again.";
+        "Payment was confirmed, but the employer contact could not be opened. Please contact the administrator. DO NOT PAY AGAIN.";
 
     }
 
 
     /* =====================================================
-       SHOW ERROR
+       ⚠️ SHOW ERROR
        ===================================================== */
 
-    Swal.fire({
+    try{
+
+      Swal.close();
+
+    }catch(_){}
+
+
+    await Swal.fire({
 
       icon:
         "error",
@@ -24132,6 +24183,9 @@ window.unlockJobContact = async function(jobId){
   }
 
 };
+
+
+
 window.publishJob = async function(event){
   if(event) event.preventDefault();
 
