@@ -28,7 +28,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
       content="Teacher Swap Kenya">
 
 <meta property="og:image"
-      content="https://rasmtech.github.io/Teacher-1-images/Screenshot_20260708_134219_ChatGPT.jpg">
+      content="https://i.imgur.com/20AqQzS.png">
 
 <meta property="og:image:width"
       content="1200">
@@ -136,6 +136,262 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
   --space:20px;
 }
+
+
+/* =========================================================
+   🎉 CELEBRATION CONTAINER
+========================================================= */
+
+#mwalimuWelcomeCelebration {
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 999999;
+
+    overflow: hidden;
+
+}
+
+
+/* =========================================================
+   ✨ RADIATING SPIKES
+========================================================= */
+
+.welcome-spike {
+
+    position: absolute;
+
+    width: 8px;
+
+    height: 90px;
+
+    left: 50%;
+
+    top: 50%;
+
+    transform-origin: 50% 100%;
+
+    border-radius: 999px;
+
+    opacity: 0;
+
+    animation:
+        welcomeSpike 1.5s ease-out forwards;
+
+}
+
+
+/* Different directions */
+
+.spike-1 {
+
+    transform:
+        translate(-50%, -100%)
+        rotate(0deg);
+
+    background: #facc15;
+
+}
+
+
+.spike-2 {
+
+    transform:
+        translate(-50%, -100%)
+        rotate(90deg);
+
+    background: #22c55e;
+
+}
+
+
+.spike-3 {
+
+    transform:
+        translate(-50%, -100%)
+        rotate(180deg);
+
+    background: #ef4444;
+
+}
+
+
+.spike-4 {
+
+    transform:
+        translate(-50%, -100%)
+        rotate(270deg);
+
+    background: #3b82f6;
+
+}
+
+
+/* =========================================================
+   🎊 FLOATING CELEBRATION EMOJIS
+========================================================= */
+
+.welcome-confetti {
+
+    position: absolute;
+
+    font-size: 30px;
+
+    animation:
+        welcomeFloat 2.2s ease-out forwards;
+
+    opacity: 0;
+
+}
+
+
+/* Positions */
+
+.c1 {
+    left: 10%;
+    top: 25%;
+    animation-delay: .05s;
+}
+
+.c2 {
+    left: 25%;
+    top: 12%;
+    animation-delay: .15s;
+}
+
+.c3 {
+    left: 45%;
+    top: 8%;
+    animation-delay: .25s;
+}
+
+.c4 {
+    right: 25%;
+    top: 15%;
+    animation-delay: .35s;
+}
+
+.c5 {
+    right: 10%;
+    top: 30%;
+    animation-delay: .45s;
+}
+
+.c6 {
+    left: 15%;
+    bottom: 20%;
+    animation-delay: .55s;
+}
+
+.c7 {
+    right: 15%;
+    bottom: 22%;
+    animation-delay: .65s;
+}
+
+.c8 {
+    left: 48%;
+    bottom: 10%;
+    animation-delay: .75s;
+}
+
+
+/* =========================================================
+   ✨ SPIKE ANIMATION
+========================================================= */
+
+@keyframes welcomeSpike {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, -100%)
+            scaleY(.1);
+
+    }
+
+    30% {
+
+        opacity: 1;
+
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translate(-50%, -100%)
+            scaleY(1.8);
+
+    }
+
+}
+
+
+/* =========================================================
+   🎉 FLOATING ANIMATION
+========================================================= */
+
+@keyframes welcomeFloat {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateY(40px)
+            scale(.4)
+            rotate(0deg);
+
+    }
+
+    20% {
+
+        opacity: 1;
+
+    }
+
+    100% {
+
+        opacity: 0;
+
+        transform:
+            translateY(-180px)
+            scale(1.25)
+            rotate(360deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   📱 MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .welcome-confetti {
+
+        font-size: 24px;
+
+    }
+
+    .welcome-spike {
+
+        height: 65px;
+
+    }
+
+}
+
 
 
 /* =========================================================
@@ -3453,7 +3709,7 @@ input[type="file"]::file-selector-button{
   color:#ffffff;
   text-shadow:0 2px 4px rgba(0,0,0,0.2);
 ">
-MwalimuHub Kenya – Swaps & Learning Resources
+MwalimuHub Kenya 🇰🇪 — Jobs • Swaps • Resources • Opportunities
 </h1>
 
 <p style="
@@ -3463,8 +3719,7 @@ MwalimuHub Kenya – Swaps & Learning Resources
   line-height:1.5;
   font-weight:500;
 ">
- Discover. Connect. Make Your Next Move.
-Join teachers across Kenya using Mwalimu Hub for trusted transfer swaps and learning resources.
+Connect with teachers across Kenya, discover transfer swap opportunities, teaching jobs, and valuable learning resources — all in one trusted hub.
 </p>
   </div>
 </header>
@@ -17728,30 +17983,111 @@ confirmButtonText:"Submit"
 document.addEventListener("DOMContentLoaded", function () {
 
     Swal.fire({
-        imageUrl: "https://rasmtech.github.io/Teacher-1-images/Screenshot_20260708_134219_ChatGPT.jpg",
-        imageAlt: "Teacher Swap Kenya",
+
+        imageUrl: "https://i.imgur.com/20AqQzS.png",
+        imageAlt: "MwalimuHub Kenya",
+
         imageWidth: "100%",
+
         width: 700,
+
         showConfirmButton: true,
-        confirmButtonText: "Continue",
+
+        confirmButtonText: "🚀 Continue",
+
         confirmButtonColor: "#16a34a",
+
         allowOutsideClick: false,
+
         allowEscapeKey: false,
-        backdrop: true,
+
+        backdrop: `
+            rgba(0,0,0,0.72)
+            url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='3' opacity='.8'%3E%3Cpath d='M60 5v25M60 90v25M5 60h25M90 60h25M21 21l18 18M81 81l18 18M99 21L81 39M39 81L21 99'/%3E%3C/g%3E%3C/svg%3E")
+            center / 120px 120px repeat
+        `,
+
         padding: 0,
 
-       showClass: {
-    popup: "animate__animated animate__fadeInUp"
-},
-hideClass: {
-    popup: "animate__animated animate__fadeOutDown"
-}
+        showClass: {
+            popup: "animate__animated animate__zoomIn"
+        },
+
+        hideClass: {
+            popup: "animate__animated animate__zoomOut"
+        },
+
+        didOpen: () => {
+
+            createWelcomeCelebration();
+
+        },
+
+        willClose: () => {
+
+            removeWelcomeCelebration();
+
+        }
 
     });
 
 });
 
 
+/* =========================================================
+   🎉 MWALIMUHUB WELCOME CELEBRATION
+========================================================= */
+
+function createWelcomeCelebration() {
+
+    if (document.getElementById("mwalimuWelcomeCelebration")) {
+        return;
+    }
+
+    const container = document.createElement("div");
+
+    container.id = "mwalimuWelcomeCelebration";
+
+    container.innerHTML = `
+
+        <div class="welcome-spike spike-1"></div>
+        <div class="welcome-spike spike-2"></div>
+        <div class="welcome-spike spike-3"></div>
+        <div class="welcome-spike spike-4"></div>
+
+        <div class="welcome-confetti c1">🎉</div>
+        <div class="welcome-confetti c2">✨</div>
+        <div class="welcome-confetti c3">🎊</div>
+        <div class="welcome-confetti c4">⭐</div>
+        <div class="welcome-confetti c5">🎉</div>
+        <div class="welcome-confetti c6">✨</div>
+        <div class="welcome-confetti c7">🎊</div>
+        <div class="welcome-confetti c8">⭐</div>
+
+    `;
+
+    document.body.appendChild(container);
+}
+
+
+/* =========================================================
+   🧹 REMOVE CELEBRATION
+========================================================= */
+
+function removeWelcomeCelebration() {
+
+    const celebration =
+        document.getElementById(
+            "mwalimuWelcomeCelebration"
+        );
+
+    if (celebration) {
+
+        celebration.remove();
+
+    }
+
+}
 </script>
 
 <script type="module">
