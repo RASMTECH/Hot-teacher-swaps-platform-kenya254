@@ -7766,12 +7766,15 @@ document
   });
 
 });
+
+
 /* =========================================================
    🚀 POST SWAP REQUEST
+   FREE POSTING
    FAST + SAFE + DUPLICATE PROTECTED
 ========================================================= */
 
-window.postSwap = async function(){
+window.postSwap = async function () {
 
     /* =====================================================
        BUTTON
@@ -7782,47 +7785,49 @@ window.postSwap = async function(){
             'button[onclick="postSwap()"]'
         );
 
-
-    /*
-     * Fallback if the onclick attribute
-     * is not exactly as expected.
-     */
-
     const submitButton =
         btn ||
-        document.querySelector(
-            '#phone'
-        )?.closest("form")
-        ?.querySelector("button");
-
+        document.querySelector("#phone")
+            ?.closest("form")
+            ?.querySelector("button");
 
     const button =
         submitButton || btn;
 
 
-    try{
+    /* =====================================================
+       GLOBAL SAFE HTML ESCAPER
+    ===================================================== */
+
+    const escapeHTML = function (value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            value ?? "";
+
+        return div.innerHTML;
+
+    };
+
+
+    try {
 
         /* =================================================
            PREVENT DOUBLE SUBMISSION
-        ================================================== */
+        ================================================= */
 
-        if(
-            window.isPostingSwap
-        ){
-
+        if (window.isPostingSwap) {
             return;
-
         }
 
-
-        window.isPostingSwap =
-            true;
+        window.isPostingSwap = true;
 
 
-        if(button){
+        if (button) {
 
-            button.disabled =
-                true;
+            button.disabled = true;
 
             button.dataset.originalText =
                 button.innerHTML;
@@ -7835,50 +7840,31 @@ window.postSwap = async function(){
 
         /* =================================================
            HELPERS
-        ================================================== */
+        ================================================= */
 
-        const getValue =
-            id => {
+        const getValue = function (id) {
 
-                return String(
-                    document.getElementById(id)
-                    ?.value || ""
-                ).trim();
+            return String(
+                document.getElementById(id)?.value || ""
+            ).trim();
 
-            };
+        };
 
 
-        const normalize =
-            value => {
+        const normalize = function (value) {
 
-                return String(
-                    value || ""
-                )
-                .trim()
-                .toLowerCase();
+            return String(
+                value || ""
+            )
+            .trim()
+            .toLowerCase();
 
-            };
-
-
-        const escapeHTML =
-            value => {
-
-                const div =
-                    document.createElement(
-                        "div"
-                    );
-
-                div.textContent =
-                    value ?? "";
-
-                return div.innerHTML;
-
-            };
+        };
 
 
         /* =================================================
-           AUTO GENERATED TEACHER NAME
-        ================================================== */
+           AUTO GENERATED PROFILE NAME
+        ================================================= */
 
         const generatedName =
             "Teacher " +
@@ -7889,7 +7875,9 @@ window.postSwap = async function(){
 
         /* =================================================
            PREMIUM COUNTIES
-        ================================================== */
+           ONLY USED FOR CLASSIFICATION
+           NOT FOR POSTING CHARGE
+        ================================================= */
 
         const premiumCounties = new Set([
 
@@ -7929,8 +7917,7 @@ window.postSwap = async function(){
             getValue("notes");
 
         const hardship =
-            getValue("hardship") ||
-            "No";
+            getValue("hardship") || "No";
 
 
         /* =================================================
@@ -7944,13 +7931,14 @@ window.postSwap = async function(){
             );
 
 
-        /*
-         * 2547XXXXXXXX -> 07XXXXXXXX
-         */
+        if (phone.startsWith("+254")) {
 
-        if(
-            phone.startsWith("254")
-        ){
+            phone =
+                "0" +
+                phone.substring(4);
+
+        }
+        else if (phone.startsWith("254")) {
 
             phone =
                 "0" +
@@ -7959,34 +7947,17 @@ window.postSwap = async function(){
         }
 
 
-        /*
-         * +2547XXXXXXXX -> 07XXXXXXXX
-         */
-
-        if(
-            phone.startsWith("+254")
-        ){
-
-            phone =
-                "0" +
-                phone.substring(4);
-
-        }
-
-
         /* =================================================
-           VALIDATION
+           PHONE VALIDATION
         ================================================= */
 
-        if(!phone){
+        if (!phone) {
 
             await Swal.fire({
 
-                icon:
-                    "warning",
+                icon: "warning",
 
-                title:
-                    "Missing Phone",
+                title: "Missing Phone",
 
                 text:
                     "Please enter your phone number."
@@ -7998,21 +7969,15 @@ window.postSwap = async function(){
         }
 
 
-        const phoneRegex =
-            /^(07\d{8}|01\d{8})$/;
-
-
-        if(
-            !phoneRegex.test(phone)
-        ){
+        if (
+            !/^(07\d{8}|01\d{8})$/.test(phone)
+        ) {
 
             await Swal.fire({
 
-                icon:
-                    "warning",
+                icon: "warning",
 
-                title:
-                    "Invalid Phone Number",
+                title: "Invalid Phone Number",
 
                 text:
                     "Enter a valid Kenyan phone number, for example 0712345678."
@@ -8024,15 +7989,17 @@ window.postSwap = async function(){
         }
 
 
-        if(!level){
+        /* =================================================
+           REQUIRED FIELDS
+        ================================================= */
+
+        if (!level) {
 
             await Swal.fire({
 
-                icon:
-                    "warning",
+                icon: "warning",
 
-                title:
-                    "Teaching Level Required",
+                title: "Teaching Level Required",
 
                 text:
                     "Please select the teaching level."
@@ -8044,15 +8011,13 @@ window.postSwap = async function(){
         }
 
 
-        if(!currentCounty){
+        if (!currentCounty) {
 
             await Swal.fire({
 
-                icon:
-                    "warning",
+                icon: "warning",
 
-                title:
-                    "Current County Required",
+                title: "Current County Required",
 
                 text:
                     "Please select your current county."
@@ -8064,15 +8029,13 @@ window.postSwap = async function(){
         }
 
 
-        if(!swapCounty){
+        if (!swapCounty) {
 
             await Swal.fire({
 
-                icon:
-                    "warning",
+                icon: "warning",
 
-                title:
-                    "Destination Required",
+                title: "Destination Required",
 
                 text:
                     "Please select the county you want to move to."
@@ -8085,21 +8048,19 @@ window.postSwap = async function(){
 
 
         /* =================================================
-           PREVENT SAME-COUNTY SWAPS
-        ================================================== */
+           PREVENT SAME COUNTY
+        ================================================= */
 
-        if(
+        if (
             normalize(currentCounty) ===
             normalize(swapCounty)
-        ){
+        ) {
 
             await Swal.fire({
 
-                icon:
-                    "warning",
+                icon: "warning",
 
-                title:
-                    "Same County Selected",
+                title: "Same County Selected",
 
                 text:
                     "Your desired county must be different from your current county."
@@ -8112,66 +8073,50 @@ window.postSwap = async function(){
 
 
         /* =================================================
-           AUTO PRICING
+           CLASSIFICATION
+           POSTING IS FREE
         ================================================= */
 
         const currentPremium =
             premiumCounties.has(
-                normalize(
-                    currentCounty
-                )
+                normalize(currentCounty)
             );
-
 
         const destinationPremium =
             premiumCounties.has(
-                normalize(
-                    swapCounty
-                )
+                normalize(swapCounty)
             );
 
 
-        let charge =
-            200;
+        /*
+         * IMPORTANT:
+         *
+         * Posting a swap is FREE.
+         *
+         * The charge below is NOT a posting fee.
+         * It is retained only as a future/reference
+         * value if your system uses it for contact
+         * unlocking or categorization.
+         */
 
-
-        if(
-            normalize(hardship) ===
-            "yes"
-        ){
-
-            charge =
-                500;
-
-        }
-        else if(
-            currentPremium ||
-            destinationPremium
-        ){
-
-            charge =
-                400;
-
-        }
+        const charge = 0;
 
 
         /* =================================================
-           FAST DUPLICATE PHONE CHECK
-           USE ALLSWAPS FIRST
+           DUPLICATE PHONE CHECK
         ================================================= */
 
         const normalizedPhone =
             phone;
 
 
-        let duplicate =
-            false;
+        let duplicate = false;
 
 
-        if(
+        if (
             Array.isArray(allSwaps) &&
             allSwaps.length
-        ){
+        ) {
 
             duplicate =
                 allSwaps.some(
@@ -8179,8 +8124,7 @@ window.postSwap = async function(){
 
                         let existing =
                             String(
-                                swap.phone ||
-                                ""
+                                swap?.phone || ""
                             )
                             .replace(
                                 /[\s\-()]/g,
@@ -8188,30 +8132,22 @@ window.postSwap = async function(){
                             );
 
 
-                        if(
-                            existing.startsWith(
-                                "+254"
-                            )
-                        ){
+                        if (
+                            existing.startsWith("+254")
+                        ) {
 
                             existing =
                                 "0" +
-                                existing.substring(
-                                    4
-                                );
+                                existing.substring(4);
 
                         }
-                        else if(
-                            existing.startsWith(
-                                "254"
-                            )
-                        ){
+                        else if (
+                            existing.startsWith("254")
+                        ) {
 
                             existing =
                                 "0" +
-                                existing.substring(
-                                    3
-                                );
+                                existing.substring(3);
 
                         }
 
@@ -8225,97 +8161,94 @@ window.postSwap = async function(){
                 );
 
         }
-        else{
+        else {
 
             /*
-             * Fallback only when allSwaps
-             * is not yet loaded.
+             * Firebase fallback
              */
 
-            const existingSnapshot =
-                await get(
-                    swapsRef
-                );
+            if (
+                typeof get === "function" &&
+                typeof swapsRef !== "undefined"
+            ) {
+
+                const existingSnapshot =
+                    await get(
+                        swapsRef
+                    );
 
 
-            if(
-                existingSnapshot.exists()
-            ){
+                if (
+                    existingSnapshot.exists()
+                ) {
 
-                const swaps =
-                    existingSnapshot.val() ||
-                    {};
-
-
-                duplicate =
-                    Object.values(
-                        swaps
-                    ).some(
-                        swap => {
-
-                            let existing =
-                                String(
-                                    swap?.phone ||
-                                    ""
-                                )
-                                .replace(
-                                    /[\s\-()]/g,
-                                    ""
-                                );
+                    const swaps =
+                        existingSnapshot.val() || {};
 
 
-                            if(
-                                existing.startsWith(
-                                    "+254"
-                                )
-                            ){
+                    duplicate =
+                        Object.values(swaps)
+                            .some(
+                                swap => {
 
-                                existing =
-                                    "0" +
-                                    existing.substring(
-                                        4
+                                    let existing =
+                                        String(
+                                            swap?.phone || ""
+                                        )
+                                        .replace(
+                                            /[\s\-()]/g,
+                                            ""
+                                        );
+
+
+                                    if (
+                                        existing.startsWith("+254")
+                                    ) {
+
+                                        existing =
+                                            "0" +
+                                            existing.substring(4);
+
+                                    }
+                                    else if (
+                                        existing.startsWith("254")
+                                    ) {
+
+                                        existing =
+                                            "0" +
+                                            existing.substring(3);
+
+                                    }
+
+
+                                    return (
+                                        existing ===
+                                        normalizedPhone
                                     );
 
-                            }
-                            else if(
-                                existing.startsWith(
-                                    "254"
-                                )
-                            ){
-
-                                existing =
-                                    "0" +
-                                    existing.substring(
-                                        3
-                                    );
-
-                            }
-
-
-                            return (
-                                existing ===
-                                normalizedPhone
+                                }
                             );
 
-                        }
-                    );
+                }
 
             }
 
         }
 
 
-        if(duplicate){
+        /* =================================================
+           DUPLICATE FOUND
+        ================================================= */
+
+        if (duplicate) {
 
             await Swal.fire({
 
-                icon:
-                    "warning",
+                icon: "warning",
 
-                title:
-                    "Swap Already Exists",
+                title: "Swap Already Exists",
 
-                html:`
+                html: `
                     A swap request is already
                     registered for:
 
@@ -8340,7 +8273,7 @@ window.postSwap = async function(){
 
 
         /* =================================================
-           DATA OBJECT
+           CREATE SWAP DATA
         ================================================= */
 
         const createdAt =
@@ -8379,20 +8312,24 @@ window.postSwap = async function(){
             hardship:
                 hardship,
 
+            /*
+             * POSTING IS FREE
+             */
+
             charge:
-                charge,
+                0,
 
             paid:
                 true,
 
             paymentStatus:
-                "PAID",
+                "FREE",
 
             paymentReference:
-                swapAccountReference,
+                null,
 
             paymentPhone:
-                paymentPhone,
+                null,
 
             createdAt:
                 createdAt,
@@ -8401,9 +8338,12 @@ window.postSwap = async function(){
                 createdAt,
 
             /*
-             * Useful for future searching
-             * and analytics.
+             * Classification
              */
+
+            isPremiumRoute:
+                currentPremium ||
+                destinationPremium,
 
             searchText: [
 
@@ -8433,145 +8373,32 @@ window.postSwap = async function(){
 
 
         /* =================================================
-           💳 M-PESA STK PUSH — SWAP POSTING FEE
-           The swap is NOT published until payment is confirmed.
-        ================================================= */
-
-        const mpesaBackend = String(
-            window.TEACHERS_HUB_MPESA_BACKEND || ""
-        ).trim().replace(/\/+$/," ").trim();
-
-        if(!mpesaBackend){
-            throw new Error("M-PESA backend URL is not configured.");
-        }
-
-        const swapUserId =
-            typeof window.getTeachersHubUserId === "function"
-                ? window.getTeachersHubUserId()
-                : "anonymous";
-
-        const swapAccountReference =
-            `SWAP_POST_${Date.now()}_${Math.random().toString(36).slice(2,8).toUpperCase()}`;
-
-        const savedSwapPhone =
-            localStorage.getItem("myPhone") || phone;
-
-        const paymentForm = await Swal.fire({
-            title:"📲 Pay & Publish Swap",
-            width:520,
-            html:`
-              <div style="text-align:left;line-height:1.6;">
-                <div style="background:#ecfdf5;border:1px solid #bbf7d0;border-radius:12px;padding:14px;margin-bottom:14px;">
-                  <div style="font-size:12px;color:#64748b;">Swap Posting Fee</div>
-                  <strong style="font-size:28px;color:#16a34a;">KES ${charge.toLocaleString()}</strong>
-                </div>
-                <label style="display:block;font-weight:800;margin-bottom:7px;">M-PESA Phone Number</label>
-                <input id="swapMpesaPhone" type="tel" value="${escapeHTML(savedSwapPhone)}" placeholder="07XXXXXXXX"
-                  style="width:100%;box-sizing:border-box;padding:13px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;">
-                <div style="margin-top:8px;color:#64748b;font-size:12px;">
-                  Your swap will be published only after M-PESA confirms this payment.
-                </div>
-              </div>`,
-            showCancelButton:true,
-            confirmButtonText:"📲 Pay KES " + charge.toLocaleString() + " & Publish",
-            cancelButtonText:"Cancel",
-            confirmButtonColor:"#16a34a",
-            preConfirm:()=>{
-                let p = String(document.getElementById("swapMpesaPhone")?.value || "")
-                    .replace(/[\s\-()]/g,"");
-                if(p.startsWith("+254")) p = "0" + p.substring(4);
-                else if(p.startsWith("254")) p = "0" + p.substring(3);
-                if(!/^(07\d{8}|01\d{8})$/.test(p)){
-                    Swal.showValidationMessage("Enter a valid Kenyan M-PESA number.");
-                    return false;
-                }
-                return p;
-            }
-        });
-
-        if(!paymentForm.isConfirmed){
-            return;
-        }
-
-        const paymentPhone = paymentForm.value;
-        localStorage.setItem("myPhone", paymentPhone);
-
-        Swal.fire({
-            title:"📲 Sending STK Push...",
-            html:`Sending M-PESA payment request to <strong>${escapeHTML(paymentPhone)}</strong><br><br>Please check your phone.`,
-            allowOutsideClick:false,
-            allowEscapeKey:false,
-            showConfirmButton:false,
-            didOpen:()=>Swal.showLoading()
-        });
-
-        const stkResponse = await fetch(
-            `${mpesaBackend}/stkpush`,
-            {
-                method:"POST",
-                headers:{"Content-Type":"application/json","Accept":"application/json"},
-                body:JSON.stringify({
-                    phone:paymentPhone,
-                    amount:charge,
-                    accountReference:swapAccountReference,
-                    itemId:"SWAP_POST",
-                    itemName:"Teacher Swap Posting",
-                    userId:swapUserId
-                })
-            }
-        );
-
-        const stkRaw = await stkResponse.text();
-        let stkData;
-        try{ stkData = JSON.parse(stkRaw); }
-        catch(_){ throw new Error(`Payment server returned invalid data. HTTP ${stkResponse.status}.`); }
-
-        if(!stkResponse.ok){
-            throw new Error(stkData?.errorMessage || stkData?.message || stkData?.ResultDesc || `Payment server returned HTTP ${stkResponse.status}.`);
-        }
-
-        const accepted =
-            stkData?.success === true &&
-            (String(stkData?.ResponseCode) === "0" || stkData?.ResponseCode === 0 || !!stkData?.CheckoutRequestID);
-
-        if(!accepted){
-            throw new Error(stkData?.errorMessage || stkData?.ResponseDescription || stkData?.ResultDesc || "M-PESA did not accept the payment request.");
-        }
-
-        if(typeof window.waitForResourcePayment !== "function"){
-            throw new Error("The M-PESA confirmation engine is not available. Please reload and try again.");
-        }
-
-        Swal.fire({
-            title:"⏳ Confirming Payment...",
-            html:"Please complete the M-PESA prompt. Your swap will be published automatically after confirmation.",
-            allowOutsideClick:false,
-            allowEscapeKey:false,
-            showConfirmButton:false,
-            didOpen:()=>Swal.showLoading()
-        });
-
-        const paymentResult = await window.waitForResourcePayment(
-            swapAccountReference,
-            "SWAP_POST",
-            swapUserId,
-            stkData?.CheckoutRequestID || null,
-            {
-                pollInterval:3000,
-                timeout:180000,
-                maxNetworkErrors:10,
-                autoUnlockResource:false,
-                flow:"swap-post"
-            }
-        );
-
-        if(!paymentResult || paymentResult.status !== "PAID"){
-            throw new Error(paymentResult?.message || "M-PESA payment was not confirmed.");
-        }
-
-        /* =================================================
            SAVE TO FIREBASE
         ================================================= */
+
+        if (
+            typeof push !== "function" ||
+            typeof set !== "function"
+        ) {
+
+            throw new Error(
+                "Firebase database functions are not ready. Please reload the page."
+            );
+
+        }
+
+
+        if (
+            typeof swapsRef === "undefined" ||
+            !swapsRef
+        ) {
+
+            throw new Error(
+                "Swap database reference is not available."
+            );
+
+        }
+
 
         const newSwapRef =
             push(
@@ -8583,7 +8410,7 @@ window.postSwap = async function(){
             newSwapRef.key;
 
 
-        if(!swapId){
+        if (!swapId) {
 
             throw new Error(
                 "Firebase failed to generate a swap ID."
@@ -8611,7 +8438,7 @@ window.postSwap = async function(){
            SAVE OWNER PHONE LOCALLY
         ================================================= */
 
-        try{
+        try {
 
             localStorage.setItem(
                 "myPhone",
@@ -8619,7 +8446,7 @@ window.postSwap = async function(){
             );
 
         }
-        catch(storageError){
+        catch (storageError) {
 
             console.warn(
                 "localStorage unavailable:",
@@ -8649,14 +8476,11 @@ window.postSwap = async function(){
             id => {
 
                 const element =
-                    document.getElementById(
-                        id
-                    );
+                    document.getElementById(id);
 
-                if(element){
+                if (element) {
 
-                    element.value =
-                        "";
+                    element.value = "";
 
                 }
 
@@ -8670,14 +8494,13 @@ window.postSwap = async function(){
             );
 
 
-        if(currentSub){
+        if (currentSub) {
 
-            currentSub.innerHTML =
-                `
+            currentSub.innerHTML = `
                 <option value="">
                     Select Current Sub County
                 </option>
-                `;
+            `;
 
         }
 
@@ -8688,14 +8511,13 @@ window.postSwap = async function(){
             );
 
 
-        if(swapSub){
+        if (swapSub) {
 
-            swapSub.innerHTML =
-                `
+            swapSub.innerHTML = `
                 <option value="">
                     Select Desired Sub County
                 </option>
-                `;
+            `;
 
         }
 
@@ -8706,7 +8528,7 @@ window.postSwap = async function(){
             );
 
 
-        if(hardshipField){
+        if (hardshipField) {
 
             hardshipField.value =
                 "No";
@@ -8731,7 +8553,7 @@ window.postSwap = async function(){
                     ? "92%"
                     : 520,
 
-            html:`
+            html: `
 
                 <div
                     style="
@@ -8806,8 +8628,7 @@ window.postSwap = async function(){
                         </strong>
 
                         ${escapeHTML(
-                            subjects ||
-                            "-"
+                            subjects || "-"
                         )}
                     </p>
 
@@ -8815,29 +8636,36 @@ window.postSwap = async function(){
                     <p>
                         💰
                         <strong>
-                            Unlock Fee:
+                            Posting Fee:
                         </strong>
 
-                        KES
-                        ${charge.toLocaleString()}
+                        <span
+                            style="
+                                color:#16a34a;
+                                font-weight:800;
+                            "
+                        >
+                            FREE
+                        </span>
                     </p>
 
 
                     <p>
+
                         ${
-                            normalize(
-                                hardship
-                            ) === "yes"
+                            normalize(hardship) === "yes"
 
-                            ? "🔥 Hardship Swap"
+                                ? "🔥 Hardship Swap"
 
-                            : currentPremium ||
-                              destinationPremium
+                                : currentPremium ||
+                                  destinationPremium
 
-                            ? "🔥 Hot County Swap"
+                                    ? "🔥 Hot County Swap"
 
-                            : "📍 Normal Swap"
+                                    : "📍 Normal Swap"
+
                         }
+
                     </p>
 
 
@@ -8856,8 +8684,8 @@ window.postSwap = async function(){
                         protected.
 
                         Other teachers must complete
-                        the unlock process before seeing
-                        your contact details.
+                        the contact unlock process before
+                        seeing your contact details.
 
                     </div>
 
@@ -8875,7 +8703,7 @@ window.postSwap = async function(){
 
 
     }
-    catch(error){
+    catch (error) {
 
         console.error(
             "❌ postSwap error:",
@@ -8891,7 +8719,7 @@ window.postSwap = async function(){
             title:
                 "Unable to Post Swap",
 
-            html:`
+            html: `
 
                 <div
                     style="
@@ -8920,13 +8748,13 @@ window.postSwap = async function(){
         });
 
     }
-    finally{
+    finally {
 
         window.isPostingSwap =
             false;
 
 
-        if(button){
+        if (button) {
 
             button.disabled =
                 false;
@@ -8940,6 +8768,7 @@ window.postSwap = async function(){
     }
 
 };
+
 /* =========================================================
    🚀 RASM 360 — PREMIUM SWAP CARD RENDERER
    Faster + Cleaner + Better Data Arrangement
@@ -12045,1335 +11874,211 @@ window.showTriangularOptions = function (swapId) {
 };
 
 /* =========================================================
-   🔓 TEACHER SWAP CONTACT UNLOCK
-   RASM 360 — M-PESA STK PAYMENT + BACKEND AUTHORIZATION
-   =========================================================
-
-   SECURE FLOW:
-
-   Teacher Swap
-        ↓
-   Visitor enters M-PESA number
-        ↓
-   STK Push
-        ↓
-   M-PESA payment confirmed
-        ↓
-   /payment-status/:reference
-        ↓
-   Payment = PAID
-        ↓
-   POST /reveal-paid-contact
-        ↓
-   Backend verifies:
-        - exact payment reference
-        - payment is PAID
-        - itemId matches this swap
-        - flow = swap
-        ↓
-   Backend returns ONLY this swap's contact
-        ↓
-   Contact displayed
-
-   IMPORTANT:
-
-   ❌ Browser NEVER reads swap.phone
-   ❌ Browser NEVER reads swapContacts directly
-   ❌ Browser NEVER trusts localStorage as proof of payment
-   ❌ Visitor does NOT need Firebase login
-
-   The backend is the authority.
+   🔓 SHOW PAYMENT / UNLOCK CONTACT
+   RASM 360 — PREMIUM PAYMENT MODAL
 ========================================================= */
 
+/* =========================================================
+   🔓 SWAP CONTACT UNLOCK — M-PESA STK PUSH
+   Replaces the old manual "I Have Paid" / WhatsApp flow.
+========================================================= */
 window.showPayment = async function(
     swapId,
     teacherName,
     currentCounty,
     swapCounty,
-    charge = 2
+    charge = 200
 ){
-
     try{
-
-        /* =====================================================
-           🔐 BASIC VALIDATION
-        ===================================================== */
-
-        const safeSwapId =
-            String(
-                swapId || ""
-            ).trim();
-
-        if(!safeSwapId){
-
-            throw new Error(
-                "Swap ID is missing."
-            );
-
-        }
-
-
-        const amount =
-            Math.max(
-                1,
-                Number(charge) || 2
-            );
-
-
-        const teacher =
-            String(
-                teacherName ||
-                "Teacher"
-            );
-
-
-        const current =
-            String(
-                currentCounty ||
-                "-"
-            );
-
-
-        const destination =
-            String(
-                swapCounty ||
-                "-"
-            );
-
-
-        /* =====================================================
-           🔎 FIND PUBLIC SWAP DATA ONLY
-           =====================================================
-
-           This is okay because the public swap posting can
-           remain visible.
-
-           IMPORTANT:
-           We DO NOT read swap.phone here.
-        ===================================================== */
-
-        const swap =
-            Array.isArray(window.allSwaps)
-                ? window.allSwaps.find(
-                    x =>
-                        String(
-                            x?.swapId ||
-                            x?.id ||
-                            ""
-                        ) === safeSwapId
-                  )
-                : null;
-
+        const safeSwapId = String(swapId || "");
+        const amount = Math.max(1, Number(charge) || 200);
+        const teacher = String(teacherName || "Teacher");
+        const current = String(currentCounty || "-");
+        const destination = String(swapCounty || "-");
+        const refCode = safeSwapId.slice(-6).toUpperCase() || "SWAP";
+        const swap = Array.isArray(allSwaps)
+            ? allSwaps.find(x => String(x.swapId) === safeSwapId)
+            : null;
 
         if(!swap){
-
-            throw new Error(
-                "This teacher swap is no longer available."
-            );
-
+            throw new Error("This swap is no longer available.");
         }
 
-
-        /* =====================================================
-           🛡️ HTML ESCAPE
-        ===================================================== */
-
-        const escapeHTML =
-            value => {
-
-                const div =
-                    document.createElement(
-                        "div"
-                    );
-
-                div.textContent =
-                    value ?? "";
-
-                return div.innerHTML;
-
-            };
-
-
-        /* =====================================================
-           🏷️ CATEGORY
-        ===================================================== */
-
-        const category =
-            amount === 500
-                ? "🚧 Hardship Swap"
-                : amount === 400
-                    ? "🔥 Hot County Swap"
-                    : "📍 Normal Swap";
-
-
-        /* =====================================================
-           📱 SAVED PHONE
-        ===================================================== */
-
-        const savedPhone =
-            localStorage.getItem(
-                "myPhone"
-            ) || "";
-
-
-        /* =====================================================
-           💳 PAYMENT DIALOG
-        ===================================================== */
-
-        const result =
-            await Swal.fire({
-
-                title:
-                    "🔓 Unlock Teacher Contact",
-
-                width:
-                    520,
-
-                html:`
-
-                    <div style="
-                        text-align:left;
-                        line-height:1.6;
-                    ">
-
-                        <div style="
-                            background:#eff6ff;
-                            border:1px solid #bfdbfe;
-                            border-left:5px solid #2563eb;
-                            border-radius:12px;
-                            padding:14px;
-                            margin-bottom:13px;
-                        ">
-
-                            <div style="
-                                color:#1d4ed8;
-                                font-size:11px;
-                                font-weight:900;
-                            ">
-                                TEACHER SWAP CONTACT
-                            </div>
-
-                            <strong style="
-                                display:block;
-                                color:#0f172a;
-                                font-size:18px;
-                                margin-top:4px;
-                            ">
-                                ${escapeHTML(teacher)}
-                            </strong>
-
-                            <div style="
-                                color:#64748b;
-                                font-size:12px;
-                                margin-top:4px;
-                            ">
-                                ${escapeHTML(current)}
-                                ➜
-                                ${escapeHTML(destination)}
-                            </div>
-
-                            <div style="
-                                margin-top:8px;
-                                display:inline-block;
-                                background:#fff7ed;
-                                color:#9a3412;
-                                padding:5px 9px;
-                                border-radius:999px;
-                                font-size:10px;
-                                font-weight:900;
-                            ">
-                                ${escapeHTML(category)}
-                            </div>
-
-                        </div>
-
-
-                        <div style="
-                            background:#ecfdf5;
-                            border:1px solid #bbf7d0;
-                            border-radius:13px;
-                            padding:17px;
-                            text-align:center;
-                            margin-bottom:13px;
-                        ">
-
-                            <div style="
-                                color:#166534;
-                                font-size:11px;
-                                font-weight:900;
-                                text-transform:uppercase;
-                            ">
-                                Contact Unlock Fee
-                            </div>
-
-                            <div style="
-                                color:#16a34a;
-                                font-size:36px;
-                                font-weight:900;
-                                margin:3px 0;
-                            ">
-                                KES ${amount.toLocaleString()}
-                            </div>
-
-                            <div style="
-                                color:#64748b;
-                                font-size:11px;
-                            ">
-                                Teacher Swap Contact
-                            </div>
-
-                        </div>
-
-
-                        <label style="
-                            display:block;
-                            font-weight:900;
-                            font-size:12px;
-                            margin-bottom:7px;
-                        ">
-                            M-PESA Phone Number
-                        </label>
-
-
-                        <input
-                            id="swapUnlockMpesaPhone"
-                            type="tel"
-                            value="${escapeHTML(savedPhone)}"
-                            placeholder="07XXXXXXXX"
-                            autocomplete="tel"
-                            style="
-                                width:100%;
-                                box-sizing:border-box;
-                                padding:14px;
-                                border:2px solid #e2e8f0;
-                                border-radius:10px;
-                                font-size:16px;
-                            "
-                        >
-
-
-                        <div style="
-                            margin-top:8px;
-                            color:#64748b;
-                            font-size:11px;
-                        ">
-
-                            An M-PESA STK Push will be sent
-                            to this number.
-
-                            <br><br>
-
-                            <strong>
-                                The teacher contact will only
-                                be revealed after the backend
-                                confirms your payment.
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                `,
-
-                showCancelButton:
-                    true,
-
-                confirmButtonText:
-                    `📲 Pay KES ${amount.toLocaleString()} & Reveal`,
-
-                cancelButtonText:
-                    "Cancel",
-
-                confirmButtonColor:
-                    "#16a34a",
-
-                cancelButtonColor:
-                    "#64748b",
-
-
-                preConfirm:()=>{
-
-                    let phone =
-                        String(
-                            document.getElementById(
-                                "swapUnlockMpesaPhone"
-                            )?.value || ""
-                        )
-                        .replace(
-                            /[\s\-()]/g,
-                            ""
-                        );
-
-
-                    if(
-                        phone.startsWith("+254")
-                    ){
-
-                        phone =
-                            "0" +
-                            phone.substring(4);
-
-                    }
-                    else if(
-                        phone.startsWith("254")
-                    ){
-
-                        phone =
-                            "0" +
-                            phone.substring(3);
-
-                    }
-
-
-                    if(
-                        !/^(07\d{8}|01\d{8})$/.test(
-                            phone
-                        )
-                    ){
-
-                        Swal.showValidationMessage(
-                            "Enter a valid Kenyan M-PESA number."
-                        );
-
-                        return false;
-
-                    }
-
-
-                    return phone;
-
-                }
-
-            });
-
-
-        /* =====================================================
-           ❌ CANCELLED
-        ===================================================== */
-
-        if(
-            !result.isConfirmed
-        ){
-
-            return;
-
-        }
-
-
-        /* =====================================================
-           📱 BUYER PHONE
-        ===================================================== */
-
-        const paymentPhone =
-            result.value;
-
-
-        localStorage.setItem(
-            "myPhone",
-            paymentPhone
-        );
-
-
-        /* =====================================================
-           👤 OPTIONAL USER ID
-           =====================================================
-
-           Visitors are allowed.
-
-           This ID is NOT used as proof of payment.
-           The payment reference is the important identifier.
-        ===================================================== */
-
-        let firebaseUser =
-            null;
-
-
-        try{
-
-            if(
-                window.firebase &&
-                typeof window.firebase.auth ===
-                    "function"
-            ){
-
-                firebaseUser =
-                    window.firebase.auth().currentUser;
-
-            }
-
-        }
-        catch(e){
-
-            console.warn(
-                "Firebase auth lookup warning:",
-                e
-            );
-
-        }
-
-
-        if(
-            !firebaseUser &&
-            typeof window.getFirebaseCurrentUser ===
-                "function"
-        ){
-
-            try{
-
-                firebaseUser =
-                    window.getFirebaseCurrentUser();
-
-            }
-            catch(e){
-
-                console.warn(
-                    "Firebase modular auth lookup warning:",
-                    e
-                );
-
-            }
-
-        }
-
-
-        const userId =
-            firebaseUser?.uid ||
-            (
-                typeof window.getTeachersHubUserId ===
-                    "function"
-                    ? window.getTeachersHubUserId()
-                    : "anonymous"
-            );
-
-
-        /* =====================================================
-           🌐 BACKEND
-        ===================================================== */
-
-        const backend =
-            String(
-                window.TEACHERS_HUB_MPESA_BACKEND ||
-                ""
-            )
-            .trim()
-            .replace(
-                /\/+$/,
-                ""
-            );
-
-
-        if(!backend){
-
-            throw new Error(
-                "M-PESA backend URL is not configured."
-            );
-
-        }
-
-
-        /* =====================================================
-           🧾 UNIQUE PAYMENT REFERENCE
-        ===================================================== */
-
-        const safeReferenceId =
-            safeSwapId
-                .replace(
-                    /[^a-zA-Z0-9_-]/g,
-                    ""
-                )
-                .substring(
-                    0,
-                    40
-                );
-
-
-        const accountReference =
-            `SWAP_${safeReferenceId}_${Date.now()}`;
-
-
-        /* =====================================================
-           💳 PAYMENT PAYLOAD
-        ===================================================== */
-
-        const stkPayload = {
-
-            phone:
-                paymentPhone,
-
-            amount:
-                amount,
-
-            accountReference:
-                accountReference,
-
-            itemId:
-                safeSwapId,
-
-            itemName:
-                "Teacher Swap Contact",
-
-            userId:
-                userId,
-
-            flow:
-                "swap",
-
-            paymentType:
-                "swap_contact"
-
+        const escapeHTML = value => {
+            const div=document.createElement("div");
+            div.textContent=value ?? "";
+            return div.innerHTML;
         };
 
+        const category = amount === 500
+            ? "🚧 Hardship Swap"
+            : amount === 400
+                ? "🔥 Hot County Swap"
+                : "📍 Normal Swap";
 
-        console.log(
-            "📲 TEACHER SWAP STK REQUEST:",
-            {
-                swapId:
-                    safeSwapId,
+        const savedPhone = localStorage.getItem("myPhone") || "";
 
-                amount:
-                    amount,
-
-                accountReference:
-                    accountReference,
-
-                flow:
-                    "swap",
-
-                paymentType:
-                    "swap_contact"
-            }
-        );
-
-
-        /* =====================================================
-           📲 SENDING STK
-        ===================================================== */
-
-        Swal.fire({
-
-            title:
-                "📲 Sending STK Push...",
-
+        const result = await Swal.fire({
+            title:"🔓 Unlock Teacher Contact",
+            width:520,
             html:`
+              <div style="text-align:left;line-height:1.6;">
+                <div style="background:#eff6ff;border:1px solid #bfdbfe;border-left:5px solid #2563eb;border-radius:12px;padding:14px;margin-bottom:13px;">
+                  <div style="color:#1d4ed8;font-size:11px;font-weight:900;">TEACHER SWAP CONTACT</div>
+                  <strong style="display:block;color:#0f172a;font-size:18px;margin-top:4px;">${escapeHTML(teacher)}</strong>
+                  <div style="color:#64748b;font-size:12px;margin-top:4px;">${escapeHTML(current)} ➜ ${escapeHTML(destination)}</div>
+                  <div style="margin-top:8px;display:inline-block;background:#fff7ed;color:#9a3412;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:900;">${escapeHTML(category)}</div>
+                </div>
 
-                Sending payment request to
+                <div style="background:#ecfdf5;border:1px solid #bbf7d0;border-radius:13px;padding:17px;text-align:center;margin-bottom:13px;">
+                  <div style="color:#166534;font-size:11px;font-weight:900;text-transform:uppercase;">Contact Unlock Fee</div>
+                  <div style="color:#16a34a;font-size:36px;font-weight:900;margin:3px 0;">KES ${amount.toLocaleString()}</div>
+                  <div style="color:#64748b;font-size:11px;">Reference: ${escapeHTML(refCode)}</div>
+                </div>
 
-                <br>
-
-                <strong>
-                    ${escapeHTML(paymentPhone)}
-                </strong>
-
-                <br><br>
-
-                Amount:
-
-                <strong>
-                    KES ${amount.toLocaleString()}
-                </strong>
-
-                <br><br>
-
-                Please check your phone and complete
-                the M-PESA prompt.
-
-            `,
-
-            allowOutsideClick:
-                false,
-
-            allowEscapeKey:
-                false,
-
-            showConfirmButton:
-                false,
-
-            didOpen:()=>{
-
-                Swal.showLoading();
-
+                <label style="display:block;font-weight:900;font-size:12px;margin-bottom:7px;">M-PESA Phone Number</label>
+                <input id="swapUnlockMpesaPhone" type="tel" value="${escapeHTML(savedPhone)}" placeholder="07XXXXXXXX" autocomplete="tel"
+                  style="width:100%;box-sizing:border-box;padding:14px;border:2px solid #e2e8f0;border-radius:10px;font-size:16px;">
+                <div style="margin-top:8px;color:#64748b;font-size:11px;">
+                  An STK Push will be sent to this number. The teacher contact is revealed only after payment is confirmed.
+                </div>
+              </div>`,
+            showCancelButton:true,
+            confirmButtonText:`📲 Pay KES ${amount.toLocaleString()} & Reveal`,
+            cancelButtonText:"Cancel",
+            confirmButtonColor:"#16a34a",
+            cancelButtonColor:"#64748b",
+            preConfirm:()=>{
+                let phone=String(document.getElementById("swapUnlockMpesaPhone")?.value||"").replace(/[\s\-()]/g,"");
+                if(phone.startsWith("+254")) phone="0"+phone.substring(4);
+                else if(phone.startsWith("254")) phone="0"+phone.substring(3);
+                if(!/^(07\d{8}|01\d{8})$/.test(phone)){
+                    Swal.showValidationMessage("Enter a valid Kenyan M-PESA number.");
+                    return false;
+                }
+                return phone;
             }
-
         });
 
+        if(!result.isConfirmed) return;
 
-        /* =====================================================
-           🚀 SEND STK
-        ===================================================== */
+        const paymentPhone=result.value;
+        localStorage.setItem("myPhone",paymentPhone);
 
-        const response =
-            await fetch(
-                `${backend}/stkpush`,
-                {
+        const backend=String(window.TEACHERS_HUB_MPESA_BACKEND||"").trim().replace(/\/+$/g,"");
+        if(!backend) throw new Error("M-PESA backend URL is not configured.");
 
-                    method:
-                        "POST",
+        const userId=typeof window.getTeachersHubUserId === "function"
+            ? window.getTeachersHubUserId()
+            : "anonymous";
 
-                    headers:{
+        const accountReference=`SWAP_UNLOCK_${safeSwapId}_${Date.now()}`;
 
-                        "Content-Type":
-                            "application/json",
+        Swal.fire({
+            title:"📲 Sending STK Push...",
+            html:`Sending payment request to <strong>${escapeHTML(paymentPhone)}</strong><br><br>Please check your phone and complete the M-PESA prompt.`,
+            allowOutsideClick:false,
+            allowEscapeKey:false,
+            showConfirmButton:false,
+            didOpen:()=>Swal.showLoading()
+        });
 
-                        "Accept":
-                            "application/json"
+        const response=await fetch(`${backend}/stkpush`,{
+            method:"POST",
+            headers:{"Content-Type":"application/json","Accept":"application/json"},
+            body:JSON.stringify({
+                phone:paymentPhone,
+                amount,
+                accountReference,
+                itemId:safeSwapId,
+                itemName:"Teacher Swap Contact Unlock",
+                userId
+            })
+        });
 
-                    },
-
-                    body:
-                        JSON.stringify(
-                            stkPayload
-                        )
-
-                }
-            );
-
-
-        const raw =
-            await response.text();
-
-
+        const raw=await response.text();
         let data;
+        try{ data=JSON.parse(raw); }
+        catch(_){ throw new Error(`Payment server returned invalid data. HTTP ${response.status}.`); }
 
-
-        try{
-
-            data =
-                JSON.parse(
-                    raw
-                );
-
-        }
-        catch(e){
-
-            throw new Error(
-                `Payment server returned invalid data. HTTP ${response.status}.`
-            );
-
+        if(!response.ok){
+            throw new Error(data?.errorMessage||data?.message||data?.ResultDesc||`Payment server returned HTTP ${response.status}.`);
         }
 
-
-        console.log(
-            "📥 SWAP STK RESPONSE:",
-            data
+        const accepted=data?.success===true && (
+            String(data?.ResponseCode)==="0" ||
+            data?.ResponseCode===0 ||
+            !!data?.CheckoutRequestID
         );
-
-
-        /* =====================================================
-           ❌ BACKEND ERROR
-        ===================================================== */
-
-        if(
-            !response.ok
-        ){
-
-            throw new Error(
-
-                data?.errorMessage ||
-
-                data?.message ||
-
-                data?.ResultDesc ||
-
-                data?.ResponseDescription ||
-
-                `Payment server returned HTTP ${response.status}.`
-
-            );
-
-        }
-
-
-        /* =====================================================
-           ✅ STK ACCEPTED
-        ===================================================== */
-
-        const accepted =
-            data?.success === true &&
-            (
-                String(
-                    data?.ResponseCode
-                ) === "0" ||
-
-                data?.ResponseCode === 0 ||
-
-                !!data?.CheckoutRequestID
-            );
-
 
         if(!accepted){
-
-            throw new Error(
-
-                data?.errorMessage ||
-
-                data?.ResponseDescription ||
-
-                data?.ResultDesc ||
-
-                "M-PESA did not accept the payment request."
-
-            );
-
+            throw new Error(data?.errorMessage||data?.ResponseDescription||data?.ResultDesc||"M-PESA did not accept the payment request.");
         }
 
-
-        const checkoutRequestId =
-            data?.CheckoutRequestID ||
-            null;
-
-
-        /* =====================================================
-           ⏳ WAIT FOR PAYMENT
-        ===================================================== */
+        if(typeof window.waitForResourcePayment !== "function"){
+            throw new Error("The M-PESA confirmation engine is not available. Please reload and try again.");
+        }
 
         Swal.fire({
-
-            title:
-                "⏳ Confirming Payment...",
-
-            html:`
-
-                We are waiting for M-PESA confirmation.
-
-                <br><br>
-
-                <strong>
-                    Complete the payment on your phone.
-                </strong>
-
-                <br><br>
-
-                Your teacher contact will be requested
-                from the secure payment server only after
-                payment is confirmed.
-
-            `,
-
-            allowOutsideClick:
-                false,
-
-            allowEscapeKey:
-                false,
-
-            showConfirmButton:
-                false,
-
-            didOpen:()=>{
-
-                Swal.showLoading();
-
-            }
-
+            title:"⏳ Confirming Payment...",
+            html:"Please complete the M-PESA prompt. Your teacher contact will appear automatically after confirmation.",
+            allowOutsideClick:false,
+            allowEscapeKey:false,
+            showConfirmButton:false,
+            didOpen:()=>Swal.showLoading()
         });
 
-
-        /* =====================================================
-           🔎 SHARED PAYMENT MONITOR
-        ===================================================== */
-
-        if(
-            typeof window.waitForResourcePayment !==
-                "function"
-        ){
-
-            throw new Error(
-                "The M-PESA payment confirmation engine is not available. Please reload the page and try again."
-            );
-
-        }
-
-
-        const payment =
-            await window.waitForResourcePayment(
-
-                accountReference,
-
-                safeSwapId,
-
-                userId,
-
-                checkoutRequestId,
-
-                {
-
-                    pollInterval:
-                        3000,
-
-                    timeout:
-                        180000,
-
-                    maxNetworkErrors:
-                        10,
-
-                    autoUnlockResource:
-                        false,
-
-                    flow:
-                        "swap",
-
-                    swapId:
-                        safeSwapId,
-
-                    paymentType:
-                        "swap_contact"
-
-                }
-
-            );
-
-
-        /* =====================================================
-           💰 PAYMENT MUST BE PAID
-        ===================================================== */
-
-        if(
-            !payment ||
-            String(
-                payment.status ||
-                ""
-            ).toUpperCase() !==
-                "PAID"
-        ){
-
-            throw new Error(
-
-                payment?.message ||
-
-                payment?.ResultDesc ||
-
-                "M-PESA payment was not confirmed."
-
-            );
-
-        }
-
-
-        console.log(
-            "🎉 TEACHER SWAP PAYMENT CONFIRMED.",
+        const payment=await window.waitForResourcePayment(
+            accountReference,
+            safeSwapId,
+            userId,
+            data?.CheckoutRequestID||null,
             {
-                swapId:
-                    safeSwapId,
-
-                accountReference:
-                    accountReference
+                pollInterval:3000,
+                timeout:180000,
+                maxNetworkErrors:10,
+                autoUnlockResource:false,
+                flow:"swap"
             }
         );
 
-
-        /* =====================================================
-           🔐 REQUEST CONTACT FROM BACKEND
-           =====================================================
-
-           THIS IS THE IMPORTANT NEW PART.
-
-           We do NOT use:
-
-               swap.phone
-
-           We do NOT use:
-
-               get(swapContacts/...)
-
-           We do NOT trust localStorage.
-
-           The backend must independently check that this
-           exact payment reference is PAID and belongs to
-           this exact swap.
-        ===================================================== */
-
-        Swal.fire({
-
-            title:
-                "🔐 Authorizing Contact...",
-
-            html:`
-
-                <div style="
-                    line-height:1.7;
-                    text-align:center;
-                ">
-
-                    M-PESA payment confirmed.
-
-                    <br><br>
-
-                    <strong>
-                        Securely authorizing this
-                        teacher contact...
-                    </strong>
-
-                </div>
-
-            `,
-
-            allowOutsideClick:
-                false,
-
-            allowEscapeKey:
-                false,
-
-            showConfirmButton:
-                false,
-
-            didOpen:()=>{
-
-                Swal.showLoading();
-
-            }
-
-        });
-
-
-        const revealResponse =
-            await fetch(
-                `${backend}/reveal-paid-contact`,
-                {
-
-                    method:
-                        "POST",
-
-                    headers:{
-
-                        "Content-Type":
-                            "application/json",
-
-                        "Accept":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            accountReference:
-                                accountReference,
-
-                            resourceId:
-                                safeSwapId,
-
-                            flow:
-                                "swap",
-
-                            paymentType:
-                                "swap_contact",
-
-                            userId:
-                                userId
-
-                        })
-
-                }
-            );
-
-
-        const revealRaw =
-            await revealResponse.text();
-
-
-        let revealData;
-
-
-        try{
-
-            revealData =
-                JSON.parse(
-                    revealRaw
-                );
-
-        }
-        catch(e){
-
-            throw new Error(
-                `Contact authorization server returned invalid data. HTTP ${revealResponse.status}.`
-            );
-
+        if(!payment || payment.status!=="PAID"){
+            throw new Error(payment?.message||"M-PESA payment was not confirmed.");
         }
 
-
-        console.log(
-            "📥 SWAP CONTACT AUTHORIZATION RESPONSE:",
-            {
-                status:
-                    revealResponse.status,
-
-                success:
-                    revealData?.success,
-
-                authorized:
-                    revealData?.contactAuthorized,
-
-                flow:
-                    revealData?.flow
-            }
+        localStorage.setItem(
+            `paid_swap_unlock_${safeSwapId}_${userId}`,
+            JSON.stringify({status:"PAID",reference:accountReference,paidAt:Date.now()})
         );
 
-
-        /* =====================================================
-           ❌ CONTACT NOT AUTHORIZED
-        ===================================================== */
-
-        if(
-            !revealResponse.ok ||
-            revealData?.success !== true ||
-            revealData?.contactAuthorized !== true
-        ){
-
-            throw new Error(
-
-                revealData?.message ||
-
-                "Payment was confirmed, but the teacher contact was not authorized."
-
-            );
-
-        }
-
-
-        /* =====================================================
-           🔐 VERIFY BACKEND RETURNED THIS EXACT SWAP
-        ===================================================== */
-
-        if(
-            String(
-                revealData?.resourceId ||
-                ""
-            ) !== safeSwapId
-        ){
-
-            throw new Error(
-                "Security check failed: returned contact does not belong to this swap."
-            );
-
-        }
-
-
-        if(
-            String(
-                revealData?.flow ||
-                ""
-            ).toLowerCase() !==
-                "swap"
-        ){
-
-            throw new Error(
-                "Security check failed: invalid contact flow."
-            );
-
-        }
-
-
-        /* =====================================================
-           📞 CONTACT COMES ONLY FROM BACKEND
-        ===================================================== */
-
-        const contact =
-            String(
-
-                revealData?.contact?.phone ||
-
-                revealData?.contact?.contactPhone ||
-
-                revealData?.contact?.phoneNumber ||
-
-                ""
-
-            ).trim();
-
-
-        if(!contact){
-
-            throw new Error(
-                "Payment was confirmed, but the authorized teacher contact is unavailable."
-            );
-
-        }
-
-
-        /* =====================================================
-           💾 SAVE LOCAL PURCHASE
-        =====================================================
-
-           This is only for the UI remembering the purchase.
-
-           IMPORTANT:
-           This local record is NEVER treated as proof
-           by the backend.
-        ===================================================== */
-
-        try{
-
-            localStorage.setItem(
-
-                `paid_swap_unlock_${safeSwapId}_${userId}`,
-
-                JSON.stringify({
-
-                    status:
-                        "PAID",
-
-                    accountReference:
-                        accountReference,
-
-                    reference:
-                        accountReference,
-
-                    swapId:
-                        safeSwapId,
-
-                    paymentType:
-                        "swap_contact",
-
-                    flow:
-                        "swap",
-
-                    paidAt:
-                        revealData?.paidAt ||
-
-                        payment?.paidAt ||
-
-                        Date.now()
-
-                })
-
-            );
-
-        }
-        catch(storageError){
-
-            console.warn(
-                "⚠️ Could not save local purchase:",
-                storageError
-            );
-
-        }
-
-
-        /* =====================================================
-           🎉 CONTACT REVEALED
-        ===================================================== */
+        const contact=String(swap.phone||"");
 
         await Swal.fire({
-
-            icon:
-                "success",
-
-            title:
-                "🔓 Contact Revealed",
-
-            width:
-                500,
-
+            icon:"success",
+            title:"🔓 Contact Revealed",
+            width:500,
             html:`
-
-                <div style="
-                    text-align:left;
-                    line-height:1.75;
-                ">
-
-                    <div style="
-                        background:#ecfdf5;
-                        border:1px solid #86efac;
-                        border-radius:12px;
-                        padding:15px;
-                    ">
-
-                        <strong style="
-                            display:block;
-                            color:#166534;
-                            font-size:18px;
-                        ">
-                            ${escapeHTML(teacher)}
-                        </strong>
-
-
-                        <div>
-                            📍
-                            ${escapeHTML(current)}
-                            ➜
-                            ${escapeHTML(destination)}
-                        </div>
-
-
-                        <div style="
-                            margin-top:10px;
-                            font-size:20px;
-                            font-weight:900;
-                            color:#166534;
-                        ">
-
-                            📞
-                            ${escapeHTML(contact)}
-
-                        </div>
-
-
-                        <div style="
-                            margin-top:8px;
-                            color:#64748b;
-                            font-size:11px;
-                        ">
-
-                            M-PESA payment confirmed
-
-                            <br>
-
-                            Receipt:
-                            ${escapeHTML(
-                                payment?.MpesaReceiptNumber ||
-                                revealData?.MpesaReceiptNumber ||
-                                "Confirmed"
-                            )}
-
-                        </div>
-
-                    </div>
-
+              <div style="text-align:left;line-height:1.75;">
+                <div style="background:#ecfdf5;border:1px solid #86efac;border-radius:12px;padding:15px;">
+                  <strong style="display:block;color:#166534;font-size:18px;">${escapeHTML(teacher)}</strong>
+                  <div>📍 ${escapeHTML(current)} ➜ ${escapeHTML(destination)}</div>
+                  <div style="margin-top:8px;font-size:20px;font-weight:900;color:#166534;">📞 ${escapeHTML(contact||"Contact unavailable")}</div>
+                  <div style="margin-top:6px;color:#64748b;font-size:11px;">Payment confirmed • Ref: ${escapeHTML(refCode)}</div>
                 </div>
-
-            `,
-
-            confirmButtonText:
-                "Done",
-
-            confirmButtonColor:
-                "#16a34a"
-
+              </div>`,
+            confirmButtonText:"Done",
+            confirmButtonColor:"#16a34a"
         });
 
-
-    }
-    catch(error){
-
-        console.error(
-            "❌ SWAP CONTACT PAYMENT ERROR:",
-            error
-        );
-
-
-        let message =
-            error?.message ||
-
-            "The teacher contact could not be unlocked. Please try again.";
-
-
+    }catch(error){
+        console.error("❌ SWAP CONTACT PAYMENT ERROR:",error);
         Swal.fire({
-
-            icon:
-                "error",
-
-            title:
-                "Payment / Unlock Failed",
-
-            text:
-                message,
-
-            confirmButtonColor:
-                "#dc2626"
-
+            icon:"error",
+            title:"Payment / Unlock Failed",
+            text:error?.message||"The teacher contact could not be unlocked. Please try again.",
+            confirmButtonColor:"#dc2626"
         });
-
     }
-
 };
 
 /* =========================================================
