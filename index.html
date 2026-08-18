@@ -8132,7 +8132,7 @@ window.postSwap = async function(){
 
 
         let charge =
-            200;
+            2;
 
 
         if(
@@ -9172,7 +9172,7 @@ function render(swaps){
         let charge =
             Number(
                 item.charge
-            ) || 200;
+            ) || 2;
 
 
         if(
@@ -9764,7 +9764,7 @@ function render(swaps){
                                 ${
                                     Number(
                                         matchedTeacher.charge ||
-                                        200
+                                        2
                                     )
                                 }
                             )
@@ -12090,7 +12090,7 @@ window.showPayment = async function(
     teacherName,
     currentCounty,
     swapCounty,
-    charge = 200
+    charge = 2
 ){
 
     try{
@@ -12116,7 +12116,7 @@ window.showPayment = async function(
         const amount =
             Math.max(
                 1,
-                Number(charge) || 200
+                Number(charge) || 2
             );
 
 
@@ -26067,151 +26067,179 @@ async function revealPaidJobContact(jobId, accountReference){
 
   try{
 
-    /* =====================================================
-       💼 JOB CONTACT REVEAL
-       ===================================================== */
-
     if(!jobId){
-
-      throw new Error(
-        "Job ID is missing."
-      );
-
+      throw new Error("Job ID is missing.");
     }
 
+    if(!accountReference){
+      throw new Error("Payment reference is missing.");
+    }
 
     /* =====================================================
-       🔥 FIREBASE DATABASE READY CHECK
+       🌐 M-PESA BACKEND
        ===================================================== */
 
-    if(
-      !window.__firebaseDB ||
-      typeof get !== "function" ||
-      typeof ref !== "function"
-    ){
+    const backend =
+      String(
+        window.TEACHERS_HUB_MPESA_BACKEND || ""
+      )
+      .trim()
+      .replace(/\/+$/, "");
 
+    if(!backend){
       throw new Error(
-        "Firebase is not ready. Please reload the page and try again."
+        "M-PESA backend URL is not configured."
       );
-
     }
 
 
     console.log(
-      "🔓 Revealing paid job contact:",
+      "🔐 Requesting SERVER-SIDE job contact reveal:",
       {
         jobId,
-        accountReference
+        accountReference,
+        flow: "job",
+        paymentType: "job_contact"
       }
     );
 
 
     /* =====================================================
-       🔎 READ ONLY THIS JOB'S CONTACT
+       🔐 SERVER-SIDE CONTACT REVEAL
        
        IMPORTANT:
-       Website visitors do NOT sign in.
-       Therefore DO NOT require Firebase Auth here.
+       DO NOT READ jobContacts FROM FIREBASE HERE.
+
+       The browser is NOT Firebase-authenticated.
+
+       The SERVER will:
+       1. Check payment
+       2. Check PAID status
+       3. Check exact jobId
+       4. Check flow = job
+       5. Check paymentType = job_contact
+       6. Read jobContacts/{jobId} using Firebase Admin
        ===================================================== */
 
-    const contactRef =
-      ref(
-        window.__firebaseDB,
-        `jobContacts/${jobId}`
+    const response =
+      await teachersHubRequest(
+
+        `${backend}/reveal-paid-contact`,
+
+        {
+
+          method:
+            "POST",
+
+          headers:{
+
+            "Content-Type":
+              "application/json",
+
+            "Accept":
+              "application/json"
+
+          },
+
+          body:
+            JSON.stringify({
+
+              accountReference:
+                accountReference,
+
+              resourceId:
+                jobId,
+
+              flow:
+                "job"
+
+            })
+
+        },
+
+        30000
+
       );
 
 
-    let contactSnap;
+    /* =====================================================
+       📥 READ SERVER RESPONSE
+       ===================================================== */
 
+    const raw =
+      await response.text();
+
+    let data;
 
     try{
 
-      contactSnap =
-        await get(
-          contactRef
-        );
+      data =
+        JSON.parse(raw);
 
-    }catch(firebaseError){
-
-      console.error(
-        "❌ JOB CONTACT FIREBASE READ ERROR:",
-        firebaseError
-      );
-
-
-      const firebaseCode =
-        String(
-          firebaseError?.code ||
-          ""
-        ).toLowerCase();
-
-
-      const firebaseMessage =
-        String(
-          firebaseError?.message ||
-          ""
-        ).toLowerCase();
-
-
-      if(
-        firebaseCode.includes("permission") ||
-        firebaseMessage.includes("permission denied")
-      ){
-
-        throw new Error(
-          "Firebase is blocking access to job contacts. Your current jobContacts Firebase rule requires a signed-in user, but website visitors do not sign in."
-        );
-
-      }
-
-
-      throw firebaseError;
-
-    }
-
-
-    /* =====================================================
-       ❌ CONTACT RECORD DOES NOT EXIST
-       ===================================================== */
-
-    if(!contactSnap.exists()){
-
-      console.error(
-        "❌ JOB CONTACT NOT FOUND:",
-        jobId
-      );
-
+    }catch(e){
 
       throw new Error(
-        "Payment was confirmed, but the employer contact record is unavailable. Please contact the administrator."
+        `Contact server returned invalid data. HTTP ${response.status}.`
       );
 
     }
-
-
-    /* =====================================================
-       📋 CONTACT DATA
-       ===================================================== */
-
-    const contact =
-      contactSnap.val() || {};
 
 
     console.log(
-      "✅ JOB CONTACT LOADED:",
+      "📥 SERVER JOB CONTACT RESPONSE:",
+      data
+    );
+
+
+    /* =====================================================
+       ❌ SERVER DENIED ACCESS
+       ===================================================== */
+
+    if(
+      !response.ok ||
+      data?.success !== true ||
+      data?.contactAuthorized !== true
+    ){
+
+      throw new Error(
+
+        data?.message ||
+
+        data?.errorMessage ||
+
+        data?.ResultDesc ||
+
+        "The employer contact could not be authorized."
+
+      );
+
+    }
+
+
+    /* =====================================================
+       📋 CONTACT RETURNED BY SERVER
+       ===================================================== */
+
+    const contact =
+      data.contact || {};
+
+
+    console.log(
+      "✅ AUTHORIZED JOB CONTACT RECEIVED:",
       {
         jobId,
-        hasName:!!contact.contactName,
-        hasPhone:!!contact.phone,
-        hasEmail:!!contact.email
+        hasName:
+          !!contact.contactName,
+        hasPhone:
+          !!contact.phone,
+        hasEmail:
+          !!contact.email
       }
     );
 
 
     /* =====================================================
-       👤 LOCAL USER IDENTIFIER
-       
-       No Firebase authentication required.
+       💾 SAVE LOCAL PURCHASE
        ===================================================== */
 
     let localUserId = "";
@@ -26224,37 +26252,28 @@ async function revealPaidJobContact(jobId, accountReference){
       ){
 
         localUserId =
-          getTeachersHubUserId() || "";
+          String(
+            getTeachersHubUserId() || ""
+          ).trim();
 
       }
 
-    }catch(e){
+    }catch(e){}
 
-      console.warn(
-        "⚠️ Could not obtain local Teachers Hub user ID:",
-        e
-      );
-
-    }
-
-
-    /*
-     * Fallback for completely anonymous visitors.
-     */
 
     if(!localUserId){
 
-      localUserId =
-        localStorage.getItem(
-          "teachersHubGuestId"
-        ) || "";
+      try{
+
+        localUserId =
+          localStorage.getItem(
+            "teachersHubGuestId"
+          ) || "";
+
+      }catch(e){}
 
     }
 
-
-    /*
-     * Create a stable anonymous browser ID if necessary.
-     */
 
     if(!localUserId){
 
@@ -26265,7 +26284,6 @@ async function revealPaidJobContact(jobId, accountReference){
         Math.random()
           .toString(36)
           .substring(2,10);
-
 
       try{
 
@@ -26278,10 +26296,6 @@ async function revealPaidJobContact(jobId, accountReference){
 
     }
 
-
-    /* =====================================================
-       💾 SAVE LOCAL PURCHASE
-       ===================================================== */
 
     try{
 
@@ -26298,7 +26312,7 @@ async function revealPaidJobContact(jobId, accountReference){
             "PAID",
 
           accountReference:
-            accountReference || "",
+            accountReference,
 
           jobId:
             jobId,
@@ -26358,7 +26372,6 @@ async function revealPaidJobContact(jobId, accountReference){
               EMPLOYER CONTACT
             </div>
 
-
             <strong style="
               display:block;
               color:#166534;
@@ -26374,7 +26387,6 @@ async function revealPaidJobContact(jobId, accountReference){
               }
 
             </strong>
-
 
             ${
               contact.phone
@@ -26399,7 +26411,6 @@ async function revealPaidJobContact(jobId, accountReference){
               : ""
             }
 
-
             ${
               contact.email
               ? `
@@ -26422,7 +26433,6 @@ async function revealPaidJobContact(jobId, accountReference){
               `
               : ""
             }
-
 
             ${
               contact.instructions
@@ -26451,9 +26461,7 @@ async function revealPaidJobContact(jobId, accountReference){
               : ""
             }
 
-
           </div>
-
 
           <div style="
             margin-top:12px;
@@ -26493,10 +26501,6 @@ async function revealPaidJobContact(jobId, accountReference){
     }
 
 
-    /* =====================================================
-       ✅ RETURN CONTACT
-       ===================================================== */
-
     return {
 
       success:
@@ -26520,18 +26524,15 @@ async function revealPaidJobContact(jobId, accountReference){
   }catch(error){
 
     console.error(
-      "❌ Reveal job contact error:",
+      "❌ Secure job contact reveal error:",
       error
     );
-
 
     throw error;
 
   }
 
 }
-
-
 
 window.unlockJobContact = async function(jobId){
 
@@ -27445,27 +27446,18 @@ window.unlockJobContact = async function(jobId){
     /* =====================================================
        💰 PAYMENT MUST BE PAID
        ===================================================== */
+if(
+    !payment ||
+    String(payment.status || "").toUpperCase() !== "PAID"
+){
 
-    if(
-      !payment ||
-      String(
-        payment.status ||
-        ""
-      ).toUpperCase() !==
-      "PAID"
-    ){
-
-      throw new Error(
-
+    throw new Error(
         payment?.message ||
-
         payment?.ResultDesc ||
+        "M-PESA payment was not confirmed."
+    );
 
-        "Payment was not confirmed."
-
-      );
-
-    }
+}
 
 
     console.log(
@@ -27570,8 +27562,6 @@ window.unlockJobContact = async function(jobId){
   }
 
 };
-
-
 
 
 
