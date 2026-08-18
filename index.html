@@ -12198,7 +12198,12 @@ window.showPayment = async function(
             safeSwapId,
             userId,
             data?.CheckoutRequestID||null,
-            {pollInterval:3000,timeout:180000,maxNetworkErrors:10}
+            {
+                pollInterval:3000,
+                timeout:180000,
+                maxNetworkErrors:10,
+                autoUnlockResource:false
+            }
         );
 
         if(!payment || payment.status!=="PAID"){
@@ -15681,7 +15686,18 @@ window.unlockTriangularContacts = async function(id1,id2,id3){
         if(typeof window.waitForResourcePayment!=="function")throw new Error("The M-PESA confirmation engine is not available. Please reload and try again.");
 
         Swal.fire({title:"⏳ Confirming Payment...",html:"Complete the M-PESA prompt. All three contacts will appear automatically after confirmation.",allowOutsideClick:false,allowEscapeKey:false,showConfirmButton:false,didOpen:()=>Swal.showLoading()});
-        const payment=await window.waitForResourcePayment(accountReference,ids.join("_"),userId,data?.CheckoutRequestID||null,{pollInterval:3000,timeout:180000,maxNetworkErrors:10});
+        const payment=await window.waitForResourcePayment(
+            accountReference,
+            ids.join("_"),
+            userId,
+            data?.CheckoutRequestID||null,
+            {
+                pollInterval:3000,
+                timeout:180000,
+                maxNetworkErrors:10,
+                autoUnlockResource:false
+            }
+        );
         if(!payment||payment.status!=="PAID")throw new Error(payment?.message||"M-PESA payment was not confirmed.");
 
         localStorage.setItem(`paid_triangle_${ids.sort().join("_")}_${userId}`,JSON.stringify({status:"PAID",reference:accountReference,paidAt:Date.now()}));
@@ -20671,17 +20687,20 @@ async function(
 
 
                 /* =================================================
-                   UNLOCK RESOURCE
+                   AUTO-UNLOCK RESOURCE
+                   Jobs and Teacher Swaps use this same payment monitor,
+                   but they reveal their own contacts after PAID.
                 ================================================= */
 
-                if (resourceId) {
+                if (
+                    resourceId &&
+                    options &&
+                    options.autoUnlockResource === true
+                ) {
 
                     await downloadPaidResource(
-
                         accountReference,
-
                         resourceId
-
                     );
 
                 }
@@ -22066,7 +22085,11 @@ async function(resourceId) {
 
                 userId,
 
-                checkoutRequestId
+                checkoutRequestId,
+
+                {
+                    autoUnlockResource:true
+                }
 
             );
 
@@ -23371,7 +23394,8 @@ window.unlockJobContact = async function(jobId){
         {
           pollInterval:3000,
           timeout:180000,
-          maxNetworkErrors:10
+          maxNetworkErrors:10,
+          autoUnlockResource:false
         }
       );
 
