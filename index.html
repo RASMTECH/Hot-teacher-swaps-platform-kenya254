@@ -2637,6 +2637,70 @@ input[type="file"]::file-selector-button{
 .action-card-purple{border-top:4px solid #7c3aed;}
 .action-card-purple .action-open{color:#7c3aed;}
 
+.action-card-connect{border-top:4px solid #e11d48;}
+.action-card-connect .action-open{color:#e11d48;}
+
+/* =========================================================
+   ❤️ MWALIMU CONNECT
+========================================================= */
+.mwalimu-connect-section{
+  width:100%;
+  box-sizing:border-box;
+  margin-top:20px;
+}
+.mwalimu-connect-hero{
+  background:linear-gradient(135deg,#881337,#e11d48,#be123c);
+  color:#fff;
+  border-radius:20px;
+  padding:25px;
+  box-shadow:0 12px 30px rgba(225,29,72,.20);
+  margin-bottom:20px;
+}
+.mwalimu-connect-hero h2{margin:0 0 7px;font-size:25px;}
+.mwalimu-connect-hero p{margin:0;line-height:1.6;color:#ffe4e6;font-size:13px;}
+.mwalimu-connect-adult{
+  display:inline-flex;
+  margin-top:12px;
+  padding:7px 11px;
+  border-radius:999px;
+  background:#fff;
+  color:#9f1239;
+  font-size:11px;
+  font-weight:900;
+}
+.mwalimu-connect-grid{
+  display:grid;
+  grid-template-columns:minmax(320px,420px) 1fr;
+  gap:20px;
+  align-items:start;
+}
+.mwalimu-connect-card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 8px 24px rgba(15,23,42,.07);
+}
+.mwalimu-connect-card h3{margin:0 0 14px;color:#0f172a;}
+.mwalimu-connect-form{display:grid;gap:11px;}
+.mwalimu-connect-form label{font-size:12px;font-weight:800;color:#334155;}
+.mwalimu-connect-form input,.mwalimu-connect-form select{
+  width:100%;box-sizing:border-box;min-height:43px;padding:10px 12px;
+  border:1px solid #cbd5e1;border-radius:10px;background:#fff;color:#0f172a;
+}
+.mwalimu-connect-form button{
+  min-height:46px;border:0;border-radius:11px;background:#e11d48;color:#fff;font-weight:900;cursor:pointer;
+}
+.mwalimu-connect-note{font-size:11px;color:#64748b;line-height:1.55;}
+.mwalimu-connect-profiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px;}
+.mwalimu-profile{border:1px solid #fecdd3;border-radius:15px;padding:16px;background:#fff7f8;}
+.mwalimu-profile h4{margin:0 0 5px;color:#881337;font-size:16px;}
+.mwalimu-profile .m-meta{font-size:12px;color:#475569;line-height:1.7;}
+.mwalimu-profile .m-phone-locked{margin-top:10px;padding:9px;border-radius:9px;background:#fff1f2;color:#9f1239;font-weight:800;font-size:11px;}
+.mwalimu-profile .m-unlock{margin-top:11px;width:100%;min-height:40px;border:0;border-radius:9px;background:#be123c;color:#fff;font-weight:900;cursor:pointer;}
+.mwalimu-empty{padding:35px 15px;text-align:center;color:#64748b;border:1px dashed #cbd5e1;border-radius:14px;background:#f8fafc;}
+@media(max-width:850px){.mwalimu-connect-grid{grid-template-columns:1fr;}}
+
 
 /* =========================================================
    SECTION NAVIGATION
@@ -3694,6 +3758,12 @@ input[type="file"]::file-selector-button{
 .swap-requests-section.active-independent-section{
   display:block !important;
 }
+.mwalimu-connect-section:not(.active-independent-section){
+  display:none !important;
+}
+.mwalimu-connect-section.active-independent-section{
+  display:block !important;
+}
 </style>
 </head>
 <body>
@@ -4064,6 +4134,32 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
 
 
 <!-- =====================================================
+     ❤️ MWALIMU CONNECT — 18+ TEACHER MATCHING
+====================================================== -->
+
+<button
+  type="button"
+  class="action-card action-card-connect"
+  onclick="openMwalimuConnectSection()"
+>
+  <div class="action-card-color">
+    <span class="action-icon">❤️</span>
+    <span class="action-number">05</span>
+  </div>
+
+  <div class="action-card-content">
+    <strong>Mwalimu Connect</strong>
+    <small>
+      An adults-only space for teachers to create profiles and discover compatible teacher connections.
+    </small>
+    <span class="action-open">
+      Find Your Match <b>→</b>
+    </span>
+  </div>
+</button>
+
+
+<!-- =====================================================
      🏫 RASM SCHOOL MANAGEMENT SYSTEM
 ====================================================== -->
 
@@ -4112,6 +4208,179 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
   </div>
 
 </section>
+
+<!-- =========================================================
+     ❤️ MWALIMU CONNECT — 18+ TEACHER MATCHING
+     Contact numbers are revealed only after confirmed payment.
+========================================================= -->
+<section id="mwalimuConnectSection" class="independent-section-wrapper mwalimu-connect-section" style="display:none;" aria-hidden="true">
+  <div class="section-back-row">
+    <button type="button" class="section-back-btn" onclick="closeIndependentSections()">← Back to Sections</button>
+  </div>
+
+  <div class="mwalimu-connect-hero">
+    <h2>❤️ Mwalimu Connect</h2>
+    <p>Connect with other adult teachers who are open to meaningful personal connections. Create an adult profile, browse available teacher profiles, and pay only when you want to reveal a phone number. Your public identity is generated automatically as Teacher 001, Teacher 002, Teacher 003, and so on.</p>
+    <span class="mwalimu-connect-adult">🔞 18+ TEACHERS ONLY</span>
+  </div>
+
+  <div class="mwalimu-connect-grid">
+    <div class="mwalimu-connect-card">
+      <h3>📝 Create / Update Your Profile</h3>
+      <form id="mwalimuConnectForm" class="mwalimu-connect-form" onsubmit="saveMwalimuConnectProfile(event)">
+        <div><label>Gender</label><select id="mcGender" required><option value="">Select gender</option><option>Male</option><option>Female</option></select></div>
+        <div><label>Age</label><input id="mcAge" type="number" min="18" max="99" required placeholder="18+"></div>
+        <div><label>Tribe / Community</label><select id="mcTribe" required><option value="">Select tribe / community</option>            <option>Agikuyu (Kikuyu)</option>
+            <option>Aembu (Embu)</option>
+            <option>Akaamba (Kamba)</option>
+            <option>Ameru (Meru)</option>
+            <option>Abagusii (Kisii)</option>
+            <option>Jaluo (Luo)</option>
+            <option>Abaluhya (Luhya)</option>
+            <option>Bukusu</option>
+            <option>Maragoli</option>
+            <option>Tachoni</option>
+            <option>Tiriki</option>
+            <option>Kabras</option>
+            <option>Wanga</option>
+            <option>Idakho</option>
+            <option>Isukha</option>
+            <option>Banyore</option>
+            <option>Samia</option>
+            <option>Marama</option>
+            <option>Batsotso</option>
+            <option>Kalenjin</option>
+            <option>Kipsigis</option>
+            <option>Nandi</option>
+            <option>Keiyo</option>
+            <option>Marakwet</option>
+            <option>Tugen</option>
+            <option>Sabaot</option>
+            <option>Pokot</option>
+            <option>Maasai</option>
+            <option>Samburu</option>
+            <option>Turkana</option>
+            <option>Rendille</option>
+            <option>Borana</option>
+            <option>Gabra</option>
+            <option>Orma</option>
+            <option>Pokomo</option>
+            <option>Wardei</option>
+            <option>Somali</option>
+            <option>Oromo</option>
+            <option>El Molo</option>
+            <option>Ilchamus</option>
+            <option>Taita</option>
+            <option>Taveta</option>
+            <option>Giriama</option>
+            <option>Digo</option>
+            <option>Duruma</option>
+            <option>Chonyi</option>
+            <option>Rabai</option>
+            <option>Kauma</option>
+            <option>Ribe</option>
+            <option>Jibana</option>
+            <option>Kambe</option>
+            <option>Swahili</option>
+            <option>Bajuni</option>
+            <option>Yaaku</option>
+            <option>Ogiek</option>
+            <option>Burji</option>
+            <option>Konso</option>
+            <option>Asian Kenyan</option>
+            <option>Arab Kenyan</option>
+            <option>European Kenyan</option>
+            <option>Other Kenyan community</option>
+            <option>Prefer not to say</option>
+          </select></div>
+        <div><label>Phone Number</label><input id="mcPhone" required inputmode="tel" maxlength="15" placeholder="07XXXXXXXX"></div>
+        <div><label>Work / Profession</label><select id="mcJob" required><option value="">Select work / profession</option>            <option>High School Teacher</option>
+            <option>Primary School Teacher</option>
+            <option>Junior Secondary School Teacher</option>
+            <option>ECDE Teacher</option>
+            <option>TVET Instructor</option>
+            <option>College Lecturer</option>
+            <option>University Lecturer</option>
+            <option>Special Needs Education Teacher</option>
+            <option>School Administrator</option>
+            <option>School Principal / Headteacher</option>
+            <option>Doctor</option>
+            <option>Nurse</option>
+            <option>Clinical Officer</option>
+            <option>Pharmacist</option>
+            <option>Engineer</option>
+            <option>Accountant</option>
+            <option>Lawyer</option>
+            <option>ICT Professional</option>
+            <option>Business Professional</option>
+            <option>Government Employee</option>
+            <option>NGO / Development Professional</option>
+            <option>Other Professional</option>
+          </select></div>
+        <div><label>Work County</label><select id="mcCounty" required><option value="">Select work county</option>            <option>Mombasa</option>
+            <option>Kwale</option>
+            <option>Kilifi</option>
+            <option>Tana River</option>
+            <option>Lamu</option>
+            <option>Taita-Taveta</option>
+            <option>Garissa</option>
+            <option>Wajir</option>
+            <option>Mandera</option>
+            <option>Marsabit</option>
+            <option>Isiolo</option>
+            <option>Meru</option>
+            <option>Tharaka-Nithi</option>
+            <option>Embu</option>
+            <option>Kitui</option>
+            <option>Machakos</option>
+            <option>Makueni</option>
+            <option>Nyandarua</option>
+            <option>Nyeri</option>
+            <option>Kirinyaga</option>
+            <option>Murang'a</option>
+            <option>Kiambu</option>
+            <option>Turkana</option>
+            <option>West Pokot</option>
+            <option>Samburu</option>
+            <option>Trans Nzoia</option>
+            <option>Uasin Gishu</option>
+            <option>Elgeyo-Marakwet</option>
+            <option>Nandi</option>
+            <option>Baringo</option>
+            <option>Laikipia</option>
+            <option>Nakuru</option>
+            <option>Narok</option>
+            <option>Kajiado</option>
+            <option>Kericho</option>
+            <option>Bomet</option>
+            <option>Kakamega</option>
+            <option>Vihiga</option>
+            <option>Bungoma</option>
+            <option>Busia</option>
+            <option>Siaya</option>
+            <option>Kisumu</option>
+            <option>Homa Bay</option>
+            <option>Migori</option>
+            <option>Kisii</option>
+            <option>Nyamira</option>
+            <option>Nairobi</option>
+            <option>Diaspora</option>
+          </select></div>
+        <label style="display:flex;gap:8px;align-items:flex-start;font-size:11px;line-height:1.45;color:#475569;"><input id="mcAdultConfirm" type="checkbox" required style="margin-top:2px;width:16px;height:16px;"><span>I confirm that I am 18 years or older and I am voluntarily creating this adult profile.</span></label>
+        <button type="submit">💾 Save My Mwalimu Connect Profile</button>
+        <div class="mwalimu-connect-note">No account or login is required. Your phone number is protected and is not shown on public cards. A phone number can only be revealed after the required M-PESA payment is confirmed.</div>
+      </form>
+    </div>
+
+    <div class="mwalimu-connect-card">
+      <h3>🔎 Discover Teacher Connections</h3>
+      <div id="mwalimuConnectProfiles" class="mwalimu-connect-profiles">
+        <div class="mwalimu-empty">Loading Mwalimu Connect profiles...</div>
+      </div>
+    </div>
+  </div>
+</section>
+
   <!-- MAIN GRID -->
   <div class="grid">
 
@@ -18307,7 +18576,8 @@ window.closeIndependentSections = function(){
     "swapRequestsSection",
     "postSwapSection",
     "learningResourcesSection",
-    "jobsSection"
+    "jobsSection",
+    "mwalimuConnectSection"
   ];
 
   sections.forEach(id => {
@@ -18364,7 +18634,8 @@ window.__INDEPENDENT_SECTION_IDS = [
   "swapRequestsSection",
   "postSwapSection",
   "learningResourcesSection",
-  "jobsSection"
+  "jobsSection",
+  "mwalimuConnectSection"
 ];
 
 window.__showOnlyIndependentSection = function(sectionId){
@@ -18570,6 +18841,124 @@ function closeIndependentSectionsNoScroll(){
 
 }
 
+
+/* =========================================================
+   ❤️ MWALIMU CONNECT — ADULT TEACHER MATCHING
+   Free profile creation; KES 2 to reveal a phone number.
+   18+ gate is mandatory.
+========================================================= */
+const mwalimuConnectRef =
+  (db && ref) ? ref(db, "mwalimuConnectProfiles") : null;
+
+function mcCurrentUser(){
+  return window.currentUser || window.__firebaseAuth?.currentUser || null;
+}
+
+
+const MC_LOCAL_PROFILE_KEY = "mwalimu_connect_profile_id";
+const MC_LOCAL_GUEST_KEY = "mwalimu_connect_guest_id";
+const MC_PRICE = 2;
+
+function mcEscape(value){
+  const fn = window.escapeHTML || window.jobEscape || window.safeEscape;
+  if(typeof fn === "function") return fn(String(value ?? ""));
+  return String(value ?? "").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[c]));
+}
+function mcGuestId(){
+  let id=localStorage.getItem(MC_LOCAL_GUEST_KEY);
+  if(!id){ id="guest_"+Date.now()+"_"+Math.random().toString(36).slice(2,10); localStorage.setItem(MC_LOCAL_GUEST_KEY,id); }
+  return id;
+}
+function mcNormalizePhone(value){
+  try{if(typeof window.normalizeKenyanPhone==="function") return window.normalizeKenyanPhone(value);}catch(_){ }
+  const raw=String(value||"").trim().replace(/[\s-]/g,"");
+  if(/^07\d{8}$/.test(raw)) return "254"+raw.slice(1);
+  if(/^01\d{8}$/.test(raw)) return "254"+raw.slice(1);
+  if(/^254[17]\d{8}$/.test(raw)) return raw;
+  if(/^\+254[17]\d{8}$/.test(raw)) return raw.slice(1);
+  return null;
+}
+window.openMwalimuConnectSection=function(){
+  if(!window.__showOnlyIndependentSection("mwalimuConnectSection")) return;
+  const section=document.getElementById("mwalimuConnectSection");
+  if(section) section.style.setProperty("display","block","important");
+  loadMwalimuConnectProfiles();
+  loadMyMwalimuConnectProfile();
+  if(section) section.scrollIntoView({behavior:"smooth",block:"start"});
+};
+async function loadMyMwalimuConnectProfile(){
+  const id=localStorage.getItem(MC_LOCAL_PROFILE_KEY);
+  if(!id || !db || !get || !ref) return;
+  try{
+    const snap=await get(ref(db,`mwalimuConnectProfiles/${id}`));
+    if(!snap.exists()) return;
+    const p=snap.val()||{};
+    const map={mcGender:p.gender,mcAge:p.age,mcTribe:p.tribe,mcPhone:p.phone,mcJob:p.job,mcCounty:p.workCounty};
+    Object.entries(map).forEach(([key,val])=>{const el=document.getElementById(key);if(el&&val!=null)el.value=val;});
+    const adult=document.getElementById("mcAdultConfirm");if(adult)adult.checked=true;
+  }catch(e){console.warn("Mwalimu Connect profile load:",e);}
+}
+async function mcNextTeacherName(){
+  const snap=await get(mwalimuConnectRef);
+  const raw=snap.exists()?(snap.val()||{}):{};
+  let max=0;
+  Object.values(raw).forEach(p=>{const m=String(p?.generatedName||"").match(/^Teacher\s+(\d+)$/i);if(m)max=Math.max(max,Number(m[1]));});
+  return "Teacher "+String(max+1).padStart(3,"0");
+}
+window.saveMwalimuConnectProfile=async function(event){
+  event.preventDefault();
+  const age=Number(document.getElementById("mcAge")?.value||0);
+  if(age<18){await Swal.fire({icon:"warning",title:"18+ Only",text:"Mwalimu Connect is available only to adults aged 18 and above."});return;}
+  if(!document.getElementById("mcAdultConfirm")?.checked){await Swal.fire({icon:"warning",title:"Adult confirmation required",text:"Please confirm that you are 18 or older."});return;}
+  const phone=mcNormalizePhone(document.getElementById("mcPhone")?.value);
+  if(!phone){await Swal.fire({icon:"warning",title:"Invalid phone number",text:"Enter a valid Kenyan mobile number."});return;}
+  if(!mwalimuConnectRef){await Swal.fire({icon:"error",title:"Database unavailable",text:"Please reload and try again."});return;}
+  try{
+    let id=localStorage.getItem(MC_LOCAL_PROFILE_KEY), generatedName="";
+    if(id){const existing=await get(ref(db,`mwalimuConnectProfiles/${id}`));if(existing.exists())generatedName=existing.val()?.generatedName||"";}
+    if(!id){id=push(mwalimuConnectRef).key;generatedName=await mcNextTeacherName();}
+    const oldSnap=await get(ref(db,`mwalimuConnectProfiles/${id}`));
+    const old=oldSnap.exists()?(oldSnap.val()||{}):{};
+    const profile={...old,id,guestId:mcGuestId(),generatedName:generatedName||old.generatedName||await mcNextTeacherName(),gender:String(document.getElementById("mcGender")?.value||"").trim(),age,tribe:String(document.getElementById("mcTribe")?.value||"").trim(),phone,job:String(document.getElementById("mcJob")?.value||"").trim(),workCounty:String(document.getElementById("mcCounty")?.value||"").trim(),status:"active",adultConfirmed:true,updatedAt:Date.now(),createdAt:old.createdAt||Date.now()};
+    await set(ref(db,`mwalimuConnectProfiles/${id}`),profile);
+    localStorage.setItem(MC_LOCAL_PROFILE_KEY,id);
+    await Swal.fire({icon:"success",title:"Profile Saved",html:`Your profile is now listed as <strong>${mcEscape(profile.generatedName)}</strong>.`});
+    loadMwalimuConnectProfiles();
+  }catch(error){console.error("Mwalimu Connect save error:",error);await Swal.fire({icon:"error",title:"Could not save profile",text:error?.message||"Please try again."});}
+};
+async function loadMwalimuConnectProfiles(){
+  const box=document.getElementById("mwalimuConnectProfiles");if(!box||!mwalimuConnectRef)return;
+  try{
+    const snap=await get(mwalimuConnectRef),raw=snap.exists()?(snap.val()||{}):{},ownId=localStorage.getItem(MC_LOCAL_PROFILE_KEY)||"";
+    const profiles=Object.entries(raw).map(([id,p])=>({id,...(p||{})})).filter(p=>p.status!=="closed"&&Number(p.age)>=18&&p.adultConfirmed===true).sort((a,b)=>Number(b.updatedAt||0)-Number(a.updatedAt||0));
+    if(!profiles.length){box.innerHTML='<div class="mwalimu-empty">No adult profiles are available yet. Be the first to create yours.</div>';return;}
+    box.innerHTML=profiles.map(p=>{
+      const own=String(p.id)===String(ownId);
+      return `<article class="mwalimu-profile"><h4>👤 ${mcEscape(p.generatedName||"Teacher")}</h4><div class="m-meta"><strong>Gender:</strong> ${mcEscape(p.gender||"-")}<br><strong>Age:</strong> ${mcEscape(p.age||"-")}<br><strong>Community:</strong> ${mcEscape(p.tribe||"-")}<br><strong>Work:</strong> ${mcEscape(p.job||"-")}<br><strong>Work County:</strong> ${mcEscape(p.workCounty||"-")}</div>${own?'<div class="m-phone-locked">📌 This is your profile. Your phone number is never shown publicly.</div>':`<div class="m-phone-locked">🔒 Phone protected. Pay KES ${MC_PRICE.toLocaleString()} to reveal this teacher's number.</div><button class="m-unlock" type="button" onclick="unlockMwalimuConnectContact('${mcEscape(p.id)}','${mcEscape(p.generatedName||"Teacher")}')">🔓 Reveal Phone — KES ${MC_PRICE.toLocaleString()}</button>`}</article>`;
+    }).join("");
+  }catch(error){console.error("Mwalimu Connect load error:",error);box.innerHTML='<div class="mwalimu-empty">Unable to load profiles right now. Please refresh and try again.</div>';}
+}
+window.unlockMwalimuConnectContact=async function(profileId,profileName){
+  try{
+    if(!profileId)throw new Error("Profile ID is missing.");
+    const snap=await get(ref(db,`mwalimuConnectProfiles/${profileId}`));if(!snap.exists())throw new Error("This profile is no longer available.");
+    const profile=snap.val()||{};if(Number(profile.age)<18||profile.adultConfirmed!==true)throw new Error("This profile is not eligible for Mwalimu Connect.");
+    const buyerAge=Number((await Swal.fire({title:"18+ confirmation",text:"Mwalimu Connect contact purchases are for adults aged 18 and above.",input:"number",inputLabel:"Enter your age",inputAttributes:{min:18,max:120},showCancelButton:true,confirmButtonText:"Continue",inputValidator:v=>Number(v)>=18?undefined:"You must be 18 or older."})).value||0);if(buyerAge<18)return;
+    const alreadyKey=`mwalimu_connect_paid_${profileId}`;try{const cached=JSON.parse(localStorage.getItem(alreadyKey)||"null");if(cached?.status==="PAID"&&cached?.phone){await Swal.fire({icon:"success",title:"Contact Unlocked",html:`<strong>${mcEscape(profile.generatedName||profileName||"Teacher")}</strong><br><br>📞 ${mcEscape(cached.phone)}`});return;}}catch(_){ }
+    const result=await Swal.fire({title:"🔓 Reveal Teacher Contact",html:`Reveal the phone number for <strong>${mcEscape(profile.generatedName||profileName||"Teacher")}</strong>.<br><br><strong>KES ${MC_PRICE.toLocaleString()}</strong><br><br>Enter the M-PESA number that should pay.`,input:"tel",inputPlaceholder:"07XXXXXXXX",confirmButtonText:`Pay KES ${MC_PRICE.toLocaleString()}`,confirmButtonColor:"#e11d48",showCancelButton:true,inputValidator:v=>mcNormalizePhone(v)?undefined:"Enter a valid Kenyan M-PESA number."});
+    if(!result.isConfirmed)return;
+    const buyerPhone=mcNormalizePhone(result.value),accountReference=`MC_${String(profileId).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,25)}_${Date.now()}`,backend=String(window.TEACHERS_HUB_MPESA_BACKEND||"").trim().replace(/\/+$/g,"");if(!backend)throw new Error("M-PESA backend URL is not configured.");
+    Swal.fire({title:"📲 Sending STK Push...",html:`Pay <strong>KES ${MC_PRICE.toLocaleString()}</strong> using <strong>${mcEscape(buyerPhone)}</strong>.<br><br>Please check your phone.`,allowOutsideClick:false,allowEscapeKey:false,showConfirmButton:false,didOpen:()=>Swal.showLoading()});
+    const response=await fetch(`${backend}/stkpush`,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({phone:buyerPhone,amount:MC_PRICE,accountReference,itemId:profileId,itemName:`Mwalimu Connect Contact - ${profile.generatedName||profileName||"Teacher"}`,userId:mcGuestId(),flow:"mwalimu_connect",paymentType:"mwalimu_connect_contact"})});
+    const raw=await response.text();let data={};try{data=JSON.parse(raw);}catch(_){throw new Error(`Payment server returned invalid data. HTTP ${response.status}.`);}if(!response.ok)throw new Error(data?.errorMessage||data?.message||data?.ResultDesc||`Payment server returned HTTP ${response.status}.`);
+    const accepted=data?.success===true&&(String(data?.ResponseCode)==="0"||data?.ResponseCode===0||!!data?.CheckoutRequestID);if(!accepted)throw new Error(data?.errorMessage||data?.ResponseDescription||data?.ResultDesc||"M-PESA did not accept the payment request.");
+    Swal.fire({title:"⏳ Confirming Payment...",html:"Waiting for M-PESA confirmation.<br><br><strong>Do not close this window.</strong>",allowOutsideClick:false,allowEscapeKey:false,showConfirmButton:false,didOpen:()=>Swal.showLoading()});
+    const payment=await window.waitForResourcePayment(accountReference,profileId,mcGuestId(),data?.CheckoutRequestID||null,{pollInterval:3000,timeout:180000,maxNetworkErrors:10,autoUnlockResource:false,flow:"mwalimu_connect",paymentType:"mwalimu_connect_contact"});if(!payment||String(payment.status||"").toUpperCase()!=="PAID")throw new Error(payment?.message||payment?.ResultDesc||"Payment was not confirmed.");
+    const finalSnap=await get(ref(db,`mwalimuConnectProfiles/${profileId}`));if(!finalSnap.exists())throw new Error("The teacher profile could not be found after payment.");const contact=finalSnap.val()?.phone;if(!contact)throw new Error("The teacher has not provided a phone number.");
+    localStorage.setItem(alreadyKey,JSON.stringify({status:"PAID",phone:contact,profileId,paidAt:Date.now(),accountReference}));
+    await Swal.fire({icon:"success",title:"🎉 Contact Unlocked",html:`<strong>${mcEscape(finalSnap.val()?.generatedName||profileName||"Teacher")}</strong><br><br>📞 <span style="font-size:20px;font-weight:900;color:#be123c">${mcEscape(contact)}</span>`,confirmButtonColor:"#e11d48"});
+  }catch(error){console.error("Mwalimu Connect payment error:",error);try{Swal.close();}catch(_){ }await Swal.fire({icon:"error",title:"Contact Unlock Failed",text:error?.message||"Unable to complete the payment and reveal the contact."});}
+};
 
 /* =========================================================
    💰 RESOURCE PRICE PREVIEW
