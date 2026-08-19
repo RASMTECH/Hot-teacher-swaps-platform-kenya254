@@ -4215,7 +4215,24 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
 ========================================================= -->
 <section id="mwalimuConnectSection" class="independent-section-wrapper mwalimu-connect-section" style="display:none;" aria-hidden="true">
   <div class="section-back-row">
-    <button type="button" class="section-back-btn" onclick="closeIndependentSections()">← Back to Sections</button>
+    <button
+    type="button"
+    class="section-back-btn"
+    onclick="closeIndependentSections()"
+    style="
+      background:#dc2626 !important;
+      color:#ffffff !important;
+      width:auto !important;
+      max-width:180px !important;
+      padding:9px 14px !important;
+      border:none !important;
+      border-radius:8px !important;
+      font-weight:800 !important;
+      cursor:pointer !important;
+    "
+  >
+    ← Back to Sections
+  </button>
   </div>
 
   <div class="mwalimu-connect-hero">
@@ -4224,10 +4241,37 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
     <span class="mwalimu-connect-adult">🔞 18+ TEACHERS ONLY</span>
   </div>
 
-  <div class="mwalimu-connect-grid">
-    <div class="mwalimu-connect-card">
-      <h3>📝 Create / Update Your Profile</h3>
-      <form id="mwalimuConnectForm" class="mwalimu-connect-form" onsubmit="saveMwalimuConnectProfile(event)">
+<div class="mwalimu-connect-grid">
+
+  <div
+    class="mwalimu-connect-card"
+    style="
+      background-image:url('https://i.imgur.com/tOPeNVj.jpeg') !important;
+      background-position:center !important;
+      background-size:cover !important;
+      background-repeat:repeat !important;
+    "
+  >
+
+   <h3
+  style="
+    display:inline-block;
+    background:#ffffff !important;
+    color:#0f172a !important;
+    padding:8px 14px !important;
+    border-radius:8px !important;
+    margin:0 0 12px 0 !important;
+    box-shadow:0 3px 10px rgba(0,0,0,.10) !important;
+  "
+>
+  📝 Create / Update Your Profile
+</h3>
+
+    <form
+      id="mwalimuConnectForm"
+      class="mwalimu-connect-form"
+      onsubmit="saveMwalimuConnectProfile(event)"
+    >
         <div><label>Gender</label><select id="mcGender" required><option value="">Select gender</option><option>Male</option><option>Female</option></select></div>
         <div><label>Age</label><input id="mcAge" type="number" min="18" max="99" required placeholder="18+"></div>
         <div><label>Tribe / Community</label><select id="mcTribe" required><option value="">Select tribe / community</option>            <option>Agikuyu (Kikuyu)</option>
@@ -4368,17 +4412,42 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
           </select></div>
         <label style="display:flex;gap:8px;align-items:flex-start;font-size:11px;line-height:1.45;color:#475569;"><input id="mcAdultConfirm" type="checkbox" required style="margin-top:2px;width:16px;height:16px;"><span>I confirm that I am 18 years or older and I am voluntarily creating this adult profile.</span></label>
         <button type="submit">💾 Save My Mwalimu Connect Profile</button>
-        <div class="mwalimu-connect-note">No account or login is required. Your phone number is protected and is not shown on public cards. A phone number can only be revealed after the required M-PESA payment is confirmed.</div>
+ <div
+  class="mwalimu-connect-note"
+  style="
+    background:#ffffff !important;
+    color:#b91c1c !important;
+    border:1px solid #fecaca !important;
+    border-left:5px solid #dc2626 !important;
+    padding:12px 14px !important;
+    border-radius:10px !important;
+    font-weight:800 !important;
+  "
+>
+  ⚠️ Teachers Hubs Kenya is not responsible for false, misleading,
+  inaccurate, or fraudulent information posted here. Please verify
+  information and act accordingly.
+</div>
       </form>
     </div>
 
-    <div class="mwalimu-connect-card">
-      <h3>🔎 Discover Teacher Connections</h3>
-      <div id="mwalimuConnectProfiles" class="mwalimu-connect-profiles">
-        <div class="mwalimu-empty">Loading Mwalimu Connect profiles...</div>
-      </div>
+  <div
+  class="mwalimu-connect-card"
+  style="
+    background-image:url('https://i.imgur.com/h60TdqX.png') !important;
+    background-position:center !important;
+    background-size:cover !important;
+    background-repeat:repeat !important;
+  "
+>
+  <h3>🔎 Discover Teacher Connections</h3>
+
+  <div id="mwalimuConnectProfiles" class="mwalimu-connect-profiles">
+    <div class="mwalimu-empty">
+      Loading Mwalimu Connect profiles...
     </div>
   </div>
+</div>
 </section>
 
   <!-- MAIN GRID -->
@@ -4397,7 +4466,22 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
 <div id="postSwapSection" class="independent-section-wrapper">
 
 <div class="section-back-row">
-  <button type="button" class="section-back-btn" onclick="closeIndependentSections()">
+   <button
+    type="button"
+    class="section-back-btn"
+    onclick="closeIndependentSections()"
+    style="
+      background:#dc2626 !important;
+      color:#ffffff !important;
+      width:auto !important;
+      max-width:180px !important;
+      padding:9px 14px !important;
+      border:none !important;
+      border-radius:8px !important;
+      font-weight:800 !important;
+      cursor:pointer !important;
+    "
+  >
     ← Back to Sections
   </button>
 </div>
@@ -5046,9 +5130,24 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
 >
 
   <div class="section-back-row">
-    <button type="button" class="section-back-btn" onclick="closeIndependentSections()">
-      ← Back to Sections
-    </button>
+     <button
+    type="button"
+    class="section-back-btn"
+    onclick="closeIndependentSections()"
+    style="
+      background:#dc2626 !important;
+      color:#ffffff !important;
+      width:auto !important;
+      max-width:180px !important;
+      padding:9px 14px !important;
+      border:none !important;
+      border-radius:8px !important;
+      font-weight:800 !important;
+      cursor:pointer !important;
+    "
+  >
+    ← Back to Sections
+  </button>
   </div>
 
   <!-- =====================================================
@@ -5063,36 +5162,39 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
     <button type="button" onclick="deleteSelectedContent('swaps')">🗑️ Delete Selected Swaps</button>
   </div>
 
-  <div
-    class="swap-requests-controls"
-    style="
-      display:flex !important;
-      align-items:center !important;
-      gap:12px !important;
-      flex-wrap:wrap !important;
+<div
+  class="swap-requests-controls"
+  style="
+    display:flex !important;
+    align-items:center !important;
+    gap:12px !important;
+    flex-wrap:wrap !important;
 
-      width:100% !important;
-      min-height:65px;
+    width:100% !important;
+    min-height:65px;
 
-      padding:14px !important;
-      margin:0 0 18px 0 !important;
+    padding:14px !important;
+    margin:0 0 18px 0 !important;
 
-      background:#ffffff !important;
+    background-image:
+      url('https://i.imgur.com/20AqQzS.png') !important;
 
-      border:1px solid #e5e7eb !important;
-      border-radius:14px !important;
+    background-repeat:repeat !important;
+    background-position:center !important;
+    background-size:auto !important;
 
-      box-shadow:
-        0 5px 18px rgba(0,0,0,.10) !important;
+    border:1px solid #e5e7eb !important;
+    border-radius:14px !important;
 
-      position:relative !important;
-      z-index:10 !important;
+    box-shadow:
+      0 5px 18px rgba(0,0,0,.10) !important;
 
-      box-sizing:border-box !important;
-    "
-  >
+    position:relative !important;
+    z-index:10 !important;
 
-    <!-- =================================================
+    box-sizing:border-box !important;
+  "
+>    <!-- =================================================
          📋 TITLE
     ================================================== -->
 
@@ -6204,18 +6306,29 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
 
 </div>
   <!-- =====================================================
-       🔙 BACK TO SECTIONS
-  ====================================================== -->
+     🔙 BACK TO SECTIONS
+====================================================== -->
 
-  <div class="section-back-row">
-    <button
-      type="button"
-      class="section-back-btn"
-      onclick="closeIndependentSections()"
-    >
-      ← Back to Sections
-    </button>
-  </div>
+<div class="section-back-row">
+  <button
+    type="button"
+    class="section-back-btn"
+    onclick="closeIndependentSections()"
+    style="
+      background:#dc2626 !important;
+      color:#ffffff !important;
+      width:auto !important;
+      max-width:180px !important;
+      padding:9px 14px !important;
+      border:none !important;
+      border-radius:8px !important;
+      font-weight:800 !important;
+      cursor:pointer !important;
+    "
+  >
+    ← Back to Sections
+  </button>
+</div>
 
 
 <!-- =========================================================
@@ -6274,28 +6387,34 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
 
     <!-- KICKER -->
 
-    <div
-      class="resource-kicker"
-      style="
-        display:inline-flex;
-        align-items:center;
-        gap:7px;
+  <div
+  class="resource-kicker"
+  style="
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
 
-        padding:7px 12px;
-        margin-bottom:11px;
+    padding:7px 12px;
+    margin-bottom:11px;
 
-        border-radius:999px;
+    border-radius:999px;
 
-        background:#dcfce7;
-        border:1px solid #86efac;
+    background-image:
+      url('https://i.imgur.com/pqSFaYh.png') !important;
 
-        color:#166534;
+    background-repeat:repeat !important;
+    background-position:center !important;
+    background-size:auto !important;
 
-        font-size:11px;
-        font-weight:900;
-        letter-spacing:.5px;
-      "
-    >
+    border:1px solid #fecaca;
+
+    color:#166534;
+
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:.5px;
+  "
+>
       📚 LEARNING RESOURCE MARKETPLACE
     </div>
 
@@ -6479,13 +6598,12 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
 
     box-sizing:border-box;
 
-    background:
-      linear-gradient(
-        135deg,
-        #fff1f2 0%,
-        #fef2f2 48%,
-        #fff7f7 100%
-      );
+    background-image:
+      url('https://i.imgur.com/pqSFaYh.png') !important;
+
+    background-repeat:repeat !important;
+    background-position:center !important;
+    background-size:auto !important;
 
     border:1px solid #fecaca;
     border-radius:20px;
@@ -6942,15 +7060,23 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
 </div>
 
   <!-- =====================================================
-       📊 RESULTS SUMMARY
-  ====================================================== -->
+     📊 RESULTS SUMMARY
+====================================================== -->
 
-  <div
-    id="learningResourceResultsSummary"
-    class="resource-results-summary"
-  >
-    📚 Loading learning resources...
-  </div>
+<div
+  id="learningResourceResultsSummary"
+  class="resource-results-summary"
+  style="
+    background:#facc15 !important;
+    color:#111827 !important;
+    font-weight:800 !important;
+    border-radius:10px !important;
+    padding:10px 14px !important;
+    box-shadow:0 3px 10px rgba(0,0,0,.10) !important;
+  "
+>
+  📚 Loading learning resources...
+</div>
 
 
   <!-- =====================================================
@@ -7778,73 +7904,113 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
   </div>
 
   <!-- PUBLIC HERO -->
-  <div class="jobs-hero">
-    <div>
-      <span class="jobs-kicker">💼 JOBS & VACANCIES</span>
-      <h2>Find Your Next Opportunity</h2>
-      <p>
-        Browse available jobs across Kenya. Public job details are visible
-        to everyone, while employer contact details are revealed only after
-        successful M-PESA payment.
-      </p>
+<div
+  class="jobs-hero"
+  style="
+    background-image:url('https://i.imgur.com/pqSFaYh.png') !important;
+    background-position:center !important;
+    background-size:cover !important;
+    background-repeat:repeat !important;
+  "
+>
+  <div>
+    <span class="jobs-kicker">💼 JOBS & VACANCIES</span>
 
-      <div class="jobs-feature-row">
-        <span>🔎 Search</span>
-        <span>📍 County Filters</span>
-        <span>🎓 Education Jobs</span>
-        <span>🔐 Paid Contact Reveal</span>
-      </div>
+    <h2>Find Your Next Opportunity</h2>
+
+    <p
+  style="
+    background:#facc15 !important;
+    color:#111827 !important;
+    padding:10px 14px !important;
+    border-radius:8px !important;
+    font-weight:700 !important;
+    display:inline-block !important;
+    box-shadow:0 3px 10px rgba(0,0,0,.12) !important;
+  "
+>
+  Browse available jobs across Kenya. Public job details are visible
+  to everyone, while employer contact details are revealed only after
+  successful M-PESA payment.
+</p>
+
+    <div class="jobs-feature-row">
+      <span>🔎 Search</span>
+      <span>📍 County Filters</span>
+      <span>🎓 Education Jobs</span>
+      <span>🔐 Paid Contact Reveal</span>
     </div>
-
-   <div class="jobs-price-badge">
-  <a href="https://rasmtech.github.io/rasm-school-management-system/"
-     target="_blank"
-     rel="noopener noreferrer">
-    🔗 Open RASM School Management System
-  </a>
-</div>
   </div>
+
+  <div class="jobs-price-badge">
+    <a
+      href="https://rasmtech.github.io/rasm-school-management-system/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      🔗 Open RASM School Management System
+    </a>
+  </div>
+</div>
 
   <!-- FILTERS -->
-  <div class="jobs-filter-card">
-    <div class="jobs-filter-grid">
-      <div>
-        <label for="jobCategoryFilter">Category</label>
-        <select id="jobCategoryFilter">
-          <option value="">All Categories</option>
-          <option>Teaching</option>
-          <option>School Administration</option>
-          <option>Education Support</option>
-          <option>ICT / Technology</option>
-          <option>Non-Teaching</option>
-          <option>Other</option>
-        </select>
-      </div>
-
-      <div>
-        <label for="jobCountyFilter">County</label>
-        <input id="jobCountyFilter" placeholder="e.g. Nairobi">
-      </div>
-
-      <div>
-        <label for="jobSearchInput">Search</label>
-        <input id="jobSearchInput" placeholder="Search job title, school, subject...">
-      </div>
-
-      <button
-        type="button"
-        class="jobs-clear-btn"
-        onclick="clearJobFilters()"
-      >
-        ↺ Clear Filters
-      </button>
+<div
+  class="jobs-filter-card"
+  style="
+    background:#16a34a !important;
+  "
+>
+  <div class="jobs-filter-grid">
+    <div>
+      <label for="jobCategoryFilter">Category</label>
+      <select id="jobCategoryFilter">
+        <option value="">All Categories</option>
+        <option>Teaching</option>
+        <option>School Administration</option>
+        <option>Education Support</option>
+        <option>ICT / Technology</option>
+        <option>Non-Teaching</option>
+        <option>Other</option>
+      </select>
     </div>
-  </div>
 
-  <div id="jobsResultsSummary" class="jobs-results-summary">
-    💼 Loading jobs...
-  </div>
+    <div>
+      <label for="jobCountyFilter">County</label>
+      <input id="jobCountyFilter" placeholder="e.g. Nairobi">
+    </div>
 
+    <div>
+      <label for="jobSearchInput">Search</label>
+      <input
+        id="jobSearchInput"
+        placeholder="Search job title, school, subject..."
+      >
+    </div>
+
+    <button
+      type="button"
+      class="jobs-clear-btn"
+      onclick="clearJobFilters()"
+    >
+      ↺ Clear Filters
+    </button>
+  </div>
+</div>
+
+<div
+  id="jobsResultsSummary"
+  class="jobs-results-summary"
+  style="
+    background:#facc15 !important;
+    color:#111827 !important;
+    font-weight:800 !important;
+    border-radius:10px !important;
+    padding:10px 14px !important;
+    box-shadow:0 3px 10px rgba(0,0,0,.10) !important;
+  "
+>
+  💼 Loading jobs...
+</div>
   <div id="jobsList" class="jobs-list">
     <div class="jobs-empty">
       💼 Loading jobs...
