@@ -28103,6 +28103,24 @@ window.deleteSelectedContent = async function(type){
     box-shadow:0 8px 24px rgba(15,23,42,.08);
 }
 
+/* Green background for the House Manager posting form */
+.hm-post-panel{
+    background:linear-gradient(135deg,#ecfdf5 0%,#dcfce7 100%);
+    border:1px solid #86efac;
+    box-shadow:0 10px 28px rgba(22,163,74,.12);
+}
+
+.hm-post-panel .hm-form input,
+.hm-post-panel .hm-form select,
+.hm-post-panel .hm-form textarea{
+    background:#ffffff;
+    border-color:#bbf7d0;
+}
+
+.hm-post-panel .hm-form label{
+    color:#166534;
+}
+
 .hm-panel h3{
     margin:0 0 16px;
     color:#0f172a;
@@ -28696,7 +28714,7 @@ function addHouseManagerSection(){
                  POST PROFILE
             ========================================== -->
 
-            <div class="hm-panel">
+            <div class="hm-panel hm-post-panel">
 
                 <h3>
                     🙋 Post Your Job-Seeking Profile
@@ -28709,30 +28727,51 @@ function addHouseManagerSection(){
                 >
 
                     <label>
-                        Full Name *
+                        System Generated Name
                     </label>
 
                     <input
                         id="hmName"
                         type="text"
                         maxlength="100"
-                        placeholder="Enter your full name"
-                        required
+                        value="Generating..."
+                        readonly
+                        aria-readonly="true"
                     >
+
+                    <div style="
+                        margin:-4px 0 10px;
+                        padding:8px 10px;
+                        border-radius:8px;
+                        background:rgba(22,163,74,.12);
+                        color:#166534;
+                        font-size:12px;
+                        font-weight:700;
+                    ">
+                        🔐 Your name is generated automatically as HouseManager001, HouseManager002, etc.
+                    </div>
 
 
                     <label>
                         Age *
                     </label>
 
-                    <input
+                    <select
                         id="hmAge"
-                        type="number"
-                        min="18"
-                        max="80"
-                        placeholder="Example: 28"
                         required
                     >
+                        <option value="">Select age</option>
+                        <option value="18">18</option><option value="19">19</option><option value="20">20</option>
+                        <option value="21">21</option><option value="22">22</option><option value="23">23</option>
+                        <option value="24">24</option><option value="25">25</option><option value="26">26</option>
+                        <option value="27">27</option><option value="28">28</option><option value="29">29</option>
+                        <option value="30">30</option><option value="31">31</option><option value="32">32</option>
+                        <option value="33">33</option><option value="34">34</option><option value="35">35</option>
+                        <option value="36">36</option><option value="37">37</option><option value="38">38</option>
+                        <option value="39">39</option><option value="40">40</option><option value="41">41</option>
+                        <option value="42">42</option><option value="43">43</option><option value="44">44</option>
+                        <option value="45">45</option>
+                    </select>
 
 
                     <label>
@@ -28807,49 +28846,57 @@ function addHouseManagerSection(){
                         County *
                     </label>
 
-                    <input
+                    <select
                         id="hmCounty"
-                        type="text"
-                        maxlength="60"
-                        placeholder="Example: Nairobi"
                         required
                     >
+                        <option value="">
+                            Select county
+                        </option>
+                    </select>
 
 
                     <label>
                         Preferred Work Location
                     </label>
 
-                    <input
+                    <select
                         id="hmPreferredLocation"
-                        type="text"
-                        maxlength="100"
-                        placeholder="County, town or anywhere"
                     >
+                        <option value="">
+                            Select preferred work county
+                        </option>
+                    </select>
 
 
                     <label>
                         Tribe
                     </label>
 
-                    <input
+                    <select
                         id="hmTribe"
-                        type="text"
-                        maxlength="60"
-                        placeholder="Optional"
                     >
+                        <option value="">
+                            Select tribe / community
+                        </option>
+                    </select>
 
 
                     <label>
                         Religion
                     </label>
 
-                    <input
+                    <select
                         id="hmReligion"
-                        type="text"
-                        maxlength="60"
-                        placeholder="Optional"
                     >
+                        <option value="">Select religion</option>
+                        <option value="Christian">Christian</option>
+                        <option value="Muslim">Muslim</option>
+                        <option value="Hindu">Hindu</option>
+                        <option value="Traditional African Religion">Traditional African Religion</option>
+                        <option value="Other">Other</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
 
 
                     <label>
@@ -28904,12 +28951,42 @@ function addHouseManagerSection(){
                         Expected Salary
                     </label>
 
-                    <input
+                    <select
                         id="hmExpectedSalary"
-                        type="text"
-                        maxlength="80"
-                        placeholder="Example: KES 15,000 - 20,000"
                     >
+                        <option value="">Select expected salary</option>
+                        <option value="5000">KES 5,000</option>
+                        <option value="6000">KES 6,000</option>
+                        <option value="7000">KES 7,000</option>
+                        <option value="8000">KES 8,000</option>
+                        <option value="9000">KES 9,000</option>
+                        <option value="10000">KES 10,000</option>
+                        <option value="11000">KES 11,000</option>
+                        <option value="12000">KES 12,000</option>
+                        <option value="13000">KES 13,000</option>
+                        <option value="14000">KES 14,000</option>
+                        <option value="15000">KES 15,000</option>
+                        <option value="16000">KES 16,000</option>
+                        <option value="17000">KES 17,000</option>
+                        <option value="18000">KES 18,000</option>
+                        <option value="19000">KES 19,000</option>
+                        <option value="20000">KES 20,000</option>
+                        <option value="21000">KES 21,000</option>
+                        <option value="22000">KES 22,000</option>
+                        <option value="23000">KES 23,000</option>
+                        <option value="24000">KES 24,000</option>
+                        <option value="25000">KES 25,000</option>
+                        <option value="26000">KES 26,000</option>
+                        <option value="27000">KES 27,000</option>
+                        <option value="28000">KES 28,000</option>
+                        <option value="29000">KES 29,000</option>
+                        <option value="30000">KES 30,000</option>
+                        <option value="31000">KES 31,000</option>
+                        <option value="32000">KES 32,000</option>
+                        <option value="33000">KES 33,000</option>
+                        <option value="34000">KES 34,000</option>
+                        <option value="35000">KES 35,000</option>
+                    </select>
 
 
                     <label>
@@ -28928,12 +29005,42 @@ function addHouseManagerSection(){
                         Languages Spoken
                     </label>
 
-                    <input
+                    <select
                         id="hmLanguages"
-                        type="text"
-                        maxlength="150"
-                        placeholder="Example: English, Kiswahili"
                     >
+                        <option value="">
+                            Select language
+                        </option>
+                        <option>English</option>
+                        <option>Kiswahili</option>
+                        <option>Agikuyu (Kikuyu)</option>
+                        <option>Kiembu (Embu)</option>
+                        <option>Kitaita</option>
+                        <option>Kitaveta</option>
+                        <option>Kikamba</option>
+                        <option>Kimĩîru (Meru)</option>
+                        <option>Ekegusii</option>
+                        <option>Dholuo (Luo)</option>
+                        <option>Luhya</option>
+                        <option>Kimaragoli</option>
+                        <option>Kalenjin</option>
+                        <option>Kipsigis</option>
+                        <option>Nandi</option>
+                        <option>Keiyo</option>
+                        <option>Marakwet</option>
+                        <option>Maasai</option>
+                        <option>Samburu</option>
+                        <option>Turkana</option>
+                        <option>Somali</option>
+                        <option>Oromo</option>
+                        <option>Giriama</option>
+                        <option>Chichewa</option>
+                        <option>Arabic</option>
+                        <option>French</option>
+                        <option>German</option>
+                        <option>Other</option>
+                        <option>Prefer not to say</option>
+                    </select>
 
 
                     <label>
@@ -29177,6 +29284,135 @@ function addHouseManagerSection(){
             "submit",
             postHouseManagerProfile
         );
+
+    /* =====================================================
+       🟢 HOUSE MANAGER FORM OPTION SOURCES
+       Uses the SAME county list as Teacher Swaps and the
+       SAME tribe/community list already used by Mwalimu Connect.
+    ===================================================== */
+    (function populateHouseManagerOptions(){
+
+        const countySelect =
+            document.getElementById("hmCounty");
+
+        const preferredSelect =
+            document.getElementById("hmPreferredLocation");
+
+        const tribeSelect =
+            document.getElementById("hmTribe");
+
+        const languageSelect =
+            document.getElementById("hmLanguages");
+
+        /* ---------------------------------------------
+           COUNTIES — EXACTLY FROM kenyaLocations
+           (the same object used by Teacher Swaps)
+        --------------------------------------------- */
+        const countySource =
+            (typeof kenyaLocations === "object" && kenyaLocations)
+                ? Object.keys(kenyaLocations)
+                : [];
+
+        const sortedCounties =
+            countySource
+                .filter(Boolean)
+                .sort((a,b)=>String(a).localeCompare(String(b)));
+
+        if(countySelect){
+            const current = countySelect.value;
+            countySelect.innerHTML =
+                `<option value="">Select county</option>` +
+                sortedCounties.map(county=>
+                    `<option value="${hmEscape(county)}">${hmEscape(county)}</option>`
+                ).join("");
+            if(current) countySelect.value = current;
+        }
+
+        if(preferredSelect){
+            const current = preferredSelect.value;
+            preferredSelect.innerHTML =
+                `<option value="">Select preferred work county</option>` +
+                `<option value="Anywhere in Kenya">Anywhere in Kenya</option>` +
+                sortedCounties.map(county=>
+                    `<option value="${hmEscape(county)}">${hmEscape(county)}</option>`
+                ).join("");
+            if(current) preferredSelect.value = current;
+        }
+
+        /* ---------------------------------------------
+           TRIBES — COPY THE EXISTING MWALIMU CONNECT LIST
+           This avoids maintaining two different lists.
+        --------------------------------------------- */
+        if(tribeSelect){
+            const source =
+                document.getElementById("mcTribe");
+
+            const tribes = source
+                ? Array.from(source.options)
+                    .map(option=>String(option.value || option.textContent || "").trim())
+                    .filter(Boolean)
+                : [];
+
+            const uniqueTribes = [...new Set(tribes)];
+
+            tribeSelect.innerHTML =
+                `<option value="">Select tribe / community</option>` +
+                uniqueTribes.map(tribe=>
+                    `<option value="${hmEscape(tribe)}">${hmEscape(tribe)}</option>`
+                ).join("");
+        }
+
+        /* ---------------------------------------------
+           LANGUAGES — DROPDOWN
+           Keep the existing options, remove duplicates.
+        --------------------------------------------- */
+        if(languageSelect){
+            const current = languageSelect.value;
+            const languages = [
+                "English",
+                "Kiswahili",
+                "Agikuyu (Kikuyu)",
+                "Kiembu (Embu)",
+                "Kikamba",
+                "Kimĩîru (Meru)",
+                "Ekegusii",
+                "Dholuo (Luo)",
+                "Luhya",
+                "Kimaragoli",
+                "Kalenjin",
+                "Kipsigis",
+                "Nandi",
+                "Keiyo",
+                "Marakwet",
+                "Maasai",
+                "Samburu",
+                "Turkana",
+                "Somali",
+                "Oromo",
+                "Giriama",
+                "Kitaita",
+                "Kitaveta",
+                "Arabic",
+                "French",
+                "German",
+                "Other",
+                "Prefer not to say"
+            ];
+
+            languageSelect.innerHTML =
+                `<option value="">Select language</option>` +
+                languages.map(language=>
+                    `<option value="${hmEscape(language)}">${hmEscape(language)}</option>`
+                ).join("");
+
+            if(current) languageSelect.value = current;
+        }
+
+    })();
+
+    /* Preview the next system-generated name in the form.
+       The final name is recalculated again at submission time. */
+    refreshHouseManagerGeneratedName();
 
 
     /* FILTERS */
@@ -29960,6 +30196,81 @@ function renderHouseManagerProfiles(){
 }
 
 /* =========================================================
+   🆔 SYSTEM GENERATED HOUSE MANAGER NAME
+   Format: HouseManager001, HouseManager002, ...
+========================================================= */
+
+async function generateHouseManagerName(fb){
+
+    const profilesRef =
+        fb.ref(
+            fb.db,
+            HM_PROFILE_PATH
+        );
+
+    const snapshot =
+        await fb.get(
+            profilesRef
+        );
+
+    const data =
+        snapshot && typeof snapshot.val === "function"
+            ? (snapshot.val() || {})
+            : {};
+
+    let highestNumber = 0;
+
+    Object.values(data).forEach(profile => {
+
+        const currentName =
+            String(profile?.name || "").trim();
+
+        const match =
+            currentName.match(/^HouseManager(\d+)$/i);
+
+        if(match){
+            highestNumber = Math.max(
+                highestNumber,
+                Number(match[1]) || 0
+            );
+        }
+
+    });
+
+    return `HouseManager${String(highestNumber + 1).padStart(3, "0")}`;
+}
+
+async function refreshHouseManagerGeneratedName(){
+
+    const nameInput =
+        document.getElementById("hmName");
+
+    if(!nameInput) return;
+
+    try{
+
+        const fb =
+            await waitForHouseManagerFirebase(10000);
+
+        const generatedName =
+            await generateHouseManagerName(fb);
+
+        nameInput.value =
+            generatedName;
+
+    }catch(error){
+
+        console.warn(
+            "⚠️ Could not preview generated House Manager name:",
+            error
+        );
+
+        nameInput.value =
+            "Generated automatically";
+    }
+}
+
+/* =========================================================
    🏠 PATA HOUSE MANAGER
    POST PROFILE — FIREBASE SAFE VERSION
 ========================================================= */
@@ -30004,12 +30315,19 @@ async function postHouseManagerProfile(event){
            📋 READ FORM VALUES
         ===================================================== */
 
+        /*
+           Name is NEVER entered by the applicant.
+           Generate the next sequential public name from Firebase.
+        */
         const name =
-            String(
-                document.getElementById(
-                    "hmName"
-                )?.value || ""
-            ).trim();
+            await generateHouseManagerName(fb);
+
+        const nameInput =
+            document.getElementById("hmName");
+
+        if(nameInput){
+            nameInput.value = name;
+        }
 
 
         const age =
@@ -30143,7 +30461,6 @@ async function postHouseManagerProfile(event){
         ===================================================== */
 
         if(
-            !name ||
             !age ||
             !gender ||
             !education ||
@@ -30162,11 +30479,11 @@ async function postHouseManagerProfile(event){
         if(
             !Number.isFinite(age) ||
             age < 18 ||
-            age > 80
+            age > 45
         ){
 
             throw new Error(
-                "Please enter a valid age between 18 and 80."
+                "Please select a valid age between 18 and 45."
             );
 
         }
