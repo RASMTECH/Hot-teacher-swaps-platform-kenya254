@@ -3079,6 +3079,22 @@ footer a:hover{
     }
 }
 
+
+
+/* =========================================================
+   START CARDS: SECTION-SPECIFIC QUICK ACTIONS
+   Each group is hidden until its own section is opened.
+   ========================================================= */
+.section-start-cards{display:none !important;width:100%;margin:0 0 22px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px;}
+.independent-section-wrapper.active-independent-section .section-start-cards{display:grid !important;}
+.section-start-card{min-height:155px;padding:18px;border-radius:16px;border:none;background-size:cover;background-position:center;position:relative;overflow:hidden;text-align:left;color:#fff;box-shadow:0 10px 24px rgba(15,23,42,.14);}
+.section-start-card::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.48);}
+.section-start-card > *{position:relative;z-index:1;}
+.section-start-card .start-icon{display:block;font-size:30px;margin-bottom:10px;}
+.section-start-card strong{display:block;color:#fff;font-size:17px;margin-bottom:6px;}
+.section-start-card small{display:block;color:#fff;line-height:1.5;font-size:12px;}
+.section-start-card .start-open{display:block;margin-top:14px;font-size:13px;font-weight:900;}
+
 </style>
 </head>
 <body>
@@ -3117,8 +3133,7 @@ MwalimuHub Kenya 🇰🇪 — Jobs • Swaps • Resources • Opportunities
   line-height:1.5;
   font-weight:500;
 ">
-Connect with teachers across Kenya, discover transfer swap opportunities, teaching jobs, and valuable learning resources — all in one trusted hub.
-</p>
+Connect with teachers and professionals across Kenya, discover transfer and swap opportunities, teaching jobs, learning resources, domestic work opportunities through Pata House Manager, and meaningful connections through Mwalimu Connect — all in one trusted hub.</p>
   </div>
 </header>
 
@@ -3674,87 +3689,117 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
     </button>
 
 
-    <!-- =====================================================
-         🏫 06 — RASM SCHOOL MANAGEMENT SYSTEM
-    ====================================================== -->
+   <!-- =====================================================
+     🏫 06 — RASM SCHOOL MANAGEMENT SYSTEM
+====================================================== -->
 
-    <a
-      href="https://rasmtech.github.io/rasm-school-management-system/"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="action-card action-card-rasm"
+<a
+  href="https://rasmtech.github.io/rasm-school-management-system/"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="action-card action-card-rasm"
+  style="
+    text-decoration:none !important;
+    background-image:url('https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=85') !important;
+    background-size:cover !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+    border:none !important;
+    position:relative !important;
+    overflow:hidden !important;
+  "
+>
+
+  <!-- DARK OVERLAY -->
+  <div
+    style="
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,0.42);
+      pointer-events:none;
+      z-index:1;
+    "
+  ></div>
+
+
+  <!-- ICON + ACTION NUMBER -->
+  <div
+    class="action-card-color"
+    style="
+      position:relative;
+      z-index:2;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    "
+  >
+
+    <!-- SCHOOL ICON -->
+    <span
+      class="action-icon"
       style="
-        text-decoration:none !important;
-        background-image:url('https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=85') !important;
-        background-size:cover !important;
-        background-position:center !important;
-        background-repeat:no-repeat !important;
-        border:none !important;
-        position:relative !important;
-        overflow:hidden !important;
+        position:relative;
+        z-index:2;
       "
     >
+      🏫
+    </span>
 
-      <div
-        style="
-          position:absolute;
-          inset:0;
-          background:rgba(0,0,0,0.42);
-          pointer-events:none;
-        "
-      ></div>
-
-
-      <div
-        class="action-card-color"
-        style="position:relative;z-index:2;"
-      >
-
-        <span class="action-icon">
-          🏫
-        </span>
-
-        <span class="action-number">
-          06
-        </span>
-
-      </div>
-
-
-      <div
-        class="action-card-content"
-        style="
-          position:relative;
-          z-index:2;
-          color:#ffffff !important;
-        "
-      >
-
-        <strong style="color:#ffffff !important;">
-          RASM School Management System
-        </strong>
-
-        <small style="color:#ffffff !important;">
-          Manage learners, teachers, attendance, exams,
-          fees, reports, library and other school activities
-          in one complete school management system.
-        </small>
-
-        <span
-          class="action-open"
-          style="color:#ffffff !important;"
-        >
-          Open RASM School System
-          <b>↗</b>
-        </span>
-
-      </div>
-
-    </a>
-
+    <!-- 06 — NOT HIGHLIGHTED -->
+    <span
+      style="
+        font-size:14px !important;
+        font-weight:600 !important;
+        color:#ffffff !important;
+        background:transparent !important;
+        border:none !important;
+        box-shadow:none !important;
+        padding:0 !important;
+        margin:0 !important;
+        display:inline-block !important;
+        opacity:.9 !important;
+      "
+    >
+      06
+    </span>
 
   </div>
 
+
+  <!-- CARD CONTENT -->
+  <div
+    class="action-card-content"
+    style="
+      position:relative;
+      z-index:2;
+      color:#ffffff !important;
+    "
+  >
+
+    <strong style="color:#ffffff !important;">
+      RASM School Management System
+    </strong>
+
+    <small style="color:#ffffff !important;">
+      Manage learners, teachers, attendance, exams,
+      fees, reports, library and other school activities
+      in one complete school management system.
+    </small>
+
+    <span
+      class="action-open"
+      style="color:#ffffff !important;"
+    >
+      Open RASM School System
+      <b>↗</b>
+    </span>
+
+  </div>
+
+</a>
+
+
+</div>
 
 </section>
 
@@ -3763,6 +3808,13 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
      Contact numbers are revealed only after confirmed payment.
 ========================================================= -->
 <section id="mwalimuConnectSection" class="independent-section-wrapper mwalimu-connect-section" style="display:none;" aria-hidden="true">
+  <div class="section-start-cards" data-start-cards="mwalimuConnectSection">
+    <button type="button" class="section-start-card" onclick="document.querySelector('#mwalimuConnectSection form')?.scrollIntoView({behavior:'smooth',block:'center'})" style="background-image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">❤️</span><strong>Create Your Profile</strong><small>Start by creating or updating your teacher connection profile.</small><span class="start-open">Create Profile →</span></button>
+    <button type="button" class="section-start-card" onclick="document.querySelector('.mwalimu-connect-profiles')?.scrollIntoView({behavior:'smooth',block:'start'})" style="background-image:url('https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">👥</span><strong>Browse Profiles</strong><small>Jump directly to available teacher connection profiles.</small><span class="start-open">Explore Profiles →</span></button>
+      <button type="button" class="section-start-card" onclick="document.querySelector('#mwalimuConnectSection .mwalimu-connect-form')?.scrollIntoView({behavior:'smooth',block:'center'})" style="background-image:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">🤝</span><strong>Find a Match</strong><small>Explore teachers and connection opportunities that suit your interests.</small><span class="start-open">Find Matches →</span></button>
+    <button type="button" class="section-start-card" onclick="document.querySelector('#mwalimuConnectSection .mwalimu-connect-hero')?.scrollIntoView({behavior:'smooth',block:'start'})" style="background-image:url('https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">✨</span><strong>Explore Mwalimu Connect</strong><small>Learn how the connection service works before getting started.</small><span class="start-open">Explore →</span></button>
+  </div>
+
   <div class="section-back-row">
     <button
     type="button"
@@ -4013,6 +4065,12 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
 ========================================================= -->
 
 <div id="postSwapSection" class="independent-section-wrapper">
+  <div class="section-start-cards" data-start-cards="postSwapSection">
+    <button type="button" class="section-start-card" onclick="togglePostSwapForm(true)" style="background-image:url('https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">📌</span><strong>Start a New Swap Post</strong><small>Open your posting form and create a teacher transfer swap request.</small><span class="start-open">Open Form →</span></button>
+      <button type="button" class="section-start-card" onclick="document.getElementById('quickPaste')?.focus()" style="background-image:url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">⚡</span><strong>Quick Paste a Request</strong><small>Paste your transfer details and prepare a swap request faster.</small><span class="start-open">Quick Start →</span></button>
+    <button type="button" class="section-start-card" onclick="document.getElementById('postSwapSection')?.scrollIntoView({behavior:'smooth',block:'start'})" style="background-image:url('https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">📋</span><strong>Review Posting Details</strong><small>Go through the swap posting options and required information.</small><span class="start-open">Review Details →</span></button>
+  </div>
+
 
 <div class="section-back-row">
    <button
@@ -4677,6 +4735,13 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
     color:#111827 !important;
   "
 >
+  <div class="section-start-cards" data-start-cards="swapRequestsSection">
+    <button type="button" class="section-start-card" onclick="document.getElementById('searchBox')?.focus()" style="background-image:url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">🔎</span><strong>Search Swap Requests</strong><small>Quickly find teachers, counties, subjects or swap opportunities.</small><span class="start-open">Start Searching →</span></button>
+    <button type="button" class="section-start-card" onclick="document.getElementById('triangularFinder')?.scrollIntoView({behavior:'smooth',block:'center'})" style="background-image:url('https://images.unsplash.com/photo-1454165804606-c3b3b1c0?w=1200')"><span class="start-icon">🔺</span><strong>Find a Triangular Swap</strong><small>Open the triangular swap finder and explore possible connections.</small><span class="start-open">Open Finder →</span></button>
+      <button type="button" class="section-start-card" onclick="document.getElementById('listings')?.scrollIntoView({behavior:'smooth',block:'start'})" style="background-image:url('https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">📋</span><strong>Browse All Requests</strong><small>View the available teacher transfer swap requests.</small><span class="start-open">View Requests →</span></button>
+    <button type="button" class="section-start-card" onclick="document.getElementById('searchBox')?.focus()" style="background-image:url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">🎯</span><strong>Find Your Match</strong><small>Use search and filters to narrow down suitable swap partners.</small><span class="start-open">Find a Match →</span></button>
+  </div>
+
 
   <div class="section-back-row">
      <button
@@ -5272,6 +5337,13 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
   class="learning-resources-section independent-section-wrapper"
   style="display:none;"
 >
+  <div class="section-start-cards" data-start-cards="learningResourcesSection">
+    <button type="button" class="section-start-card" onclick="document.getElementById('learningResourceForm')?.scrollIntoView({behavior:'smooth',block:'center'})" style="background-image:url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">📤</span><strong>Upload a Resource</strong><small>Add learning materials and make them available to teachers.</small><span class="start-open">Start Uploading →</span></button>
+    <button type="button" class="section-start-card" onclick="document.querySelector('.learning-resources-list')?.scrollIntoView({behavior:'smooth',block:'start'})" style="background-image:url('https://images.unsplash.com/photo-1456324504439-367cee3b3c32?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">📚</span><strong>Browse Materials</strong><small>Jump directly to the learning resources marketplace.</small><span class="start-open">Browse Now →</span></button>
+      <button type="button" class="section-start-card" onclick="document.querySelector('.resource-market-grid')?.scrollIntoView({behavior:'smooth',block:'start'})" style="background-image:url('https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">🛒</span><strong>Explore the Marketplace</strong><small>Discover learning materials shared by other teachers.</small><span class="start-open">Explore Market →</span></button>
+    <button type="button" class="section-start-card" onclick="document.querySelector('.resource-level-grid')?.scrollIntoView({behavior:'smooth',block:'start'})" style="background-image:url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">🎓</span><strong>Browse by Level</strong><small>Jump to resources organised by learner level and category.</small><span class="start-open">Browse Levels →</span></button>
+  </div>
+
 
 
  <!-- =====================================================
@@ -7376,6 +7448,13 @@ Connect with teachers across Kenya, discover transfer swap opportunities, teachi
   class="jobs-section independent-section-wrapper"
   style="display:none;"
 >
+  <div class="section-start-cards" data-start-cards="jobsSection">
+    <button type="button" class="section-start-card" onclick="document.querySelector('#jobsSection input, #jobsSection select')?.focus()" style="background-image:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">🔎</span><strong>Find a Job</strong><small>Start exploring current job and vacancy opportunities.</small><span class="start-open">Search Opportunities →</span></button>
+    <button type="button" class="section-start-card" onclick="document.querySelector('#jobsSection .job-list, #jobsSection [id*=job]')?.scrollIntoView({behavior:'smooth',block:'start'})" style="background-image:url('https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">💼</span><strong>Browse Vacancies</strong><small>Jump to the available vacancies in this section.</small><span class="start-open">View Jobs →</span></button>
+      <button type="button" class="section-start-card" onclick="document.querySelector('#jobsSection form')?.scrollIntoView({behavior:'smooth',block:'center'})" style="background-image:url('https://images.unsplash.com/photo-1551836022-4c4c79ecde51?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">📝</span><strong>Post or Submit Details</strong><small>Open the jobs form and add your vacancy or opportunity details.</small><span class="start-open">Open Form →</span></button>
+    <button type="button" class="section-start-card" onclick="document.getElementById('jobsSection')?.scrollIntoView({behavior:'smooth',block:'start'})" style="background-image:url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">🚀</span><strong>Explore Opportunities</strong><small>Review all job-related options available in this section.</small><span class="start-open">Explore →</span></button>
+  </div>
+
   <div class="section-back-row">
     <button
       type="button"
@@ -11447,7 +11526,7 @@ function render(swaps){
                         style="
                             color:#1d4ed8;
 
-                            font-size:18px;
+                            font-size:14px;
 
                             font-weight:900;
 
@@ -11461,7 +11540,7 @@ function render(swaps){
                         style="
                             color:#0f172a;
 
-                            font-size:18px;
+                            font-size:14px;
                         "
                     >
                         ${escapeHTML(
@@ -11479,7 +11558,7 @@ function render(swaps){
 
                                     color:#64748b;
 
-                                    font-size:18px;
+                                    font-size:14px;
                                 "
                             >
                                 ${escapeHTML(
@@ -11522,7 +11601,7 @@ function render(swaps){
                     style="
                         color:#92400e;
 
-                        font-size:18px;
+                        font-size:14px;
 
                         font-weight:900;
 
@@ -18615,13 +18694,18 @@ window.__INDEPENDENT_SECTION_IDS = [
 window.__showOnlyIndependentSection = function(sectionId){
   const ids = window.__INDEPENDENT_SECTION_IDS || [];
 
-  // FIRST: close every independent section and its content.
+  // FIRST: close every independent section and hide EVERY section's Start Cards.
   ids.forEach(id => {
     const el = document.getElementById(id);
     if(el){
       el.classList.remove("active-independent-section");
       el.style.setProperty("display", "none", "important");
       el.setAttribute("aria-hidden", "true");
+    }
+
+    const startCards = document.querySelector(`[data-start-cards="${id}"]`);
+    if(startCards){
+      startCards.style.setProperty("display", "none", "important");
     }
   });
 
@@ -18643,11 +18727,30 @@ window.__showOnlyIndependentSection = function(sectionId){
   target.style.setProperty("display", "block", "important");
   target.setAttribute("aria-hidden", "false");
 
+  // Show ONLY the Start Cards belonging to the section that was triggered.
+  const activeStartCards = document.querySelector(`[data-start-cards="${sectionId}"]`);
+  if(activeStartCards){
+    activeStartCards.style.setProperty("display", "grid", "important");
+  }
+
   if(sectionId === "swapRequestsSection" && listings){
     listings.style.setProperty("display", "grid", "important");
   }
   return true;
 };
+
+// Safety: Start Cards must never appear before their section is explicitly opened.
+function __resetSectionStartCards(){
+  document.querySelectorAll("[data-start-cards]").forEach(cards => {
+    cards.style.setProperty("display", "none", "important");
+  });
+}
+
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", __resetSectionStartCards, {once:true});
+}else{
+  __resetSectionStartCards();
+}
 
 window.openIndependentSection = function(sectionId){
   return window.__showOnlyIndependentSection(sectionId);
@@ -28008,6 +28111,89 @@ window.deleteSelectedContent = async function(type){
 })();
 
 </script>
+
+<!-- FINAL SECTION + ADMIN MODERATION PATCH -->
+<style>
+/* Swap statistics belong to Swap Requests and must not appear at login. */
+.container > .stats{display:none !important;}
+body.swap-section-open .container > .stats{display:grid !important;}
+.admin-item-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;position:relative;z-index:20;}
+.admin-item-actions button{border:0;border-radius:8px;padding:7px 10px;font-weight:800;cursor:pointer;background:#111827;color:#fff;}
+.admin-item-actions button.admin-close{background:#dc2626;}
+.admin-item-actions button.admin-open{background:#16a34a;}
+.admin-item-actions button.admin-delete{background:#7f1d1d;}
+</style>
+<script>
+(function(){
+  const ids=["swapRequestsSection","postSwapSection","learningResourcesSection","jobsSection","mwalimuConnectSection","houseManagerSection"];
+  window.__INDEPENDENT_SECTION_IDS=[...new Set([...(window.__INDEPENDENT_SECTION_IDS||[]),...ids])];
+  function reset(){
+    document.body.classList.remove('swap-section-open');
+    document.querySelectorAll('[data-start-cards]').forEach(x=>x.style.setProperty('display','none','important'));
+    const stats=document.querySelector('.container > .stats'); if(stats) stats.style.setProperty('display','none','important');
+  }
+  const oldShow=window.__showOnlyIndependentSection;
+  window.__showOnlyIndependentSection=function(id){
+    reset();
+    const ok=typeof oldShow==='function'?oldShow(id):true;
+    if(id==='swapRequestsSection'){
+      document.body.classList.add('swap-section-open');
+      const stats=document.querySelector('.container > .stats'); if(stats) stats.style.setProperty('display','grid','important');
+    }
+    return ok;
+  };
+  document.addEventListener('DOMContentLoaded',reset);
+  setTimeout(reset,0); setTimeout(reset,300); setTimeout(reset,1000);
+
+  function admin(){return typeof isContentAdmin==='function'&&isContentAdmin();}
+  async function setStatus(type,id,next){
+    if(!admin()) return;
+    const base={swaps:'teacherSwaps',resources:'learningResources',jobs:'jobPostings'}[type]; if(!base||!id) return;
+    try{await set(ref(window.__firebaseDB,`${base}/${id}/status`),next);await set(ref(window.__firebaseDB,`${base}/${id}/updatedAt`),Date.now());
+      if(type==='swaps'&&typeof loadTeacherSwaps==='function') loadTeacherSwaps();
+      if(type==='resources'&&typeof loadLearningResources==='function') loadLearningResources();
+      if(type==='jobs'&&typeof loadJobsMarketplace==='function') loadJobsMarketplace();
+    }catch(e){console.error(e); Swal.fire({icon:'error',title:'Status update failed',text:e?.message||'Could not update listing status.'});}
+  }
+  window.deleteSingleContent=async function(type,id){
+    if(!admin()) return; const base={swaps:'teacherSwaps',resources:'learningResources',jobs:'jobPostings'}[type]; if(!base||!id)return;
+    const c=await Swal.fire({icon:'warning',title:'Delete this listing?',text:'This action cannot be undone.',showCancelButton:true,confirmButtonText:'Yes, Delete',confirmButtonColor:'#dc2626'});
+    if(!c.isConfirmed)return;
+    try{await set(ref(window.__firebaseDB,`${base}/${id}`),null); if(type==='jobs') await set(ref(window.__firebaseDB,`jobContacts/${id}`),null);
+      if(type==='swaps'&&typeof loadTeacherSwaps==='function')loadTeacherSwaps();
+      if(type==='resources'&&typeof loadLearningResources==='function')loadLearningResources();
+      if(type==='jobs'&&typeof loadJobsMarketplace==='function')loadJobsMarketplace();
+    }catch(e){Swal.fire({icon:'error',title:'Delete failed',text:e?.message||'Could not delete listing.'});}
+  };
+  function addActions(){
+    if(!admin())return;
+    const configs=[['.swap-card[data-swap-id]','swaps','swapId'],['.resource-item[data-resource-id]','resources','resourceId'],['.job-card[data-job-id]','jobs','jobId']];
+    configs.forEach(([sel,type,key])=>document.querySelectorAll(sel).forEach(card=>{
+      if(card.querySelector('.admin-item-actions'))return; const id=card.dataset[key]; if(!id)return;
+      const box=document.createElement('div'); box.className='admin-item-actions';
+      const status=String(card.dataset.status||card.dataset.listingStatus||'active').toLowerCase();
+      box.innerHTML=`<button type="button" class="admin-toggle ${status==='closed'?'admin-open':'admin-close'}">${status==='closed'?'🔓 Open':'🔒 Close'}</button><button type="button" class="admin-delete">🗑️ Delete</button>`;
+      const toggleBtn=box.querySelector('.admin-toggle');
+      toggleBtn.onclick=async()=>{
+        try{
+          const snap=await get(ref(window.__firebaseDB,`${{swaps:'teacherSwaps',resources:'learningResources',jobs:'jobPostings'}[type]}/${id}`));
+          const live=snap.exists()?String((snap.val()||{}).status||'active').toLowerCase():'active';
+          const next=live==='closed'?'active':'closed';
+          await setStatus(type,id,next);
+          card.dataset.status=next;
+          toggleBtn.textContent=next==='closed'?'🔓 Open':'🔒 Close';
+          toggleBtn.classList.toggle('admin-open',next==='closed');
+          toggleBtn.classList.toggle('admin-close',next!=='closed');
+        }catch(e){console.error(e);}
+      };
+      box.querySelector('.admin-delete').onclick=()=>window.deleteSingleContent(type,id);
+      card.insertAdjacentElement('afterbegin',box);
+    }));
+  }
+  setInterval(addActions,800); document.addEventListener('DOMContentLoaded',()=>setTimeout(addActions,500));
+})();
+</script>
+
 </body>
 </html>
 
@@ -28756,6 +28942,13 @@ function addHouseManagerSection(){
                 ← Back to Services
             </button>
 
+        </div>
+
+        <div class="section-start-cards" data-start-cards="houseManagerSection">
+            <button type="button" class="section-start-card" onclick="document.getElementById('houseManagerForm')?.scrollIntoView({behavior:'smooth',block:'center'})" style="background-image:url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">🏠</span><strong>Post Your Profile</strong><small>Create your job-seeking profile so employers can discover you.</small><span class="start-open">Post Profile →</span></button>
+            <button type="button" class="section-start-card" onclick="document.querySelector('#houseManagerSection .hm-filters')?.scrollIntoView({behavior:'smooth',block:'center'})" style="background-image:url('https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">🔎</span><strong>Find a House Manager</strong><small>Search available house managers, maids, nannies and domestic workers.</small><span class="start-open">Start Searching →</span></button>
+            <button type="button" class="section-start-card" onclick="document.querySelector('#houseManagerSection .hm-profiles')?.scrollIntoView({behavior:'smooth',block:'start'})" style="background-image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">👥</span><strong>Browse Profiles</strong><small>View job seekers and compare their experience, skills and availability.</small><span class="start-open">Browse Profiles →</span></button>
+            <button type="button" class="section-start-card" onclick="document.querySelector('#houseManagerSection .hm-hero')?.scrollIntoView({behavior:'smooth',block:'start'})" style="background-image:url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=85')"><span class="start-icon">✨</span><strong>Explore the Service</strong><small>Learn more about using Pata House Manager to connect with job seekers.</small><span class="start-open">Explore Service →</span></button>
         </div>
 
 
@@ -32648,3 +32841,154 @@ if(
 
 </script>
 
+
+<!-- FINAL PRESERVATION PATCH: HOUSE MANAGER + MWALIMU CONNECT ADMIN MODERATION -->
+<style>
+.admin-card-controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0;position:relative;z-index:50;}
+.admin-card-controls button{border:0;border-radius:9px;padding:8px 11px;font-weight:800;cursor:pointer;color:#fff;background:#111827;}
+.admin-card-controls .admin-toggle-listing{background:#475569;}
+.admin-card-controls .admin-delete-listing{background:#7f1d1d;}
+.admin-closed-notice{margin:10px 0;padding:9px 11px;border-radius:9px;background:#fee2e2;color:#991b1b;font-weight:800;}
+</style>
+<script>
+(function(){
+  /* This patch only adds moderation to Pata House Manager and Mwalimu Connect.
+     Existing swaps/resources/jobs changes are intentionally left untouched. */
+  function isAdmin(){try{return typeof isContentAdmin==='function'&&isContentAdmin();}catch(_){return false;}}
+  function fbRef(path){
+    const database=window.__firebaseDB||window.db||db;
+    return ref(database,path);
+  }
+  async function getListing(path){
+    const snap=await get(fbRef(path));
+    return snap.exists()?(snap.val()||{}):null;
+  }
+  async function updateListing(path,value){await set(fbRef(path),value);}
+
+  async function assertActive(path,kind){
+    const item=await getListing(path);
+    if(!item) throw new Error('This listing is no longer available.');
+    if(String(item.status||'active').toLowerCase()!=='active'){
+      throw new Error(kind+' is closed. Payment and contact access are disabled.');
+    }
+    return item;
+  }
+
+  window.__adminModerateListing=async function(kind,id,currentStatus){
+    if(!isAdmin()) return;
+    const config={house:{path:'houseManagerProfiles/'},mwalimu:{path:'mwalimuConnectProfiles/'}}[kind];
+    if(!config||!id)return;
+    const path=config.path+id;
+    let liveStatus=currentStatus;
+    try{ const live=await getListing(path); liveStatus=live?.status||currentStatus||'active'; }catch(_){ liveStatus=currentStatus||'active'; }
+    const closed=String(liveStatus||'active').toLowerCase()==='closed';
+    const next=closed?'active':'closed';
+    try{
+      await updateListing(path+'/status',next);
+      await updateListing(path+'/updatedAt',Date.now());
+      if(kind==='house'&&typeof renderHouseManagerProfiles==='function') renderHouseManagerProfiles();
+      if(kind==='mwalimu'&&typeof loadMwalimuConnectProfiles==='function') loadMwalimuConnectProfiles();
+    }catch(e){console.error('Listing status update failed',e);Swal.fire({icon:'error',title:'Status update failed',text:e?.message||'Could not update this listing.'});}
+  };
+
+  window.__adminDeleteSpecialListing=async function(kind,id){
+    if(!isAdmin()) return;
+    const config={house:'houseManagerProfiles/',mwalimu:'mwalimuConnectProfiles/'}[kind];
+    if(!config||!id)return;
+    const c=await Swal.fire({icon:'warning',title:'Delete this listing?',text:'This action cannot be undone.',showCancelButton:true,confirmButtonText:'Yes, Delete',confirmButtonColor:'#dc2626'});
+    if(!c.isConfirmed)return;
+    try{
+      await updateListing(config+id,null);
+      if(kind==='house'&&typeof renderHouseManagerProfiles==='function') renderHouseManagerProfiles();
+      if(kind==='mwalimu'&&typeof loadMwalimuConnectProfiles==='function') loadMwalimuConnectProfiles();
+    }catch(e){console.error('Special listing delete failed',e);Swal.fire({icon:'error',title:'Delete failed',text:e?.message||'Could not delete this listing.'});}
+  };
+
+  function houseVisibleProfiles(){
+    const norm=v=>String(v||'').trim().toLowerCase();
+    const search=norm(document.getElementById('hmSearch')?.value);
+    const county=norm(document.getElementById('hmCountyFilter')?.value);
+    const gender=norm(document.getElementById('hmGenderFilter')?.value);
+    const work=norm(document.getElementById('hmWorkFilter')?.value);
+    return (window.__allHouseManagers||[]).filter(p=>{
+      const hay=norm([p.name,p.county,p.preferredLocation,p.skills,p.languages,p.education,p.workType,p.about].join(' '));
+      return (!search||hay.includes(search))&&(!county||norm(p.county)===county)&&(!gender||norm(p.gender)===gender)&&(!work||norm(p.workType)===work);
+    });
+  }
+
+  function injectHouseControls(){
+    if(!isAdmin())return;
+    const cards=[...document.querySelectorAll('#houseManagerProfiles .hm-profile-card')];
+    const profiles=houseVisibleProfiles();
+    cards.forEach((card,i)=>{
+      const p=profiles[i]; if(!p?.id||card.querySelector('.admin-card-controls'))return;
+      const status=String(p.status||'active').toLowerCase();
+      const controls=document.createElement('div'); controls.className='admin-card-controls';
+      controls.innerHTML=`<button type="button" class="admin-toggle-listing">${status==='closed'?'🔓 Open':'🔒 Close'}</button><button type="button" class="admin-delete-listing">🗑️ Delete</button>`;
+      controls.querySelector('.admin-toggle-listing').onclick=async()=>{await window.__adminModerateListing('house',p.id);};
+      controls.querySelector('.admin-delete-listing').onclick=()=>window.__adminDeleteSpecialListing('house',p.id);
+      card.appendChild(controls);
+    });
+  }
+
+  async function injectMwalimuControls(){
+    if(!isAdmin())return;
+    const box=document.getElementById('mwalimuConnectProfiles');if(!box)return;
+    const cards=[...box.querySelectorAll('.mwalimu-profile')];
+    if(!cards.length)return;
+    try{
+      const snap=await get(fbRef('mwalimuConnectProfiles'));
+      const raw=snap.exists()?(snap.val()||{}):{};
+      const profiles=Object.entries(raw).map(([id,p])=>({id,...(p||{})}))
+        .filter(p=>p.status!=='closed'&&Number(p.age)>=18&&p.adultConfirmed===true)
+        .sort((a,b)=>Number(b.updatedAt||0)-Number(a.updatedAt||0));
+      cards.forEach((card,i)=>{
+        const p=profiles[i];if(!p?.id||card.querySelector('.admin-card-controls'))return;
+        const status=String(p.status||'active').toLowerCase();
+        const controls=document.createElement('div');controls.className='admin-card-controls';
+        controls.innerHTML=`<button type="button" class="admin-toggle-listing">${status==='closed'?'🔓 Open':'🔒 Close'}</button><button type="button" class="admin-delete-listing">🗑️ Delete</button>`;
+        controls.querySelector('.admin-toggle-listing').onclick=async()=>{await window.__adminModerateListing('mwalimu',p.id);};
+        controls.querySelector('.admin-delete-listing').onclick=()=>window.__adminDeleteSpecialListing('mwalimu',p.id);
+        card.appendChild(controls);
+      });
+    }catch(e){console.warn('Could not add Mwalimu admin controls',e);}
+  }
+
+  /* Add controls after existing renderers run; do not replace their markup or behavior. */
+  const originalHouseRender=window.renderHouseManagerProfiles;
+  if(typeof originalHouseRender==='function'){
+    window.renderHouseManagerProfiles=function(){
+      const out=originalHouseRender.apply(this,arguments);
+      setTimeout(injectHouseControls,0);return out;
+    };
+  }
+  const originalMwalimuLoad=window.loadMwalimuConnectProfiles;
+  if(typeof originalMwalimuLoad==='function'){
+    window.loadMwalimuConnectProfiles=async function(){
+      const out=await originalMwalimuLoad.apply(this,arguments);
+      setTimeout(injectMwalimuControls,0);return out;
+    };
+  }
+
+  /* Closed listings cannot begin payment, cannot reuse a prior paid cache, and cannot reveal contact. */
+  const originalHouseUnlock=window.unlockHouseManagerContact;
+  if(typeof originalHouseUnlock==='function'){
+    window.unlockHouseManagerContact=async function(profileId){
+      await assertActive('houseManagerProfiles/'+String(profileId||'').trim(),'This House Manager listing');
+      return originalHouseUnlock.apply(this,arguments);
+    };
+  }
+  const originalMwalimuUnlock=window.unlockMwalimuConnectContact;
+  if(typeof originalMwalimuUnlock==='function'){
+    window.unlockMwalimuConnectContact=async function(profileId){
+      await assertActive('mwalimuConnectProfiles/'+String(profileId||'').trim(),'This Mwalimu Connect listing');
+      return originalMwalimuUnlock.apply(this,arguments);
+    };
+  }
+
+  /* Guard direct payment/reveal paths as well as the visible buttons. */
+  const observer=new MutationObserver(()=>{injectHouseControls();injectMwalimuControls();});
+  document.addEventListener('DOMContentLoaded',()=>{injectHouseControls();injectMwalimuControls();setTimeout(()=>{injectHouseControls();injectMwalimuControls();},700);});
+  if(document.body)observer.observe(document.body,{childList:true,subtree:true});
+})();
+</script>
