@@ -3133,7 +3133,8 @@ MwalimuHub Kenya 🇰🇪 — Jobs • Swaps • Resources • Opportunities
   line-height:1.5;
   font-weight:500;
 ">
-Connect with teachers and professionals across Kenya, discover transfer and swap opportunities, teaching jobs, learning resources, domestic work opportunities through Pata House Manager, and meaningful connections through Mwalimu Connect — all in one trusted hub.</p>
+Connect with teachers across Kenya, discover transfer swap opportunities, teaching jobs, and valuable learning resources — all in one trusted hub.
+</p>
   </div>
 </header>
 
@@ -4041,7 +4042,16 @@ Connect with teachers and professionals across Kenya, discover transfer and swap
     background-repeat:repeat !important;
   "
 >
-  <h3>🔎 Discover Teacher Connections</h3>
+  <h3 style="
+  background:#ca8a04;
+  color:#ffffff;
+  padding:10px 16px;
+  border-radius:8px;
+  display:inline-block;
+  margin:0;
+">
+  🔎 Discover Teacher Connections
+</h3>
 
   <div id="mwalimuConnectProfiles" class="mwalimu-connect-profiles">
     <div class="mwalimu-empty">
@@ -11615,7 +11625,7 @@ function render(swaps){
                     style="
                         color:#334155;
 
-                        font-size:18px;
+                        font-size:14px;
 
                         font-weight:700;
 
@@ -28171,22 +28181,8 @@ body.swap-section-open .container > .stats{display:grid !important;}
     configs.forEach(([sel,type,key])=>document.querySelectorAll(sel).forEach(card=>{
       if(card.querySelector('.admin-item-actions'))return; const id=card.dataset[key]; if(!id)return;
       const box=document.createElement('div'); box.className='admin-item-actions';
-      const status=String(card.dataset.status||card.dataset.listingStatus||'active').toLowerCase();
-      box.innerHTML=`<button type="button" class="admin-toggle ${status==='closed'?'admin-open':'admin-close'}">${status==='closed'?'🔓 Open':'🔒 Close'}</button><button type="button" class="admin-delete">🗑️ Delete</button>`;
-      const toggleBtn=box.querySelector('.admin-toggle');
-      toggleBtn.onclick=async()=>{
-        try{
-          const snap=await get(ref(window.__firebaseDB,`${{swaps:'teacherSwaps',resources:'learningResources',jobs:'jobPostings'}[type]}/${id}`));
-          const live=snap.exists()?String((snap.val()||{}).status||'active').toLowerCase():'active';
-          const next=live==='closed'?'active':'closed';
-          await setStatus(type,id,next);
-          card.dataset.status=next;
-          toggleBtn.textContent=next==='closed'?'🔓 Open':'🔒 Close';
-          toggleBtn.classList.toggle('admin-open',next==='closed');
-          toggleBtn.classList.toggle('admin-close',next!=='closed');
-        }catch(e){console.error(e);}
-      };
-      box.querySelector('.admin-delete').onclick=()=>window.deleteSingleContent(type,id);
+    box.innerHTML = `<button type="button" class="admin-delete">🗑️ Delete</button>`;
+      box.querySelector('.admin-close').onclick=()=>setStatus(type,id,'closed'); box.querySelector('.admin-open').onclick=()=>setStatus(type,id,'active'); box.querySelector('.admin-delete').onclick=()=>window.deleteSingleContent(type,id);
       card.insertAdjacentElement('afterbegin',box);
     }));
   }
@@ -32879,9 +32875,7 @@ if(
     const config={house:{path:'houseManagerProfiles/'},mwalimu:{path:'mwalimuConnectProfiles/'}}[kind];
     if(!config||!id)return;
     const path=config.path+id;
-    let liveStatus=currentStatus;
-    try{ const live=await getListing(path); liveStatus=live?.status||currentStatus||'active'; }catch(_){ liveStatus=currentStatus||'active'; }
-    const closed=String(liveStatus||'active').toLowerCase()==='closed';
+    const closed=String(currentStatus||'active').toLowerCase()==='closed';
     const next=closed?'active':'closed';
     try{
       await updateListing(path+'/status',next);
@@ -32925,7 +32919,7 @@ if(
       const status=String(p.status||'active').toLowerCase();
       const controls=document.createElement('div'); controls.className='admin-card-controls';
       controls.innerHTML=`<button type="button" class="admin-toggle-listing">${status==='closed'?'🔓 Open':'🔒 Close'}</button><button type="button" class="admin-delete-listing">🗑️ Delete</button>`;
-      controls.querySelector('.admin-toggle-listing').onclick=async()=>{await window.__adminModerateListing('house',p.id);};
+      controls.querySelector('.admin-toggle-listing').onclick=()=>window.__adminModerateListing('house',p.id,status);
       controls.querySelector('.admin-delete-listing').onclick=()=>window.__adminDeleteSpecialListing('house',p.id);
       card.appendChild(controls);
     });
@@ -32947,7 +32941,7 @@ if(
         const status=String(p.status||'active').toLowerCase();
         const controls=document.createElement('div');controls.className='admin-card-controls';
         controls.innerHTML=`<button type="button" class="admin-toggle-listing">${status==='closed'?'🔓 Open':'🔒 Close'}</button><button type="button" class="admin-delete-listing">🗑️ Delete</button>`;
-        controls.querySelector('.admin-toggle-listing').onclick=async()=>{await window.__adminModerateListing('mwalimu',p.id);};
+        controls.querySelector('.admin-toggle-listing').onclick=()=>window.__adminModerateListing('mwalimu',p.id,status);
         controls.querySelector('.admin-delete-listing').onclick=()=>window.__adminDeleteSpecialListing('mwalimu',p.id);
         card.appendChild(controls);
       });
@@ -32990,5 +32984,73 @@ if(
   const observer=new MutationObserver(()=>{injectHouseControls();injectMwalimuControls();});
   document.addEventListener('DOMContentLoaded',()=>{injectHouseControls();injectMwalimuControls();setTimeout(()=>{injectHouseControls();injectMwalimuControls();},700);});
   if(document.body)observer.observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+
+<script>
+/* FINAL TOGGLE + MWALIMU UNLOCK FIX — preserves all earlier changes. */
+(function(){
+  function admin(){try{return typeof isContentAdmin==='function' && isContentAdmin();}catch(e){return false;}}
+  function dbref(path){return ref(window.__firebaseDB||window.db||db,path);}
+  async function writeStatus(base,id,next){
+    if(!admin()) return;
+    try{
+      await set(dbref(base+'/'+id+'/status'),next);
+      await set(dbref(base+'/'+id+'/updatedAt'),Date.now());
+      if(base==='learningResources' && typeof loadLearningResources==='function') loadLearningResources();
+      if(base==='jobPostings' && typeof loadJobsMarketplace==='function') loadJobsMarketplace();
+      if(base==='mwalimuConnectProfiles' && typeof loadMwalimuConnectProfiles==='function') loadMwalimuConnectProfiles();
+    }catch(e){console.error('Toggle failed',e);Swal.fire({icon:'error',title:'Status update failed',text:e?.message||'Could not update the listing.'});}
+  }
+
+  /* One working toggle button for Resources and Jobs; remove old separate Close/Open buttons. */
+  function fixStandardCards(){
+    if(!admin()) return;
+    document.querySelectorAll('.resource-item[data-resource-id],.job-card[data-job-id]').forEach(card=>{
+      const type=card.dataset.resourceId?'resource':'job';
+      const id=card.dataset.resourceId||card.dataset.jobId;if(!id)return;
+      const old=card.querySelector('.admin-item-actions');
+      if(!old)return;
+      const status=String(card.dataset.status||card.getAttribute('data-status')||'').toLowerCase();
+      const closed=status==='closed'||/CLOSED/i.test(card.textContent||'');
+      old.innerHTML=`<button type="button" class="admin-toggle-listing">${closed?'🔓 Open':'🔒 Close'}</button><button type="button" class="admin-delete">🗑️ Delete</button>`;
+      old.querySelector('.admin-toggle-listing').onclick=()=>writeStatus(type==='resource'?'learningResources':'jobPostings',id,closed?'active':'closed');
+      old.querySelector('.admin-delete').onclick=()=>window.deleteSingleContent?.(type==='resource'?'resources':'jobs',id);
+    });
+  }
+
+  /* Mwalimu: keep reveal-payment button, and give admins a truly working Close/Open toggle. */
+  window.loadMwalimuConnectProfiles=async function(){
+    const box=document.getElementById('mwalimuConnectProfiles');
+    const source=window.mwalimuConnectRef || (typeof mwalimuConnectRef!=='undefined'?mwalimuConnectRef:null);
+    if(!box||!source)return;
+    try{
+      const snap=await get(source), raw=snap.exists()?(snap.val()||{}):{};
+      const ownId=localStorage.getItem('mwalimu_connect_profile_id')||localStorage.getItem('MC_LOCAL_PROFILE_KEY')||'';
+      let profiles=Object.entries(raw).map(([id,p])=>({id,...(p||{})})).filter(p=>Number(p.age)>=18&&p.adultConfirmed===true);
+      if(!admin()) profiles=profiles.filter(p=>String(p.status||'active').toLowerCase()!=='closed');
+      profiles.sort((a,b)=>Number(b.updatedAt||0)-Number(a.updatedAt||0));
+      if(!profiles.length){box.innerHTML='<div class="mwalimu-empty">No adult profiles are available yet.</div>';return;}
+      box.innerHTML=profiles.map(p=>{
+        const closed=String(p.status||'active').toLowerCase()==='closed';
+        const own=String(p.id)===String(ownId);
+        const reveal=closed?'<div class="m-phone-locked">🔒 This listing is closed. Payment and contact reveal are disabled.</div>':(own?'<div class="m-phone-locked">📌 This is your profile. Your phone number is never shown publicly.</div>':`<div class="m-phone-locked">🔒 Phone protected. Pay KES ${(window.MC_PRICE||2).toLocaleString()} to reveal this teacher's number.</div><button class="m-unlock" type="button" onclick="unlockMwalimuConnectContact('${String(p.id).replace(/'/g,"\\'")}','${String(p.generatedName||'Teacher').replace(/'/g,"\\'")}')">🔓 Reveal Phone — KES ${(window.MC_PRICE||2).toLocaleString()}</button>`);
+        const controls=admin()?`<div class="admin-card-controls"><button type="button" class="admin-toggle-listing" onclick="__adminModerateListing('mwalimu','${String(p.id).replace(/'/g,"\\'")}','${closed?'closed':'active'}')">${closed?'🔓 Open':'🔒 Close'}</button><button type="button" class="admin-delete-listing" onclick="__adminDeleteSpecialListing('mwalimu','${String(p.id).replace(/'/g,"\\'")}')">🗑️ Delete</button></div>`:'';
+        return `<article class="mwalimu-profile" data-profile-id="${p.id}"><h4>👤 ${String(p.generatedName||'Teacher')}</h4><div class="m-meta"><strong>Gender:</strong> ${String(p.gender||'-')}<br><strong>Age:</strong> ${String(p.age||'-')}<br><strong>Community:</strong> ${String(p.tribe||'-')}<br><strong>Work:</strong> ${String(p.job||'-')}<br><strong>Work County:</strong> ${String(p.workCounty||'-')}</div>${reveal}${controls}</article>`;
+      }).join('');
+    }catch(e){console.error('Mwalimu load error',e);box.innerHTML='<div class="mwalimu-empty">Unable to load profiles right now. Please refresh and try again.</div>';}
+  };
+
+  const oldModerate=window.__adminModerateListing;
+  window.__adminModerateListing=async function(kind,id,currentStatus){
+    if(kind!=='mwalimu') return oldModerate?.apply(this,arguments);
+    if(!admin()) return;
+    const next=String(currentStatus||'active').toLowerCase()==='closed'?'active':'closed';
+    await writeStatus('mwalimuConnectProfiles',id,next);
+    Swal.fire({icon:'success',title:next==='closed'?'Listing Closed':'Listing Opened',timer:1200,showConfirmButton:false});
+  };
+
+  document.addEventListener('DOMContentLoaded',()=>{fixStandardCards();if(typeof loadMwalimuConnectProfiles==='function')loadMwalimuConnectProfiles();});
+  setInterval(fixStandardCards,700);
 })();
 </script>
